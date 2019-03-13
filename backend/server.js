@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import session from 'express-session';
@@ -6,6 +7,7 @@ const MongoStore = require('connect-mongo')(session);
 import path from 'path';
 
 const app = express();
+app.use(cors())
 
 // connect to database 
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true});
@@ -28,6 +30,9 @@ app.use(session({
   })
 }));
 
+// route controllers
+import apiRouter from './routers/apiRouter'
+app.use('/api', apiRouter);
 
 //page not found handler
 app.use((req, res) => {
