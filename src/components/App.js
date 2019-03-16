@@ -5,7 +5,7 @@ import {
   withStyles
 } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
-import Playground from './Playground'
+import Root from './Root'
 
 const primaryColor = '#8E2DE2'
 const secondaryColor = '#00ca69'
@@ -36,11 +36,19 @@ const theme = createMuiTheme({
           background: secondaryColor,
           border: `2px solid ${secondaryColor}`
         }
+      },
+      contained: {
+        padding: '0px 32px',
+        borderRadius: '24px',
+        boxShadow: 'none'
       }
     },
     MuiTypography: {
       h6: {
         fontSize: '1rem'
+      },
+      h3: {
+        fontWeight: 500
       }
     }
   },
@@ -63,7 +71,7 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Playground />
+      <Root />
     </MuiThemeProvider>
   )
 }
