@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
   MuiThemeProvider,
   createMuiTheme,
@@ -10,7 +10,7 @@ import Root from './Root'
 const primaryColor = '#8E2DE2'
 const secondaryColor = '#00ca69'
 
-const theme = createMuiTheme({
+const theme = {
   palette: {
     primary: {
       main: primaryColor
@@ -36,11 +36,6 @@ const theme = createMuiTheme({
           background: secondaryColor,
           border: `2px solid ${secondaryColor}`
         }
-      },
-      contained: {
-        padding: '0px 32px',
-        borderRadius: '24px',
-        boxShadow: 'none'
       }
     },
     MuiTypography: {
@@ -49,6 +44,9 @@ const theme = createMuiTheme({
       },
       h3: {
         fontWeight: 500
+      },
+      h5: {
+        fontWeight: 500
       }
     }
   },
@@ -56,24 +54,63 @@ const theme = createMuiTheme({
     fontFamily: 'Montserrat',
     useNextVariants: true
   }
-})
+}
+
+class App extends Component {
+  state = {
+    theme: createMuiTheme(theme)
+  }
+
+  persistOutlinedBtn = () => {
+    let clone = JSON.parse(JSON.stringify(theme))
+    let muiOutlinedBtn = clone.overrides.MuiButton.outlined
+    muiOutlinedBtn.border = `2px solid ${secondaryColor} !important`
+    muiOutlinedBtn.background = secondaryColor
+    this.setState(() => ({
+      theme: createMuiTheme(clone)
+    }))
+  }
+
+  resetTheme = () => {
+    this.setState(() => ({
+      theme: createMuiTheme(theme)
+    }))
+  }
+
+  render() {
+    return (
+      <MuiThemeProvider theme={this.state.theme}>
+        <CssBaseline />
+        <Root
+          resetTheme={this.resetTheme}
+          persistOutlinedBtn={this.persistOutlinedBtn}
+        />
+      </MuiThemeProvider>
+    )
+  }
+}
 
 const styles = theme => ({
   '@global': {
     '*': {
       padding: 0,
       margin: 0
+    },
+    '.mainContent': {
+      flex: 1,
+      padding: 16,
+      '@media (min-width: 600px)': {
+        padding: 24
+      },
+      marginTop: 56,
+      '@media (min-width:0px) and (orientation: landscape)': {
+        marginTop: 48
+      },
+      '@media (min-width:600px)': {
+        marginTop: 64
+      }
     }
   }
 })
-
-function App() {
-  return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Root />
-    </MuiThemeProvider>
-  )
-}
 
 export default withStyles(styles)(App)

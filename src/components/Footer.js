@@ -21,11 +21,11 @@ const Footer = props => {
     classes: { root, footerText }
   } = props
   return (
-    <div className={root}>
+    <footer className={root}>
       <Typography variant="body1" className={footerText}>
         © 2019 UOW, all rights reserved
       </Typography>
-    </div>
+    </footer>
   )
 }
 

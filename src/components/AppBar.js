@@ -1,4 +1,5 @@
 import React from 'react'
+import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Button } from '@material-ui/core'
 import MuiLink from './MuiLink'
@@ -8,12 +9,14 @@ const styles = theme => ({
   rightSide: {
     marginLeft: 'auto'
   },
-  link: {
+  linkColor: {
     color: theme.palette.primary.contrastText,
     '&:hover': {
       color: theme.palette.secondary.light,
       transition: 'color 0.25s'
-    },
+    }
+  },
+  linkMargin: {
     marginRight: '1.5rem'
   },
   activeLink: {
@@ -32,7 +35,7 @@ const styles = theme => ({
 
 const StyledAppBar = props => {
   const {
-    classes: { rightSide, link, appBar, activeLink, btn }
+    classes: { rightSide, linkColor, linkMargin, appBar, activeLink, btn }
   } = props
 
   return (
@@ -45,7 +48,7 @@ const StyledAppBar = props => {
             to="/"
             variant="h6"
             underline="none"
-            className={link}
+            className={classNames(linkColor, linkMargin)}
             activeClassName={activeLink}
           >
             Home
@@ -55,7 +58,7 @@ const StyledAppBar = props => {
             to="/pricing"
             variant="h6"
             underline="none"
-            className={link}
+            className={classNames(linkColor, linkMargin)}
             activeClassName={activeLink}
           >
             Pricing
@@ -65,7 +68,7 @@ const StyledAppBar = props => {
             to="/careers"
             variant="h6"
             underline="none"
-            className={link}
+            className={classNames(linkColor, linkMargin)}
             activeClassName={activeLink}
           >
             Careers
@@ -78,6 +81,8 @@ const StyledAppBar = props => {
                 variant="h6"
                 underline="none"
                 color="inherit"
+                className={linkColor}
+                activeClassName={activeLink}
               >
                 Login
               </MuiLink>

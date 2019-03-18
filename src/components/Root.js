@@ -20,7 +20,9 @@ const style = theme => ({
 
 const Root = props => {
   const {
-    classes: { root }
+    classes: { root },
+    resetTheme,
+    persistOutlinedBtn
   } = props
   return (
     <Router>
@@ -28,7 +30,15 @@ const Root = props => {
         <AppBar />
         <Switch>
           <Route exact path="/" component={MainLanding} />
-          <Route path="/signup" component={SignUp} />
+          <Route
+            path="/signup"
+            render={() => (
+              <SignUp
+                resetTheme={resetTheme}
+                persistOutlinedBtn={persistOutlinedBtn}
+              />
+            )}
+          />
           <Route path="/login" component={LogIn} />
           <Route path="/pricing" component={Pricing} />
           <Route path="/careers" component={Career} />
