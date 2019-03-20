@@ -12,17 +12,17 @@ const style = theme => ({
     justifyContent: 'center'
   },
   bodyTextStyle: {
-    marginTop: 16,
+    marginTop: theme.spacing.unit * 2,
     padding: 5,
-    fontSize: 20
+    fontSize: '1.25rem'
   },
   intro: {
     width: '60vw'
   },
   btn: {
-    marginTop: 15,
-    padding: '0px 32px',
-    borderRadius: '24px',
+    marginTop: theme.spacing.unit * 2,
+    padding: `0px ${theme.spacing.unit * 4}px`,
+    borderRadius: theme.spacing.unit * 3,
     boxShadow: 'none'
   },
   btnText: {
@@ -50,7 +50,6 @@ class MainLanding extends Component {
           <Typography variant="h3" color="inherit">
             {titleText}
           </Typography>
-          <Typography variant="h3" color="inherit" />
           <Typography variant="body1" color="inherit" className={bodyTextStyle}>
             {bodyText}
           </Typography>

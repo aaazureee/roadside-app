@@ -13,11 +13,14 @@ const styles = theme => ({
     color: theme.palette.primary.contrastText,
     '&:hover': {
       color: theme.palette.secondary.light,
-      transition: 'color 0.25s'
+      transition: theme.transitions.create(['color'])
     }
   },
   linkMargin: {
-    marginRight: '1.5rem'
+    marginRight: theme.spacing.unit * 3
+  },
+  rightLinkMargin: {
+    marginRight: theme.spacing.unit * 2
   },
   activeLink: {
     color: theme.palette.secondary.light
@@ -27,15 +30,19 @@ const styles = theme => ({
     background: 'linear-gradient(to right, #8e2de2, #4a00e0)',
     boxShadow:
       '0px 0px 4px -1px rgba(0,0,0,0.2), 0px 0px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-  },
-  btn: {
-    marginRight: '0.5rem'
   }
 })
 
 const StyledAppBar = props => {
   const {
-    classes: { rightSide, linkColor, linkMargin, appBar, activeLink, btn }
+    classes: {
+      rightSide,
+      linkColor,
+      linkMargin,
+      appBar,
+      activeLink,
+      rightLinkMargin
+    }
   } = props
 
   return (
@@ -74,31 +81,28 @@ const StyledAppBar = props => {
             Careers
           </MuiLink>
           <div className={rightSide}>
-            <Button color="inherit" className={btn}>
-              <MuiLink
-                type={NavLink}
-                to="/login"
-                variant="h6"
-                underline="none"
-                color="inherit"
-                className={linkColor}
-                activeClassName={activeLink}
-              >
-                Login
-              </MuiLink>
-            </Button>
-            <Button variant="outlined" color="inherit">
-              <MuiLink
-                type={NavLink}
-                to="/signup"
-                variant="h6"
-                underline="none"
-                color="inherit"
-              >
-                Sign up free
-              </MuiLink>
-            </Button>
+            <MuiLink
+              type={NavLink}
+              to="/login"
+              variant="h6"
+              underline="none"
+              className={classNames(linkColor, rightLinkMargin)}
+              activeClassName={activeLink}
+            >
+              Login
+            </MuiLink>
           </div>
+          <Button variant="outlined" color="inherit">
+            <MuiLink
+              type={NavLink}
+              to="/signup"
+              variant="h6"
+              underline="none"
+              color="inherit"
+            >
+              Sign up free
+            </MuiLink>
+          </Button>
         </Toolbar>
       </AppBar>
     </React.Fragment>

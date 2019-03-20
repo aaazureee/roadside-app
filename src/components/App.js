@@ -47,6 +47,32 @@ const theme = {
       },
       h5: {
         fontWeight: 500
+      },
+      body2: {
+        fontWeight: 500
+      }
+    },
+    MuiInput: {
+      underline: {
+        '&&&&:hover:before': {
+          borderBottom: `2px solid ${primaryColor}`
+        }
+      }
+    },
+    MuiFormLabel: {
+      root: {
+        fontWeight: 500,
+        color: 'rgba(0, 0, 0, 0.44)'
+      }
+    },
+    MuiStepIcon: {
+      text: {
+        fontWeight: 500
+      }
+    },
+    MuiInputBase: {
+      root: {
+        fontWeight: 500
       }
     }
   },
