@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "concurrently \"cd client && npm i\" \"cd server && npm i\" ",
     "start": "cd server && npm run start:prod",
     "build": "concurrently \"cd client && npm run build\" \"cd server && npm run prestart:prod\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
