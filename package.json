@@ -1,0 +1,24 @@
+{
+  "name": "roadside-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd server && npm run start:prod",
+    "build": "concurrently \"cd client && npm run build\" \"cd server && npm run prestart:prod\" ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aaazureee/roadside-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aaazureee/roadside-app/issues"
+  },
+  "homepage": "https://github.com/aaazureee/roadside-app#readme",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}

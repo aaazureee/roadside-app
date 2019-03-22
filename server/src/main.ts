@@ -16,6 +16,6 @@ async function bootstrap() {
   app.useStaticAssets(path.resolve(__dirname, '../../client/build'));
   Logger.log('Serving static assets from ' + path.resolve(__dirname, '../../client/build'), 'Bootstrap');
   app.useGlobalFilters(new NotFoundExceptionFilter());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
