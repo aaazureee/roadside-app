@@ -1,6 +1,10 @@
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
 
+### User addons ###
+# React build
+build
+
 ### Node ###
 # Logs
 logs
