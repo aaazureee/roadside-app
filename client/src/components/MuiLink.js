@@ -8,7 +8,7 @@ class MuiLink extends React.Component {
 
   render() {
     const { type } = this.props
-    const linkProps = JSON.parse(JSON.stringify(this.props))
+    const linkProps = { ...this.props }
     delete linkProps.type
     return (
       <Link component={this.renderLink(type)} {...linkProps}>

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import AppBar from './AppBar'
 import Footer from './Footer'
 import MainLanding from './MainLanding'
 import SignUp from './SignUp'
-import LogIn from './LogIn'
+import Login from './Login'
 import Pricing from './Pricing'
 import Career from './Career'
 import NotFound from './NotFound'
@@ -18,36 +18,54 @@ const style = theme => ({
   }
 })
 
-const Root = props => {
-  const {
-    classes: { root },
-    resetTheme,
-    persistOutlinedBtn
-  } = props
-  return (
-    <Router>
+class Root extends Component {
+  state = {
+    userEmail: localStorage.getItem('userEmail')
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      console.log('did update')
+      this.setState({
+        userEmail: localStorage.getItem('userEmail')
+      })
+      console.log(this.props)
+    }
+  }
+
+  render() {
+    console.log('render')
+    const {
+      classes: { root },
+      resetTheme,
+      persistOutlinedBtn
+    } = this.props
+    const { userEmail } = this.state
+    return (
       <div className={root}>
-        <AppBar />
+        <AppBar userEmail={userEmail} />
         <Switch>
           <Route exact path="/" component={MainLanding} />
           <Route
             path="/signup"
-            render={() => (
+            render={props => (
               <SignUp
                 resetTheme={resetTheme}
                 persistOutlinedBtn={persistOutlinedBtn}
+                userEmail={userEmail}
+                {...props}
               />
             )}
           />
-          <Route path="/login" component={LogIn} />
-          <Route path="/pricing" component={Pricing} />
-          <Route path="/careers" component={Career} />
+          <Route path="/login" component={Login} userEmail={userEmail} />
+          <Route path="/pricing" component={Pricing} userEmail={userEmail} />
+          <Route path="/careers" component={Career} userEmail={userEmail} />
           <Route component={NotFound} />
         </Switch>
         <Footer />
       </div>
-    </Router>
-  )
+    )
+  }
 }
 
-export default withStyles(style)(Root)
+export default withStyles(style)(withRouter(Root))

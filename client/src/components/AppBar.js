@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Button } from '@material-ui/core'
+import { AppBar, Toolbar, Button, Typography } from '@material-ui/core'
 import MuiLink from './MuiLink'
 import { NavLink } from 'react-router-dom'
 
@@ -42,7 +42,8 @@ const StyledAppBar = props => {
       appBar,
       activeLink,
       rightLinkMargin
-    }
+    },
+    userEmail
   } = props
 
   return (
@@ -80,29 +81,37 @@ const StyledAppBar = props => {
           >
             Careers
           </MuiLink>
-          <div className={rightSide}>
-            <MuiLink
-              type={NavLink}
-              to="/login"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, rightLinkMargin)}
-              activeClassName={activeLink}
-            >
-              Login
-            </MuiLink>
-          </div>
-          <Button variant="outlined" color="inherit">
-            <MuiLink
-              type={NavLink}
-              to="/signup"
-              variant="h6"
-              underline="none"
-              color="inherit"
-            >
-              Sign up free
-            </MuiLink>
-          </Button>
+
+          {/* Check if there is an authenticated user */}
+          {userEmail ? (
+            <Typography variant="h6" className={rightSide} color="inherit">
+              Hi, {userEmail}
+            </Typography>
+          ) : (
+            <React.Fragment>
+              <MuiLink
+                type={NavLink}
+                to="/login"
+                variant="h6"
+                underline="none"
+                className={classNames(rightSide, linkColor, rightLinkMargin)}
+                activeClassName={activeLink}
+              >
+                Login
+              </MuiLink>
+              <MuiLink
+                type={NavLink}
+                to="/signup"
+                variant="h6"
+                underline="none"
+                color="inherit"
+              >
+                <Button variant="outlined" color="inherit">
+                  Sign up free
+                </Button>
+              </MuiLink>
+            </React.Fragment>
+          )}
         </Toolbar>
       </AppBar>
     </React.Fragment>

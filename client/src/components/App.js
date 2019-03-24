@@ -5,6 +5,7 @@ import {
   withStyles
 } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
+import { BrowserRouter as Router } from 'react-router-dom'
 import Root from './Root'
 
 const primaryColor = '#8E2DE2'
@@ -50,6 +51,10 @@ const theme = {
       },
       body2: {
         fontWeight: 500
+      },
+      subtitle1: {
+        fontWeight: 500,
+        fontSize: '0.9rem'
       }
     },
     MuiInput: {
@@ -107,10 +112,12 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={this.state.theme}>
         <CssBaseline />
-        <Root
-          resetTheme={this.resetTheme}
-          persistOutlinedBtn={this.persistOutlinedBtn}
-        />
+        <Router>
+          <Root
+            resetTheme={this.resetTheme}
+            persistOutlinedBtn={this.persistOutlinedBtn}
+          />
+        </Router>
       </MuiThemeProvider>
     )
   }

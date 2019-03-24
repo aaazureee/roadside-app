@@ -5,27 +5,26 @@ import { Typography, Paper, Stepper, Step, StepLabel } from '@material-ui/core'
 import CustomerBasicForm from './CustomerBasicForm'
 import CustomerVehicleForm from './CustomerVehicleForm'
 import CustomerPaymentForm from './CustomerPaymentForm'
+import CustomerReview from './CustomerReview'
 
 const style = theme => ({
   root: {
-    background: '#fafafa',
-    width: 'auto'
+    background: '#fff',
+    width: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
   },
   paper: {
     padding: theme.spacing.unit * 2,
     marginLeft: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 3,
     [theme.breakpoints.up(600 + theme.spacing.unit * 2 * 2)]: {
       padding: theme.spacing.unit * 3,
       width: 600,
       marginLeft: 'auto',
-      marginRight: 'auto',
-      marginBottom: theme.spacing.unit * 6
+      marginRight: 'auto'
     }
-  },
-  formTitle: {
-    fontSize: '1.25rem'
   }
 })
 
@@ -37,7 +36,10 @@ class SignUp extends Component {
   }
 
   state = {
-    activeStep: 0
+    activeStep: 0,
+    userDetails: {
+      userType: 'customer'
+    }
   }
 
   handleNext = () => {
@@ -52,11 +54,20 @@ class SignUp extends Component {
     }))
   }
 
+  updateUserDetails = newUserDetails => {
+    this.setState(state => ({
+      ...state,
+      userDetails: {
+        ...state.userDetails,
+        ...newUserDetails
+      }
+    }))
+  }
+
   stepperOptions = {
     handleNext: this.handleNext,
     handleBack: this.handleBack,
-    activeStep: this.state.activeStep,
-    stepLength: steps.length
+    updateUserDetails: this.updateUserDetails
   }
 
   getStepContent = step => {
@@ -68,7 +79,12 @@ class SignUp extends Component {
       case 2:
         return <CustomerPaymentForm {...this.stepperOptions} />
       case 3:
-        return <CustomerBasicForm {...this.stepperOptions} />
+        return (
+          <CustomerReview
+            {...this.stepperOptions}
+            userDetails={this.state.userDetails}
+          />
+        )
       default:
         throw new Error('Unknown step')
     }
@@ -76,7 +92,8 @@ class SignUp extends Component {
 
   render() {
     const {
-      classes: { root, paper }
+      classes: { root, paper },
+      history
     } = this.props
 
     const { activeStep } = this.state
@@ -101,9 +118,14 @@ class SignUp extends Component {
                   Your registration is successful.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
+                  We will now redirect you to the dashboard.
+                  {setTimeout(() => {
+                    localStorage.setItem(
+                      'userEmail',
+                      this.state.userDetails.email
+                    )
+                    history.push('/')
+                  }, 500)}
                 </Typography>
               </React.Fragment>
             ) : (
