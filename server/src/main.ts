@@ -6,16 +6,24 @@ import { NotFoundExceptionFilter } from './filters/not-found-exception.filter';
 import { Logger } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'a secret',
-    saveUninitialized: false,
-    resave: false, //@TODO: depends on session store
-  }))
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'a secret',
+      saveUninitialized: false,
+      resave: false, //@TODO: depends on session store
+    }),
+  );
 
   //serve react frontend
   app.useStaticAssets(path.resolve(__dirname, '../../client/build'));
-  Logger.log('Serving static assets from ' + path.resolve(__dirname, '../../client/build'), 'Bootstrap');
+  Logger.log(
+    'Serving static assets from ' +
+      path.resolve(__dirname, '../../client/build'),
+    'Bootstrap',
+  );
   app.useGlobalFilters(new NotFoundExceptionFilter());
+
+  app.setGlobalPrefix('api');
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
