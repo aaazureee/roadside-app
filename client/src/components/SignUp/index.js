@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import { Typography, Paper, Stepper, Step, StepLabel } from '@material-ui/core'
-import CustomerBasicForm from './CustomerBasicForm'
+import BasicForm from './BasicForm'
 import CustomerVehicleForm from './CustomerVehicleForm'
-import CustomerPaymentForm from './CustomerPaymentForm'
-import CustomerReview from './CustomerReview'
+import PaymentForm from './PaymentForm'
+import SignUpReview from './SignUpReview'
 
 const style = theme => ({
   root: {
@@ -32,14 +32,21 @@ const steps = ['Basic details', 'Vehicle details', 'Payment details', 'Review']
 
 class SignUp extends Component {
   componentDidMount() {
-    this.props.persistOutlinedBtn()
+    this.props.userType === 'customer' && this.props.persistOutlinedBtn()
   }
 
   state = {
-    activeStep: 0,
+    activeStep: 1,
     userDetails: {
-      userType: 'customer'
-    }
+      userType: this.props.userType
+    },
+    steps:
+      this.props.userType === 'customer'
+        ? steps
+        : steps.map((step, index) => {
+            if (step === 'Vehicle details') return 'Work details'
+            return step
+          })
   }
 
   handleNext = () => {
@@ -67,20 +74,26 @@ class SignUp extends Component {
   stepperOptions = {
     handleNext: this.handleNext,
     handleBack: this.handleBack,
-    updateUserDetails: this.updateUserDetails
+    updateUserDetails: this.updateUserDetails,
+    userType: this.props.userType
   }
 
   getStepContent = step => {
+    const { userType } = this.props
     switch (step) {
       case 0:
-        return <CustomerBasicForm {...this.stepperOptions} />
+        return <BasicForm {...this.stepperOptions} />
       case 1:
-        return <CustomerVehicleForm {...this.stepperOptions} />
+        if (userType === 'customer') {
+          return <CustomerVehicleForm {...this.stepperOptions} />
+        } 
+        return 'Professional Work Form'
+
       case 2:
-        return <CustomerPaymentForm {...this.stepperOptions} />
+        return <PaymentForm {...this.stepperOptions} />
       case 3:
         return (
-          <CustomerReview
+          <SignUpReview
             {...this.stepperOptions}
             userDetails={this.state.userDetails}
           />
@@ -92,17 +105,18 @@ class SignUp extends Component {
 
   render() {
     const {
-      classes: { root, paper },
-      history
+      classes: { root, paper, divider },
+      history,
+      userType
     } = this.props
 
-    const { activeStep } = this.state
+    const { activeStep, steps } = this.state
 
     return (
       <main className={classNames('mainContent', root)}>
         <Paper className={paper}>
           <Typography variant="h5" color="primary" align="center">
-            Sign up as customer
+            Sign up as {userType}
           </Typography>
           <Stepper activeStep={activeStep}>
             {steps.map(label => (
@@ -111,9 +125,9 @@ class SignUp extends Component {
               </Step>
             ))}
           </Stepper>
-          <React.Fragment>
+          <Fragment>
             {activeStep === steps.length ? (
-              <React.Fragment>
+              <Fragment>
                 <Typography variant="h5" gutterBottom>
                   Your registration is successful.
                 </Typography>
@@ -127,23 +141,23 @@ class SignUp extends Component {
                     history.push('/')
                   }, 500)}
                 </Typography>
-              </React.Fragment>
+              </Fragment>
             ) : (
-              <React.Fragment>
+              <Fragment>
                 <Typography variant="h6" gutterBottom>
-                  {steps[activeStep]}
+                  {steps[activeStep]}                  
                 </Typography>
                 {this.getStepContent(activeStep)}
-              </React.Fragment>
+              </Fragment>
             )}
-          </React.Fragment>
+          </Fragment>
         </Paper>
       </main>
     )
   }
 
   componentWillUnmount() {
-    this.props.resetTheme()
+    this.props.userType === 'customer' && this.props.resetTheme()
   }
 }
 

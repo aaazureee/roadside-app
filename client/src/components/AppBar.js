@@ -30,6 +30,9 @@ const styles = theme => ({
     background: 'linear-gradient(to right, #8e2de2, #4a00e0)',
     boxShadow:
       '0px 0px 4px -1px rgba(0,0,0,0.2), 0px 0px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
+  },
+  btnLabel: {
+    fontSize: '1rem'
   }
 })
 
@@ -41,7 +44,8 @@ const StyledAppBar = props => {
       linkMargin,
       appBar,
       activeLink,
-      rightLinkMargin
+      rightLinkMargin,
+      btnLabel
     },
     userEmail
   } = props
@@ -83,7 +87,7 @@ const StyledAppBar = props => {
           </MuiLink>
 
           {/* Check if there is an authenticated user */}
-          {userEmail ? (
+          {(userEmail && userEmail !== 'undefined') ? (
             <Typography variant="h6" className={rightSide} color="inherit">
               Hi, {userEmail}
             </Typography>
@@ -106,7 +110,9 @@ const StyledAppBar = props => {
                 underline="none"
                 color="inherit"
               >
-                <Button variant="outlined" color="inherit">
+                <Button variant="outlined" color="inherit" classes={{
+                  label: btnLabel
+                }}>
                   Sign up free
                 </Button>
               </MuiLink>
