@@ -26,14 +26,13 @@ class PaymentForm extends Component {
     const itemSchema = {
       ccName: '',
       ccNumber: '',
-      ccExpMonth: '',
-      ccExpYear: '',
+      ccExp: '',
       cvv: ''
     }
     
     return (
       <form onSubmit={this.handleSubmit}>
-        <ItemForm itemSchema={itemSchema} itemType="vehicle" />
+        <ItemForm itemSchema={itemSchema} itemType="card" />
         <Grid container spacing={24}>          
           <Grid item container justify="flex-end" xs={12}>
             {/* prettier-ignore */}

@@ -36,7 +36,7 @@ class SignUp extends Component {
   }
 
   state = {
-    activeStep: 1,
+    activeStep: 2,
     userDetails: {
       userType: this.props.userType
     },
@@ -86,9 +86,10 @@ class SignUp extends Component {
       case 1:
         if (userType === 'customer') {
           return <CustomerVehicleForm {...this.stepperOptions} />
-        } 
-        return 'Professional Work Form'
-
+        } else if (userType === 'professional') {
+          return 'Professional Work Form'
+        }
+        break;
       case 2:
         return <PaymentForm {...this.stepperOptions} />
       case 3:
@@ -105,7 +106,7 @@ class SignUp extends Component {
 
   render() {
     const {
-      classes: { root, paper, divider },
+      classes: { root, paper },
       history,
       userType
     } = this.props

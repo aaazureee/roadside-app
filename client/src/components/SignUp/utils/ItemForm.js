@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, IconButton, Fab, TextField, Typography, Paper } from '@material-ui/core'
+import { Grid, IconButton, Fab, TextField, Typography, Paper, Fade } from '@material-ui/core'
 import { Add, Delete }  from '@material-ui/icons'
 
 const style = theme => ({
@@ -9,52 +9,73 @@ const style = theme => ({
     paddingTop: '0 !important',
     paddingBottom: '0 !important'
   },
+  gridTitle: {
+    paddingTop: '0 !important',
+    paddingBottom: '0 !important',
+    marginTop: 8,
+    marginBottom: -16
+  },
   paper: {
     marginBottom: theme.spacing.unit * 3,
     marginTop: theme.spacing.unit * 2,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2,
     paddingTop: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit * 3
+    paddingBottom: theme.spacing.unit * 3,
   },
-  deleteBtn: {
+  deleteBtn: {  
     verticalAlign: -6,
     marginLeft: -5,
     '&:hover': {
       backgroundColor: 'transparent',
       color: 'rgba(0, 0, 0, 0.65)'
     }
+  },
+  helperText: {
+    marginTop: 8,
+    fontWeight: 500,
+    color: 'rgba(0, 0, 0, 0.45)'
   }
 })
+
+const ANIMATION_TIME = 250
 
 class ItemRow extends Component {
   static propTypes = {
     itemData: PropTypes.object.isRequired,
-    itemType: PropTypes.oneOf(['vehicle', 'card', 'bankAccount']),
+    itemType: PropTypes.oneOf(['vehicle', 'card', 'account']),
     updateItem: PropTypes.func.isRequired,
     removeItem: PropTypes.func.isRequired,
     updatedID: PropTypes.number.isRequired
   }
 
   state = {
-    ...this.props.itemData
+    ...this.props.itemData,
+    removeStatus: false
   }
 
   handleChange = event => {
+    event.target.setCustomValidity('')
     this.setState({
       [event.target.name]: event.target.value
-    }, () => {
-      this.props.updateItem(this.state) // update parent item list state
-      console.log(this.state.carModel)
-    })    
+    }, () => this.props.updateItem(this.state)) // update parent item list state)    
   }
 
-  deleteButton = (
+  renderDeleteButton = () => (
     <IconButton 
       aria-label="Delete" 
-      className={this.props.classes.deleteBtn}
-      disableRipple
-      onClick={() => this.props.removeItem(this.state.id)}
+      className={this.props.classes.deleteBtn}      
+      onClick={() => {
+        this.setState({
+          removeStatus: true
+        }, 
+          () => setTimeout(() => {            
+            this.setState({
+              removeStatus: false
+            }, () => this.props.removeItem(this.state.id))
+          }, ANIMATION_TIME)
+        )        
+      }}
     >
       <Delete />
     </IconButton>
@@ -62,63 +83,148 @@ class ItemRow extends Component {
 
   render() {
     const {
-      classes: { denseGrid, paper, deleteBtn },
+      classes: { denseGrid, gridTitle, paper, helperText },
       updatedID,
       itemType,
-      removeItem
     } = this.props
-
-    if (itemType === 'vehicle') {
-      const { id, carModel, carPlate } = this.state
-      const numberID = Number(id.split('-')[1])      
-      return (
+    const { id } = this.state
+    const numberID = Number(id.split('-')[1])
+     
+    return (
+      <Fade in={!this.state.removeStatus} timeout={ANIMATION_TIME}>
         <Paper className={paper}>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>            
-              <Typography variant="h6" style={{
-                marginBottom: -16
-              }}>
-                Vehicle {updatedID + 1}
-                {this.deleteButton}
+          <Grid container spacing={24}>            
+            <Grid item xs={12} className={gridTitle}>            
+              <Typography variant="h6">
+                {`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} ${updatedID + 1}`}
+                {this.renderDeleteButton()}
               </Typography>
             </Grid>
 
-            <Grid item xs={12} sm={6} className={denseGrid}>
-              <TextField
-                required
-                id={`carModel${numberID}`}
-                name={`carModel`}
-                label="Car model"
-                type="text"
-                fullWidth
-                onChange={this.handleChange}
-                margin="dense"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} className={denseGrid}>
-              <TextField
-                required
-                id={`carPlate${numberID}`}
-                name={`carPlate`}
-                label="Car plate"
-                type="text"
-                fullWidth
-                onChange={this.handleChange}
-                margin="dense"
-              />
-            </Grid>
+            {(itemType === 'vehicle') && 
+              (
+                <Fragment>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`carModel${numberID}`}
+                      name={`carModel`}
+                      label="Car model"
+                      type="text"
+                      fullWidth
+                      onChange={this.handleChange}
+                      margin="dense"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`carPlate${numberID}`}
+                      name={`carPlate`}
+                      label="Car plate"
+                      type="text"
+                      fullWidth
+                      onChange={this.handleChange}
+                      margin="dense"
+                    />
+                  </Grid>
+                </Fragment>
+              )
+            }
+
+            {(itemType === 'card') && 
+              (
+                <Fragment>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`ccName${numberID}`}
+                      name={`ccName`}
+                      label="Name on card"
+                      type="text"
+                      fullWidth
+                      onChange={this.handleChange}
+                      margin="dense"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`ccNumber${numberID}`}
+                      name={`ccNumber`}
+                      label="Card number"
+                      type="tel"
+                      inputProps={{
+                        minLength: 16,
+                        maxLength: 16,
+                        pattern: "\\d{16}",
+                        title: "16-digit card number"  
+                      }}
+                      fullWidth
+                      onChange={this.handleChange}                 
+                      margin="dense"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`ccExp${numberID}`}
+                      name={`ccExp`}
+                      label="Expiry date"
+                      type="text"
+                      inputProps={{
+                        minLength: 5,
+                        maxLength: 5,
+                        pattern: "(0[1-9]|1[0-2])/(\\d{2})"
+                      }}                
+                      fullWidth
+                      onChange={this.handleChange}
+                      margin="dense"
+                      helperText="e.g. 09/20"
+                      FormHelperTextProps={{
+                        classes: {
+                          marginDense: helperText
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} className={denseGrid}>
+                    <TextField
+                      required
+                      id={`cvv${numberID}`}
+                      name={`cvv`}
+                      label="CVV"
+                      type="tel"
+                      inputProps={{
+                        minLength: 3,
+                        maxLength: 3,
+                        pattern: "\\d{3}"
+                      }}
+                      helperText="Last three digits on signature strip"
+                      fullWidth
+                      onChange={this.handleChange}
+                      margin="dense"
+                      FormHelperTextProps={{
+                        classes: {
+                          marginDense: helperText
+                        }
+                      }}
+                    />
+                  </Grid>
+                </Fragment>
+              )
+            }
           </Grid>
         </Paper>
-      )
-    }
-    return <div>123</div>
+      </Fade>
+    ) 
   }
 }
 
 class ItemForm extends Component {
   static propTypes = {
     itemSchema: PropTypes.object.isRequired,
-    itemType: PropTypes.oneOf(['vehicle', 'card', 'bankAccount'])
+    itemType: PropTypes.oneOf(['vehicle', 'card', 'account'])
   }
 
 
