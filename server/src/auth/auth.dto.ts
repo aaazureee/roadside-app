@@ -1,11 +1,14 @@
-import { IsString, IsEmail, IsEnum } from 'class-validator';
+import { IsString, IsEmail, IsEnum, IsOptional } from 'class-validator';
 import { UserRole } from '../user/interfaces';
 
 export class LoginInfoDto {
+  @IsOptional()
   @IsEmail()
-  readonly email: string;
+  readonly email?: string;
+
+  @IsOptional()
   @IsString()
-  readonly password: string;
+  readonly password?: string;
 }
 
 export class RegisterInfoDto extends LoginInfoDto {
@@ -16,7 +19,8 @@ export class RegisterInfoDto extends LoginInfoDto {
 export class RegisterResponeDto {
   constructor(
     public success: boolean,
-    public userId?: string,
+    public userType?: UserRole,
+    public email?: string,
     public error?: string,
   ) {}
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Session } from '@nestjs/common';
+import { Controller, Post, Body, Session, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   RegisterInfoDto,
@@ -6,6 +6,7 @@ import {
   LoginInfoDto,
   LoginResponseDto,
 } from 'src/auth/auth.dto';
+import { ISession } from './session.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +27,8 @@ export class AuthController {
     } else {
       return {
         success: true,
-        userId: user.id,
+        email: user.email,
+        userType: user.role,
       };
     }
   }
@@ -34,8 +36,17 @@ export class AuthController {
   @Post('login')
   async login(
     @Body() loginInfo: LoginInfoDto,
-    @Session() session,
+    @Session() session: ISession,
   ): Promise<LoginResponseDto> {
+    //case: session already exist
+    if (session.user) {
+      return {
+        success: true,
+        email: session.user.email,
+        userType: session.user.userType,
+      };
+    }
+
     const { email, password } = loginInfo;
     const user = await this.authService.logIn(email, password);
     if (!user) {
@@ -44,8 +55,25 @@ export class AuthController {
         error: 'Invalid credentials.',
       };
     } else {
-      session.user = { userId: user.id, userType: user.role };
-      return { success: true, userId: user.id };
+      session.user = {
+        userId: user.id,
+        userType: user.role,
+        email: user.email,
+      };
+      return { success: true, email: user.email, userType: user.role };
     }
+  }
+
+  @Get('logout')
+  async logout(@Session() session: ISession) {
+    return new Promise<void>((resolve, reject) => {
+      session.destroy(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 }
