@@ -10,10 +10,16 @@ const style = theme => ({
 })
 
 class CustomerVehicleForm extends Component {
-  state = {}
+  vehicleFormRef = null
 
   handleSubmit = event => {
     event.preventDefault()
+    let vehicleList = this.vehicleFormRef.state.itemList.map(vehicle => {
+      let cloneVehicle = { ...vehicle }
+      delete cloneVehicle.removeStatus
+      return cloneVehicle
+    })
+    this.props.updateUserDetails({ vehicleList })
     this.props.handleNext()
   }
 
@@ -27,11 +33,15 @@ class CustomerVehicleForm extends Component {
       carModel: '',
       carPlate: ''
     }
-    
+
     return (
       <form onSubmit={this.handleSubmit}>
-        <ItemForm itemSchema={itemSchema} itemType="vehicle" />
-        <Grid container spacing={24}>          
+        <ItemForm
+          itemSchema={itemSchema}
+          itemType="vehicle"
+          innerRef={vehicleFormRef => (this.vehicleFormRef = vehicleFormRef)}
+        />
+        <Grid container spacing={24}>
           <Grid item container justify="flex-end" xs={12}>
             {/* prettier-ignore */}
             <Button onClick={handleBack} className={backBtn}>

@@ -36,7 +36,7 @@ class SignUp extends Component {
   }
 
   state = {
-    activeStep: 2,
+    activeStep: 0,
     userDetails: {
       userType: this.props.userType
     },
@@ -89,7 +89,7 @@ class SignUp extends Component {
         } else if (userType === 'professional') {
           return 'Professional Work Form'
         }
-        break;
+        break
       case 2:
         return <PaymentForm {...this.stepperOptions} />
       case 3:
@@ -146,7 +146,7 @@ class SignUp extends Component {
             ) : (
               <Fragment>
                 <Typography variant="h6" gutterBottom>
-                  {steps[activeStep]}                  
+                  {steps[activeStep]}
                 </Typography>
                 {this.getStepContent(activeStep)}
               </Fragment>
