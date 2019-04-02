@@ -1,5 +1,5 @@
 import { UserRole } from 'src/user/interfaces';
-
-export class ISession {
-  user: { userType: UserRole; userId: string } | null;
+import { Express } from 'express';
+export interface ISession extends Express.Session {
+  user: { userType: UserRole; userId: string; email: string } | null;
 }
