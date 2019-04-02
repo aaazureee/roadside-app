@@ -3,8 +3,7 @@ import { User } from './user.entity';
 
 @Entity()
 export class Professional {
-  @PrimaryColumn()
-  @OneToOne(type => User, user => user.professionalInfo)
+  @OneToOne(type => User, user => user.professionalInfo, { primary: true })
   @JoinColumn()
   user: User;
 

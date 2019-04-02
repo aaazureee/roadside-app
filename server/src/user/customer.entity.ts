@@ -1,13 +1,12 @@
-import { Entity, PrimaryColumn, OneToOne, JoinColumn, Column } from "typeorm";
-import { User } from "./user.entity";
+import { Entity, PrimaryColumn, OneToOne, JoinColumn, Column } from 'typeorm';
+import { User } from './user.entity';
 
-@Entity() 
+@Entity()
 export class Customer {
-    @PrimaryColumn()
-    @OneToOne(type => User, user => user.customerInfo)
-    @JoinColumn()
-    user: User;
+  @OneToOne(type => User, user => user.customerInfo, { primary: true })
+  @JoinColumn()
+  user: User;
 
-    @Column()
-    phone: string;
+  @Column()
+  phone: string;
 }
