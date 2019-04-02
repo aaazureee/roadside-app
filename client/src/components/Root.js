@@ -7,7 +7,6 @@ import MainLanding from './MainLanding'
 import SignUp from './SignUp'
 import Login from './Login'
 import Pricing from './Pricing'
-import Career from './Career'
 import NotFound from './NotFound'
 
 const style = theme => ({
@@ -25,16 +24,16 @@ class Root extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.location.pathname !== this.props.location.pathname) {
-      console.log('did update')
+      // console.log('did update')
       this.setState({
         userEmail: localStorage.getItem('userEmail')
       })
-      console.log(this.props)
+      // console.log(this.props)
     }
   }
 
   render() {
-    console.log('render')
+    // console.log('render')
     const {
       classes: { root },
       resetTheme,
@@ -53,13 +52,19 @@ class Root extends Component {
                 resetTheme={resetTheme}
                 persistOutlinedBtn={persistOutlinedBtn}
                 userEmail={userEmail}
+                userType="customer"
                 {...props}
               />
             )}
           />
-          <Route path="/login" component={Login} userEmail={userEmail} />
-          <Route path="/pricing" component={Pricing} userEmail={userEmail} />
-          <Route path="/careers" component={Career} userEmail={userEmail} />
+          <Route path="/login" component={Login} />
+          <Route path="/pricing" component={Pricing} />
+          <Route
+            path="/careers"
+            render={() => (
+              <SignUp userEmail={userEmail} userType="professional" />
+            )}
+          />
           <Route component={NotFound} />
         </Switch>
         <Footer />

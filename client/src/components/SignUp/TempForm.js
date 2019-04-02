@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid, Button } from '@material-ui/core'
-import ItemForm from './utils/ItemForm'
 
 const style = theme => ({
   backBtn: {
@@ -9,7 +8,7 @@ const style = theme => ({
   }
 })
 
-class CustomerVehicleForm extends Component {
+class TempForm extends Component {
   state = {}
 
   handleSubmit = event => {
@@ -22,21 +21,14 @@ class CustomerVehicleForm extends Component {
       classes: { backBtn },
       handleBack
     } = this.props
-
-    const itemSchema = {
-      carModel: '',
-      carPlate: ''
-    }
-    
     return (
       <form onSubmit={this.handleSubmit}>
-        <ItemForm itemSchema={itemSchema} itemType="vehicle" />
-        <Grid container spacing={24}>          
+        <Grid container spacing={24}>
           <Grid item container justify="flex-end" xs={12}>
             {/* prettier-ignore */}
             <Button onClick={handleBack} className={backBtn}>
-              Back
-            </Button>
+                Back
+              </Button>
             <Button color="primary" variant="contained" type="submit">
               Next
             </Button>
@@ -47,4 +39,4 @@ class CustomerVehicleForm extends Component {
   }
 }
 
-export default withStyles(style)(CustomerVehicleForm)
+export default withStyles(style)(TempForm)
