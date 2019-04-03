@@ -17,6 +17,7 @@ class CustomerVehicleForm extends Component {
     let vehicleList = this.vehicleFormRef.state.itemList.map(vehicle => {
       let cloneVehicle = { ...vehicle }
       delete cloneVehicle.removeStatus
+      delete cloneVehicle.id
       return cloneVehicle
     })
     this.props.updateUserDetails({ vehicleList })
@@ -41,16 +42,13 @@ class CustomerVehicleForm extends Component {
           itemType="vehicle"
           innerRef={vehicleFormRef => (this.vehicleFormRef = vehicleFormRef)}
         />
-        <Grid container spacing={24}>
-          <Grid item container justify="flex-end" xs={12}>
-            {/* prettier-ignore */}
-            <Button onClick={handleBack} className={backBtn}>
-              Back
-            </Button>
-            <Button color="primary" variant="contained" type="submit">
-              Next
-            </Button>
-          </Grid>
+        <Grid container justify="flex-end">
+          <Button onClick={handleBack} className={backBtn}>
+            Back
+          </Button>
+          <Button color="primary" variant="contained" type="submit">
+            Next
+          </Button>
         </Grid>
       </form>
     )

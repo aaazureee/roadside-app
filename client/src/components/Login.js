@@ -76,7 +76,7 @@ class Login extends Component {
     const {
       classes: { root, paper, titleText, checkboxDiv, checkboxLabel }
     } = this.props
-    console.log(this.state)
+    console.log('Log in state', this.state)
     return (
       <main className={classNames('mainContent', root)}>
         <Paper className={paper}>
@@ -99,6 +99,7 @@ class Login extends Component {
                   type="email"
                   fullWidth
                   onChange={this.handleChange}
+                  value={this.state.email}
                 />
               </Grid>
 
@@ -111,6 +112,7 @@ class Login extends Component {
                   type={this.state.showPassword ? 'text' : 'password'}
                   fullWidth
                   onChange={this.handleChange}
+                  value={this.state.password}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">

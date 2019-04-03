@@ -17,8 +17,6 @@ const style = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
     [theme.breakpoints.up(600 + theme.spacing.unit * 2 * 2)]: {
       padding: theme.spacing.unit * 3,
       width: 600,
@@ -111,7 +109,15 @@ class SignUp extends Component {
       userType
     } = this.props
 
-    const { activeStep, steps } = this.state
+    const { activeStep, steps, userDetails } = this.state
+
+    const redirectUser = () => {
+      setTimeout(function() {
+        // console.log('kappa')
+        localStorage.setItem('userEmail', userDetails.email)
+        history.push('/')
+      }, 1000)
+    }
 
     return (
       <main className={classNames('mainContent', root)}>
@@ -134,20 +140,16 @@ class SignUp extends Component {
                 </Typography>
                 <Typography variant="subtitle1">
                   We will now redirect you to the dashboard.
-                  {setTimeout(() => {
-                    localStorage.setItem(
-                      'userEmail',
-                      this.state.userDetails.email
-                    )
-                    history.push('/')
-                  }, 500)}
                 </Typography>
+                {redirectUser()}
               </Fragment>
             ) : (
               <Fragment>
-                <Typography variant="h6" gutterBottom>
-                  {steps[activeStep]}
-                </Typography>
+                {activeStep !== steps.length - 1 && (
+                  <Typography variant="h6" gutterBottom>
+                    {steps[activeStep]}
+                  </Typography>
+                )}
                 {this.getStepContent(activeStep)}
               </Fragment>
             )}

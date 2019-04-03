@@ -129,6 +129,7 @@ class ItemRow extends Component {
                     type="text"
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.carModel}
                     margin="dense"
                   />
                 </Grid>
@@ -141,6 +142,7 @@ class ItemRow extends Component {
                     type="text"
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.carPlate}
                     margin="dense"
                   />
                 </Grid>
@@ -158,6 +160,7 @@ class ItemRow extends Component {
                     type="text"
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.ccName}
                     margin="dense"
                   />
                 </Grid>
@@ -176,6 +179,7 @@ class ItemRow extends Component {
                     }}
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.ccNumber}
                     margin="dense"
                   />
                 </Grid>
@@ -193,6 +197,7 @@ class ItemRow extends Component {
                     }}
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.ccExp}
                     margin="dense"
                     helperText="e.g. 09/20"
                     FormHelperTextProps={{
@@ -217,6 +222,7 @@ class ItemRow extends Component {
                     helperText="Last three digits on signature strip"
                     fullWidth
                     onChange={this.handleChange}
+                    value={this.state.cvv}
                     margin="dense"
                     FormHelperTextProps={{
                       classes: {
@@ -299,7 +305,6 @@ class ItemForm extends Component {
   }
 
   render() {
-    console.log('Item form state', this.state)
     const { itemList } = this.state
     const { classes, itemType } = this.props
     const renderedList = itemList.map((item, index) => {

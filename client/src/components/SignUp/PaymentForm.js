@@ -17,6 +17,7 @@ class PaymentForm extends Component {
     let cardList = this.cardFormRef.state.itemList.map(card => {
       let cloneCard = { ...card }
       delete cloneCard.removeStatus
+      delete cloneCard.id
       return cloneCard
     })
     this.props.updateUserDetails({ cardList })
@@ -43,16 +44,13 @@ class PaymentForm extends Component {
           itemType="card"
           innerRef={cardFormRef => (this.cardFormRef = cardFormRef)}
         />
-        <Grid container spacing={24}>
-          <Grid item container justify="flex-end" xs={12}>
-            {/* prettier-ignore */}
-            <Button onClick={handleBack} className={backBtn}>
-              Back
-            </Button>
-            <Button color="primary" variant="contained" type="submit">
-              Next
-            </Button>
-          </Grid>
+        <Grid container justify="flex-end">
+          <Button onClick={handleBack} className={backBtn}>
+            Back
+          </Button>
+          <Button color="primary" variant="contained" type="submit">
+            Next
+          </Button>
         </Grid>
       </form>
     )

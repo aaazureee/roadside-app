@@ -51,6 +51,7 @@ class CustomerBasicForm extends Component {
               type="text"
               fullWidth
               onChange={this.handleChange}
+              value={this.state.firstName}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -62,6 +63,7 @@ class CustomerBasicForm extends Component {
               type="text"
               fullWidth
               onChange={this.handleChange}
+              value={this.state.lastName}
             />
           </Grid>
           <Grid item xs={12}>
@@ -73,6 +75,7 @@ class CustomerBasicForm extends Component {
               type="email"
               fullWidth
               onChange={this.handleChange}
+              value={this.state.email}
             />
           </Grid>
 
@@ -85,6 +88,7 @@ class CustomerBasicForm extends Component {
               type="text"
               fullWidth
               onChange={this.handleChange}
+              value={this.state.address}
             />
           </Grid>
 
@@ -97,6 +101,7 @@ class CustomerBasicForm extends Component {
               type="tel"
               fullWidth
               onChange={this.handleChange}
+              value={this.state.phone}
             />
           </Grid>
 
@@ -109,6 +114,7 @@ class CustomerBasicForm extends Component {
               type={this.state.showPassword ? 'text' : 'password'}
               fullWidth
               onChange={this.handleChange}
+              value={this.state.password}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

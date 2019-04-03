@@ -24,6 +24,11 @@ const theme = {
       default: '#FFF'
     }
   },
+  breakpoints: {
+    values: {
+      sm: 450
+    }
+  },
   overrides: {
     MuiButton: {
       root: {
