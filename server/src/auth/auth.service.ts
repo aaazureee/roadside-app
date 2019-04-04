@@ -20,4 +20,9 @@ export class AuthService {
   async logIn(email: string, password: string): Promise<User | null> {
     return this.userRepository.logIn(email, password);
   }
+
+  async isUserValid(userId: string) {
+    const user = await this.userRepository.findUserById(userId);
+    return !!user;
+  }
 }

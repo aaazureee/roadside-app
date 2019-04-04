@@ -12,6 +12,9 @@ async function bootstrap() {
       secret: process.env.SESSION_SECRET || 'a secret',
       saveUninitialized: false,
       resave: false, //@TODO: depends on session store
+      cookie: {
+        maxAge: 24 * 60 * 60 * 1000, //1 day
+      },
     }),
   );
 

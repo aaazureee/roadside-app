@@ -38,16 +38,7 @@ export class AuthController {
     @Body() loginInfo: LoginInfoDto,
     @Session() session: ISession,
   ): Promise<LoginResponseDto> {
-    //case: session already exist
-    if (session.user) {
-      return {
-        success: true,
-        email: session.user.email,
-        userType: session.user.userType,
-      };
-    }
-
-    const { email, password } = loginInfo;
+    const { email, password, rememberMe } = loginInfo;
     const user = await this.authService.logIn(email, password);
     if (!user) {
       return {
@@ -60,7 +51,26 @@ export class AuthController {
         userType: user.role,
         email: user.email,
       };
+
+      if (rememberMe) {
+        session.cookie.maxAge = 14 * 24 * 60 * 60 * 1000; //14 days
+      }
       return { success: true, email: user.email, userType: user.role };
+    }
+  }
+
+  @Get('login')
+  async checkLogin(@Session() session: ISession) {
+    if (session.user && this.authService.isUserValid(session.user.userId)) {
+      return {
+        success: true,
+        email: session.user.email,
+        userType: session.user.userType,
+      };
+    } else {
+      return {
+        success: false,
+      };
     }
   }
 

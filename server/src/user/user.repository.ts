@@ -74,4 +74,13 @@ export class UserRepository extends AbstractRepository<User> {
       return null;
     }
   }
+
+  async findUserById(userId: string): Promise<User> {
+    const users = await this.manager.findByIds(User, [userId]);
+    if (users.length === 0) {
+      return null;
+    } else {
+      return users[0];
+    }
+  }
 }
