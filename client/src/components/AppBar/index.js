@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Button, Typography } from '@material-ui/core'
-import MuiLink from './MuiLink'
+import MuiLink from '../MuiLink'
 import { NavLink } from 'react-router-dom'
 
 const styles = theme => ({
@@ -87,7 +87,7 @@ const StyledAppBar = props => {
           </MuiLink>
 
           {/* Check if there is an authenticated user */}
-          {(userEmail && userEmail !== 'undefined') ? (
+          {userEmail && userEmail !== 'undefined' ? (
             <Typography variant="h6" className={rightSide} color="inherit">
               Hi, {userEmail}
             </Typography>
@@ -110,9 +110,13 @@ const StyledAppBar = props => {
                 underline="none"
                 color="inherit"
               >
-                <Button variant="outlined" color="inherit" classes={{
-                  label: btnLabel
-                }}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  classes={{
+                    label: btnLabel
+                  }}
+                >
                   Sign up free
                 </Button>
               </MuiLink>

@@ -8,6 +8,7 @@ import SignUp from './SignUp'
 import Login from './Login'
 import Pricing from './Pricing'
 import NotFound from './NotFound'
+import Career from './Career'
 
 const style = theme => ({
   root: {
@@ -61,9 +62,7 @@ class Root extends Component {
           <Route path="/pricing" component={Pricing} />
           <Route
             path="/careers"
-            render={() => (
-              <SignUp userEmail={userEmail} userType="professional" />
-            )}
+            render={() => <Career userEmail={userEmail} />}
           />
           <Route component={NotFound} />
         </Switch>
