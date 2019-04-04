@@ -13,4 +13,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/test-relation-id')
+  async testRelation(): Promise<object> {
+    return this.appService.testRelationId();
+  }
 }

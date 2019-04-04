@@ -1,4 +1,11 @@
-import { Entity, PrimaryColumn, OneToOne, JoinColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  OneToOne,
+  JoinColumn,
+  Column,
+  RelationId,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
@@ -7,9 +14,12 @@ export class Professional {
   @JoinColumn()
   user: User;
 
-  @Column()
+  @RelationId((prof: Professional) => prof.user)
+  userId: string;
+
+  @Column({ nullable: true })
   phone: string;
 
-  @Column()
+  @Column({ nullable: true })
   workingRange: number;
 }

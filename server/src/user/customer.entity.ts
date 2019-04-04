@@ -1,4 +1,11 @@
-import { Entity, PrimaryColumn, OneToOne, JoinColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  OneToOne,
+  JoinColumn,
+  Column,
+  RelationId,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
@@ -7,6 +14,9 @@ export class Customer {
   @JoinColumn()
   user: User;
 
-  @Column()
+  @RelationId((customer: Customer) => customer.user)
+  userId: string;
+
+  @Column({ nullable: true })
   phone: string;
 }

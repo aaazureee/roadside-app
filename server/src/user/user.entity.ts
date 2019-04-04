@@ -18,14 +18,12 @@ export class User {
   role: UserRole;
 
   @OneToOne(type => Customer, customer => customer.user, {
-    lazy: true,
     nullable: true,
   })
-  customerInfo?: Promise<Customer>;
+  customerInfo?: Customer;
 
   @OneToOne(type => Professional, professional => professional.user, {
-    lazy: true,
     nullable: true,
   })
-  professionalInfo?: Promise<Professional>;
+  professionalInfo?: Professional;
 }
