@@ -80,7 +80,7 @@ class SignUpReview extends Component {
     //   vehicleList: [{ carModel: 'x', carPlate: 'x' }]
     // }
 
-    let {
+    const {
       email,
       firstName,
       lastName,
@@ -90,7 +90,7 @@ class SignUpReview extends Component {
       cardList
     } = userDetails
 
-    let userBasicDetails = [
+    const userBasicDetails = [
       {
         name: 'Name',
         val: firstName + ' ' + lastName
@@ -156,9 +156,9 @@ class SignUpReview extends Component {
             </Typography>
           </Grid>
 
-          {vehicleList.map((vehicle, index) => (
-            <Grid item xs={12} key={index}>
-              <Paper className={paper}>
+          <Grid item xs={12}>
+            {vehicleList.map((vehicle, index) => (
+              <Paper className={paper} key={index}>
                 <Grid container spacing={24}>
                   <Grid item xs={12} className={gridTitle}>
                     <Typography variant="h6">{`Car ${index + 1}`}</Typography>
@@ -195,8 +195,8 @@ class SignUpReview extends Component {
                   </Grid>
                 </Grid>
               </Paper>
-            </Grid>
-          ))}
+            ))}
+          </Grid>
           {/* Vehicle details end */}
 
           {/* Card details start */}
@@ -213,9 +213,9 @@ class SignUpReview extends Component {
             </Typography>
           </Grid>
 
-          {cardList.map((card, index) => (
-            <Grid item xs={12} key={index}>
-              <Paper className={paper}>
+          <Grid item xs={12}>
+            {cardList.map((card, index) => (
+              <Paper className={paper} key={index}>
                 <Grid container spacing={24}>
                   <Grid item xs={12} className={gridTitle}>
                     <Typography variant="h6">{`Card ${index + 1}`}</Typography>
@@ -258,8 +258,8 @@ class SignUpReview extends Component {
                   </Grid>
                 </Grid>
               </Paper>
-            </Grid>
-          ))}
+            ))}
+          </Grid>
           {/* Card details end */}
 
           <Grid

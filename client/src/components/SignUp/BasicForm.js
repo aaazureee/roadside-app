@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import { withStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import {
   Grid,
   TextField,
@@ -9,6 +9,13 @@ import {
 } from '@material-ui/core'
 
 import { Visibility, VisibilityOff } from '@material-ui/icons'
+
+const style = theme => ({
+  denseGrid: {
+    paddingTop: '8px !important',
+    paddingBottom: '8px !important'
+  }
+})
 
 class CustomerBasicForm extends Component {
   state = {
@@ -39,10 +46,14 @@ class CustomerBasicForm extends Component {
   }
 
   render() {
+    const {
+      classes: { denseGrid }
+    } = this.props
+
     return (
       <form onSubmit={this.handleSubmit}>
         <Grid container spacing={24}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} className={denseGrid}>
             <TextField
               required
               id="firstName"
@@ -54,7 +65,7 @@ class CustomerBasicForm extends Component {
               value={this.state.firstName}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} className={denseGrid}>
             <TextField
               required
               id="lastName"
@@ -66,7 +77,7 @@ class CustomerBasicForm extends Component {
               value={this.state.lastName}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} className={denseGrid}>
             <TextField
               required
               id="email"
@@ -79,7 +90,7 @@ class CustomerBasicForm extends Component {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} className={denseGrid}>
             <TextField
               required
               id="address"
@@ -92,7 +103,7 @@ class CustomerBasicForm extends Component {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} className={denseGrid}>
             <TextField
               required
               id="phone"
@@ -105,7 +116,7 @@ class CustomerBasicForm extends Component {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={12} className={denseGrid}>
             <TextField
               required
               id="password"
@@ -145,4 +156,4 @@ class CustomerBasicForm extends Component {
   }
 }
 
-export default CustomerBasicForm
+export default withStyles(style)(CustomerBasicForm)
