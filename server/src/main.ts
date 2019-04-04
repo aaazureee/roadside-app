@@ -4,6 +4,7 @@ import * as session from 'express-session';
 import * as path from 'path';
 import { NotFoundExceptionFilter } from './filters/not-found-exception.filter';
 import { Logger } from '@nestjs/common';
+import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(
@@ -15,7 +16,8 @@ async function bootstrap() {
   );
 
   //serve react frontend
-  app.useStaticAssets(path.resolve(__dirname, '../../client/build'));
+  app.use(express.static(path.resolve(__dirname, '../../client/build')));
+
   Logger.log(
     'Serving static assets from ' +
       path.resolve(__dirname, '../../client/build'),
