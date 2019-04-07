@@ -5,6 +5,7 @@ import * as path from 'path';
 import { NotFoundExceptionFilter } from './filters/not-found-exception.filter';
 import { Logger } from '@nestjs/common';
 import * as express from 'express';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(

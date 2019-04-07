@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UserRepository } from 'src/user/user.repository';
-import { UserRole } from 'src/user/interfaces';
+import { UserRepository } from 'src/user/repository/user.repository';
+import { UserRole } from 'src/user/user-role.interface';
 import { LoginInfoDto } from 'src/auth/auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
+import { User } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class AuthService {

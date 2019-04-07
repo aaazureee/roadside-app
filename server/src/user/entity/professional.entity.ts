@@ -9,14 +9,17 @@ import {
 import { User } from './user.entity';
 
 @Entity()
-export class Customer {
-  @OneToOne(type => User, user => user.customerInfo, { primary: true })
-  @JoinColumn()
+export class Professional {
+  @OneToOne(type => User, user => user.professionalInfo)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
-  @RelationId((customer: Customer) => customer.user)
+  @PrimaryColumn({ type: 'uuid' })
   userId: string;
 
   @Column({ nullable: true })
   phone: string;
+
+  @Column({ nullable: true })
+  workingRange: number;
 }

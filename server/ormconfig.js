@@ -18,6 +18,8 @@ if (process.env.DATABASE_URL) {
     database: process.env.DB_NAME,
     entities: [__dirname + '/**/*.{entity,repository}{.ts,.js}'],
     synchronize: true,
+    logging: true,
+    logger: 'file',
   };
 }
 

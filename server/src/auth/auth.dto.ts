@@ -5,7 +5,7 @@ import {
   IsOptional,
   IsBoolean,
 } from 'class-validator';
-import { UserRole } from '../user/interfaces';
+import { UserRole } from '../user/user-role.interface';
 
 export class LoginInfoDto {
   @IsOptional()

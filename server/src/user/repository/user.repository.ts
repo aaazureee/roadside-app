@@ -1,10 +1,10 @@
 import { EntityRepository, EntityManager, AbstractRepository } from 'typeorm';
-import { UserRole } from './interfaces';
-import { LoginInfoDto } from '../auth/auth.dto';
-import { User } from './user.entity';
+import { UserRole } from '../user-role.interface';
+import { LoginInfoDto } from '../../auth/auth.dto';
+import { User } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt';
-import { Customer } from './customer.entity';
-import { Professional } from './professional.entity';
+import { Customer } from '../entity/customer.entity';
+import { Professional } from '../entity/professional.entity';
 
 const SALT_ROUNDS = 10;
 
@@ -37,20 +37,20 @@ export class UserRepository extends AbstractRepository<User> {
 
     const savedUser = await manager.save(user);
 
-    let info: Customer | Professional = null;
-    switch (userType) {
-      case UserRole.CUSTOMER:
-        info = manager.create(Customer, {});
-        break;
-      case UserRole.PROFESSIONAL:
-        info = manager.create(Professional, {});
-        break;
-    }
+    // let info: Customer | Professional = null;
+    // switch (userType) {
+    //   case UserRole.CUSTOMER:
+    //     info = manager.create(Customer, {});
+    //     break;
+    //   case UserRole.PROFESSIONAL:
+    //     info = manager.create(Professional, {});
+    //     break;
+    // }
 
-    if (info) {
-      info.user = user;
-      await manager.save(info);
-    }
+    // if (info) {
+    //   info.user = user;
+    //   await manager.save(info);
+    // }
 
     return savedUser;
   }

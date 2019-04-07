@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { UserRole } from './interfaces';
+import { UserRole } from '../user-role.interface';
 import { Customer } from './customer.entity';
 import { Professional } from './professional.entity';
 

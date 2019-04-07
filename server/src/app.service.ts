@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-import { Customer } from './user/customer.entity';
+import { Customer } from './user/entity/customer.entity';
 
 @Injectable()
 export class AppService {
