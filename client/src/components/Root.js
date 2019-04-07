@@ -23,15 +23,15 @@ class Root extends Component {
     userEmail: localStorage.getItem('userEmail')
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      // console.log('did update')
-      this.setState({
-        userEmail: localStorage.getItem('userEmail')
-      })
-      // console.log(this.props)
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.location.pathname !== this.props.location.pathname) {
+  //     // console.log('did update')
+  //     this.setState({
+  //       userEmail: localStorage.getItem('userEmail')
+  //     })
+  //     // console.log(this.props)
+  //   }
+  // }
 
   render() {
     // console.log('render')
@@ -62,7 +62,7 @@ class Root extends Component {
           <Route path="/pricing" component={Pricing} />
           <Route
             path="/careers"
-            render={() => <Career userEmail={userEmail} />}
+            render={props => <Career userEmail={userEmail} {...props} />}
           />
           <Route component={NotFound} />
         </Switch>
