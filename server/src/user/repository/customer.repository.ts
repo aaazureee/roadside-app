@@ -16,12 +16,17 @@ export class CustomerRepository extends Repository<Customer> {
       if (user.role !== UserRole.CUSTOMER) {
         throw new Error('User is not a customer');
       }
-
-      const cust = await this.manager.preload(Customer, {
+      let cust = await this.manager.preload(Customer, {
         userId,
         ...details,
       });
 
+      if (!cust) {
+        cust = await this.manager.create(Customer, {
+          userId,
+          ...details,
+        });
+      }
       return await this.manager.save(cust);
     } catch (err) {
       Logger.error(err, err.stack, 'CustomerRepository');
