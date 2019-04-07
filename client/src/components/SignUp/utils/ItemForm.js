@@ -63,7 +63,6 @@ class ItemRow extends Component {
   }
 
   handleChange = event => {
-    event.target.setCustomValidity('')
     this.setState(
       {
         [event.target.name]: event.target.value

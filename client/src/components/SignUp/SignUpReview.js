@@ -1,6 +1,16 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { Grid, Button, Typography, Paper, TextField } from '@material-ui/core'
+import {
+  Grid,
+  Button,
+  Typography,
+  Paper,
+  TextField,
+  FormControl,
+  Input,
+  InputAdornment,
+  FormHelperText
+} from '@material-ui/core'
 
 const style = theme => ({
   backBtn: {
@@ -19,9 +29,6 @@ const style = theme => ({
   listSecondaryText: {
     fontWeight: 400
   },
-  sectionTitle: {
-    fontSize: '1.5rem'
-  },
   gridSpacing: {
     marginTop: 16
   },
@@ -29,7 +36,7 @@ const style = theme => ({
     paddingTop: '0 !important',
     paddingBottom: '0 !important',
     marginTop: 8,
-    marginBottom: -8
+    marginBottom: -4
   },
   denseGrid: {
     paddingTop: '0 !important',
@@ -50,16 +57,16 @@ class SignUpReview extends Component {
         paper,
         listPrimaryText,
         listSecondaryText,
-        sectionTitle,
         gridSpacing,
         gridTitle,
         denseGrid
       },
       handleBack,
-      userDetails
+      userDetails,
+      userType
     } = this.props
 
-    console.log('In customer review', userDetails)
+    console.log('In review', userDetails)
 
     // userDetails = {
     //   address: '5 Cowper Street, Fairy Meadow, Wollongong',
@@ -86,8 +93,12 @@ class SignUpReview extends Component {
       lastName,
       address,
       phone,
+      // customer
       vehicleList,
-      cardList
+      card,
+      // professional
+      workingRadius,
+      account
     } = userDetails
 
     const userBasicDetails = [
@@ -114,14 +125,7 @@ class SignUpReview extends Component {
         {/* Basic details start */}
         <Grid container>
           <Grid item xs={12}>
-            <Typography
-              variant="h6"
-              className={sectionTitle}
-              color="primary"
-              style={{
-                marginBottom: 8
-              }}
-            >
+            <Typography variant="h6" color="primary">
               Basic details
             </Typography>
           </Grid>
@@ -140,127 +144,243 @@ class SignUpReview extends Component {
               </Grid>
             </Grid>
           ))}
+
           {/* Basic details end */}
 
-          {/* Vehicle details start */}
-          <Grid item xs={12} className={gridSpacing}>
-            <Typography
-              variant="h6"
-              className={sectionTitle}
-              color="primary"
-              style={{
-                marginBottom: 8
-              }}
-            >
-              Vehicle details
-            </Typography>
-          </Grid>
+          {/* Customer review */}
+          {userType === 'customer' && (
+            <Fragment>
+              {/* Vehicle details start */}
+              <Grid item xs={12} className={gridSpacing}>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  style={{
+                    marginBottom: 8
+                  }}
+                >
+                  Vehicle details
+                </Typography>
+              </Grid>
 
-          <Grid item xs={12}>
-            {vehicleList.map((vehicle, index) => (
-              <Paper className={paper} key={index}>
-                <Grid container spacing={24}>
-                  <Grid item xs={12} className={gridTitle}>
-                    <Typography variant="h6">{`Car ${index + 1}`}</Typography>
+              <Grid item xs={12}>
+                {vehicleList.map((vehicle, index) => (
+                  <Paper className={paper} key={index}>
+                    <Grid container spacing={24}>
+                      <Grid item xs={12} className={gridTitle}>
+                        <Typography variant="h6">{`Car ${index +
+                          1}`}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6} className={denseGrid}>
+                        <TextField
+                          id={`carModel${index}`}
+                          name={`carModel`}
+                          label="Car model"
+                          type="text"
+                          fullWidth
+                          value={vehicle.carModel}
+                          margin="dense"
+                          InputProps={{
+                            readOnly: true
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6} className={denseGrid}>
+                        <TextField
+                          id={`carPlate${index}`}
+                          name={`carPlate`}
+                          label="Car plate"
+                          type="text"
+                          fullWidth
+                          value={vehicle.carPlate}
+                          margin="dense"
+                          InputProps={{
+                            readOnly: true
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                ))}
+              </Grid>
+              {/* Vehicle details end */}
+
+              {/* Card details start */}
+              <Grid item xs={12}>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  style={{
+                    marginBottom: 8
+                  }}
+                >
+                  Payment details
+                </Typography>
+              </Grid>
+
+              {/* Card details start */}
+              <Grid item xs={12}>
+                <Paper className={paper}>
+                  <Grid container spacing={24}>
+                    <Grid item xs={12} className={gridTitle}>
+                      <Typography variant="h6">{`Credit Card`}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <TextField
+                        id={`ccName`}
+                        name={`ccName`}
+                        label="Name on card"
+                        type="text"
+                        fullWidth
+                        value={card.ccName}
+                        margin="dense"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <TextField
+                        id={`ccNumber`}
+                        name={`ccNumber`}
+                        label="Card number"
+                        type="tel"
+                        fullWidth
+                        value={card.ccNumber}
+                        margin="dense"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <TextField
+                        id={`ccExp`}
+                        name={`ccExp`}
+                        label="Expiry date"
+                        type="text"
+                        fullWidth
+                        value={card.ccExp}
+                        margin="dense"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} className={denseGrid}>
-                    <TextField
-                      required
-                      id={`carModel${index}`}
-                      name={`carModel`}
-                      label="Car model"
-                      type="text"
-                      fullWidth
-                      value={vehicle.carModel}
-                      margin="dense"
-                      InputProps={{
-                        readOnly: true
+                </Paper>
+              </Grid>
+              {/* Card details end */}
+            </Fragment>
+          )}
+
+          {/* Professional Review */}
+          {userType === 'professional' && (
+            <Fragment>
+              <Grid item xs={12} className={gridSpacing}>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  style={{
+                    marginBottom: 8
+                  }}
+                >
+                  Work details
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Paper className={paper}>
+                  <Grid container spacing={24}>
+                    <Grid
+                      item
+                      xs={12}
+                      className={gridTitle}
+                      style={{
+                        marginBottom: -16
                       }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} className={denseGrid}>
-                    <TextField
-                      required
-                      id={`carPlate${index}`}
-                      name={`carPlate`}
-                      label="Car plate"
-                      type="text"
-                      fullWidth
-                      value={vehicle.carPlate}
-                      margin="dense"
-                      InputProps={{
-                        readOnly: true
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Paper>
-            ))}
-          </Grid>
-          {/* Vehicle details end */}
+                    >
+                      <Typography variant="h6">{`Work radius`}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <FormControl>
+                        <Input
+                          id="customRadius"
+                          name="workingRadius"
+                          endAdornment={
+                            <InputAdornment position="end">km</InputAdornment>
+                          }
+                          style={{
+                            width: 75,
+                            fontSize: '0.875rem',
+                            marginTop: 18
+                          }}
+                          type="number"
+                          value={workingRadius}
+                          readOnly
+                        />
 
-          {/* Card details start */}
-          <Grid item xs={12}>
-            <Typography
-              variant="h6"
-              className={sectionTitle}
-              color="primary"
-              style={{
-                marginBottom: 8
-              }}
-            >
-              Payment details
-            </Typography>
-          </Grid>
+                        <FormHelperText id="weight-helper-text">
+                          Radius
+                        </FormHelperText>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
 
-          <Grid item xs={12}>
-            {cardList.map((card, index) => (
-              <Paper className={paper} key={index}>
-                <Grid container spacing={24}>
-                  <Grid item xs={12} className={gridTitle}>
-                    <Typography variant="h6">{`Card ${index + 1}`}</Typography>
+              <Grid item xs={12}>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  style={{
+                    marginBottom: 8
+                  }}
+                >
+                  Payment details
+                </Typography>
+              </Grid>
+
+              {/* Card details start */}
+              <Grid item xs={12}>
+                <Paper className={paper}>
+                  <Grid container spacing={24}>
+                    <Grid item xs={12} className={gridTitle}>
+                      <Typography variant="h6">{`Bank Account`}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <TextField
+                        id="bsb"
+                        name="bsb"
+                        label="BSB"
+                        type="tel"
+                        fullWidth
+                        value={account.bsb}
+                        margin="dense"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} className={denseGrid}>
+                      <TextField
+                        id="accountNumber"
+                        name="accountNumber"
+                        label="Account number"
+                        type="tel"
+                        fullWidth
+                        value={account.accountNumber}
+                        margin="dense"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={6} className={denseGrid}>
-                    <TextField
-                      required
-                      id={`ccName${index}`}
-                      name={`ccName`}
-                      label="Name on card"
-                      type="text"
-                      fullWidth
-                      value={card.ccName}
-                      margin="dense"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} className={denseGrid}>
-                    <TextField
-                      required
-                      id={`ccNumber${index}`}
-                      name={`ccNumber`}
-                      label="Card number"
-                      type="tel"
-                      fullWidth
-                      value={card.ccNumber}
-                      margin="dense"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} className={denseGrid}>
-                    <TextField
-                      required
-                      id={`ccExp${index}`}
-                      name={`ccExp`}
-                      label="Expiry date"
-                      type="text"
-                      fullWidth
-                      value={card.ccExp}
-                      margin="dense"
-                    />
-                  </Grid>
-                </Grid>
-              </Paper>
-            ))}
-          </Grid>
-          {/* Card details end */}
+                </Paper>
+              </Grid>
+            </Fragment>
+          )}
 
           <Grid
             item

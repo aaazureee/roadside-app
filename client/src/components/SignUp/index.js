@@ -6,11 +6,11 @@ import BasicForm from './BasicForm'
 import CustomerVehicleForm from './CustomerVehicleForm'
 import PaymentForm from './PaymentForm'
 import SignUpReview from './SignUpReview'
+import AccountForm from './AccountForm'
+import WorkForm from './WorkForm'
 
 const style = theme => ({
   root: {
-    background: '#fff',
-    width: 'auto',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center'
@@ -84,12 +84,15 @@ class SignUp extends Component {
       case 1:
         if (userType === 'customer') {
           return <CustomerVehicleForm {...this.stepperOptions} />
-        } else if (userType === 'professional') {
-          return 'Professional Work Form'
         }
-        break
+        return <WorkForm {...this.stepperOptions} />
+
       case 2:
-        return <PaymentForm {...this.stepperOptions} />
+        if (userType === 'customer') {
+          return <PaymentForm {...this.stepperOptions} />
+        }
+        return <AccountForm {...this.stepperOptions} />
+
       case 3:
         return (
           <SignUpReview
@@ -145,11 +148,12 @@ class SignUp extends Component {
               </Fragment>
             ) : (
               <Fragment>
-                {activeStep !== steps.length - 1 && (
-                  <Typography variant="h6" gutterBottom>
-                    {steps[activeStep]}
-                  </Typography>
-                )}
+                {activeStep !== steps.length - 1 &&
+                  steps[activeStep] !== 'Work details' && (
+                    <Typography variant="h6" color="primary" gutterBottom>
+                      {steps[activeStep]}
+                    </Typography>
+                  )}
                 {this.getStepContent(activeStep)}
               </Fragment>
             )}
