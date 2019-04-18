@@ -96,23 +96,25 @@ class AccountForm extends Component {
                 />
                 <FormControlLabel
                   className={radio}
-                  style={{
-                    marginBottom: -8
-                  }}
                   value="15"
                   control={<Radio />}
                   label="15 km"
                 />
                 <FormControlLabel
-                  className={radio}
                   value=""
                   control={
                     <Radio
                       inputProps={{
                         custom: 'true'
                       }}
+                      style={{
+                        marginTop: -12
+                      }}
                     />
                   }
+                  style={{
+                    marginTop: -8
+                  }}
                   label={
                     <FormControl>
                       <Input
@@ -124,8 +126,8 @@ class AccountForm extends Component {
                         }
                         style={{
                           width: 75,
-                          fontSize: '0.875rem',
-                          marginTop: 18
+                          fontSize: '0.875rem'
+                          // paddingTop: 16
                         }}
                         type="number"
                         inputProps={{

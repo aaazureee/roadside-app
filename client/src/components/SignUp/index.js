@@ -109,15 +109,16 @@ class SignUp extends Component {
     const {
       classes: { root, paper },
       history,
-      userType
+      userType,
+      user
     } = this.props
 
     const { activeStep, steps, userDetails } = this.state
 
     const redirectUser = () => {
       setTimeout(function() {
-        // console.log('kappa')
-        localStorage.setItem('userEmail', userDetails.email)
+        localStorage.setItem('user', JSON.stringify(userDetails))
+        user.updateUserDetails(userDetails) // update root user
         history.push('/')
       }, 1000)
     }

@@ -74,12 +74,12 @@ const Pricing = props => {
     {
       name: 'Basic Plan',
       price: 'Flexible',
-      feature: ['sad', 'ending', 'scene']
+      feature: ['ending scene', 'crown', 'euphoria']
     },
     {
       name: 'Premium Plan',
       price: 9.99,
-      feature: ['seesaw', 'euphoria', 'dear name']
+      feature: ['seesaw', 'palette', 'dear name']
     }
   ]
 
@@ -134,7 +134,12 @@ const Pricing = props => {
                     marginTop: 'auto'
                   }}
                 >
-                  <Button variant="contained" color={color} fullWidth>
+                  <Button
+                    variant="contained"
+                    color={color}
+                    fullWidth
+                    size="large"
+                  >
                     <Typography variant="h6" color="inherit">
                       Get started
                     </Typography>

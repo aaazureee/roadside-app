@@ -19,9 +19,26 @@ const style = theme => ({
 })
 
 class Root extends Component {
-  state = {
-    userEmail: localStorage.getItem('userEmail')
+  initialState = {
+    userDetails: { ...JSON.parse(localStorage.getItem('user')) },
+    updateUserDetails: newUserDetails => {
+      this.setState(state => ({
+        ...state,
+        userDetails: {
+          ...state.userDetails,
+          ...newUserDetails
+        }
+      }))
+    },
+    reset: () => {
+      this.setState(state => ({
+        ...state,
+        userDetails: {}
+      }))
+    }
   }
+
+  state = { ...this.initialState }
 
   // componentDidUpdate(prevProps) {
   //   if (prevProps.location.pathname !== this.props.location.pathname) {
@@ -34,16 +51,16 @@ class Root extends Component {
   // }
 
   render() {
-    // console.log('render')
     const {
       classes: { root },
       resetTheme,
       persistOutlinedBtn
     } = this.props
-    const { userEmail } = this.state
+
+    console.log('in root', this.state)
     return (
       <div className={root}>
-        <AppBar userEmail={userEmail} />
+        <AppBar user={this.state} />
         <Switch>
           <Route exact path="/" component={MainLanding} />
           <Route
@@ -52,7 +69,7 @@ class Root extends Component {
               <SignUp
                 resetTheme={resetTheme}
                 persistOutlinedBtn={persistOutlinedBtn}
-                userEmail={userEmail}
+                user={this.state}
                 userType="customer"
                 {...props}
               />
@@ -62,7 +79,9 @@ class Root extends Component {
           <Route path="/pricing" component={Pricing} />
           <Route
             path="/careers"
-            render={props => <Career userEmail={userEmail} {...props} />}
+            render={props => (
+              <Career user={this.state} userType="professional" {...props} />
+            )}
           />
           <Route component={NotFound} />
         </Switch>

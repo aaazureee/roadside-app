@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Typography, Button } from '@material-ui/core'
+import MuiLink from './MuiLink'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 
 const style = theme => ({
@@ -53,11 +55,13 @@ class MainLanding extends Component {
           <Typography variant="body1" color="inherit" className={bodyTextStyle}>
             {bodyText}
           </Typography>
-          <Button color="secondary" variant="contained" className={btn}>
-            <Typography variant="h6" color="inherit" className={btnText}>
-              Learn more
-            </Typography>
-          </Button>
+          <MuiLink type={Link} to="/pricing" underline="none">
+            <Button color="secondary" variant="contained" className={btn}>
+              <Typography variant="h6" color="inherit" className={btnText}>
+                Learn more
+              </Typography>
+            </Button>
+          </MuiLink>
         </div>
       </main>
     )

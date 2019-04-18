@@ -66,7 +66,7 @@ class SignUpReview extends Component {
       userType
     } = this.props
 
-    console.log('In review', userDetails)
+    // console.log('In review', userDetails)
 
     // userDetails = {
     //   address: '5 Cowper Street, Fairy Meadow, Wollongong',
@@ -311,11 +311,11 @@ class SignUpReview extends Component {
                             <InputAdornment position="end">km</InputAdornment>
                           }
                           style={{
-                            width: 75,
+                            width: 65,
                             fontSize: '0.875rem',
                             marginTop: 18
                           }}
-                          type="number"
+                          type="tel"
                           value={workingRadius}
                           readOnly
                         />
