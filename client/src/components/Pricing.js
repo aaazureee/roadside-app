@@ -1,3 +1,4 @@
+import React, { Component } from 'react'
 import {
   Divider,
   Grid,
@@ -11,10 +12,10 @@ import {
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
-import React from 'react'
 import { Check } from '@material-ui/icons'
 import MuiLink from './MuiLink'
 import { Link } from 'react-router-dom'
+import { UserContext } from './Context'
 
 const style = theme => ({
   root: {
@@ -47,7 +48,7 @@ const style = theme => ({
   },
   gridItem: {
     maxWidth: 350,
-    margin: '0 uto',
+    margin: '0 auto',
     [theme.breakpoints.up(700 + theme.spacing.unit * 3 * 2)]: {
       flexBasis: '50%'
     }
@@ -57,101 +58,180 @@ const style = theme => ({
   }
 })
 
-const Pricing = props => {
-  const {
-    classes: {
-      root,
-      paper,
-      planTitle,
-      divider,
-      gridLayout,
-      gridItem,
-      listItemText
-    }
-  } = props
+class Pricing extends Component {
+  static contextType = UserContext
 
-  const plans = [
-    {
-      name: 'Basic Plan',
-      price: 'Flexible',
-      feature: ['ending scene', 'crown', 'euphoria']
-    },
-    {
-      name: 'Premium Plan',
-      price: 9.99,
-      feature: ['seesaw', 'palette', 'dear name']
-    }
-  ]
+  selectPlan = planType => {
+    const user = this.context
+    user.updateUserDetails({
+      plan: planType
+    })
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ ...user.userDetails, plan: planType })
+    )
 
-  return (
-    <main className={classNames('mainContent', root)}>
-      <Grid container spacing={24} className={gridLayout} alignItems="center">
-        {plans.map(plan => {
-          let color = plan.name.includes('Basic') ? 'primary' : 'secondary'
-          return (
-            <Grid item xs={12} className={gridItem} key={plan.name}>
-              <Paper className={paper}>
-                <Typography variant="h5" color={color} className={planTitle}>
-                  {plan.name}
-                </Typography>
-                <Typography variant="h5" color={color}>
-                  {plan.name.includes('Premium') && '$'}
-                  <span
+    // TODO handle payment backend
+
+    // if (planType === 'basic') {
+
+    // } else {
+
+    // }
+    alert(
+      `You are now subscribed to ${planType[0].toUpperCase() +
+        planType.slice(1)} plan`
+    )
+  }
+
+  renderPlanButton = uiPlan => {
+    const user = this.context
+    const { plan } = user.userDetails
+    let color = uiPlan === 'basic' ? 'primary' : 'secondary'
+
+    // no plan
+    if (!plan) {
+      return (
+        <MuiLink
+          type={Link}
+          to="/signup"
+          underline="none"
+          style={{
+            marginTop: 'auto'
+          }}
+        >
+          <Button variant="contained" color={color} fullWidth size="large">
+            <Typography variant="h6" color="inherit">
+              Get started
+            </Typography>
+          </Button>
+        </MuiLink>
+      )
+    }
+
+    // same plan
+    if (plan === uiPlan) {
+      return (
+        <Button
+          variant="contained"
+          color={color}
+          fullWidth
+          size="large"
+          style={{
+            cursor: 'not-allowed'
+          }}
+        >
+          <Typography variant="h6" color="inherit">
+            Current plan
+          </Typography>
+        </Button>
+      )
+    }
+
+    if (plan !== uiPlan) {
+      return (
+        <Button
+          variant="contained"
+          color={color}
+          fullWidth
+          size="large"
+          onClick={() => this.selectPlan(uiPlan)}
+        >
+          <Typography variant="h6" color="inherit">
+            Subscribe
+          </Typography>
+        </Button>
+      )
+    }
+  }
+
+  render() {
+    const {
+      classes: {
+        root,
+        paper,
+        planTitle,
+        divider,
+        gridLayout,
+        gridItem,
+        listItemText
+      }
+    } = this.props
+
+    const plans = [
+      {
+        name: 'Basic Plan',
+        price: 'Flexible',
+        feature: ['ending scene', 'crown', 'euphoria']
+      },
+      {
+        name: 'Premium Plan',
+        price: 9.99,
+        feature: ['seesaw', 'palette', 'dear name']
+      }
+    ]
+
+    return (
+      <main className={classNames('mainContent', root)}>
+        <Grid container spacing={24} className={gridLayout} alignItems="center">
+          {plans.map(plan => {
+            let color = plan.name.includes('Basic') ? 'primary' : 'secondary'
+            return (
+              <Grid item xs={12} className={gridItem} key={plan.name}>
+                <Paper className={paper}>
+                  <Typography variant="h5" color={color} className={planTitle}>
+                    {plan.name}
+                  </Typography>
+                  <Typography variant="h5" color={color}>
+                    {plan.name.includes('Premium') && '$'}
+                    <span
+                      style={{
+                        fontSize: '2.5rem'
+                      }}
+                    >
+                      {plan.price}
+                    </span>
+                    {plan.name.includes('Premium') && '/mo'}
+                  </Typography>
+                  <Divider className={divider} />
+
+                  <List
                     style={{
-                      fontSize: '2.5rem'
+                      marginTop: 8
                     }}
                   >
-                    {plan.price}
-                  </span>
-                  {plan.name.includes('Premium') && '/mo'}
-                </Typography>
-                <Divider className={divider} />
+                    {plan.feature.map((feature, index) => (
+                      <ListItem disableGutters key={index}>
+                        <ListItemIcon>
+                          <Check color="secondary" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={feature}
+                          classes={{
+                            root: listItemText
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
 
-                <List
-                  style={{
-                    marginTop: 8
-                  }}
-                >
-                  {plan.feature.map((feature, index) => (
-                    <ListItem disableGutters key={index}>
-                      <ListItemIcon>
-                        <Check color="secondary" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={feature}
-                        classes={{
-                          root: listItemText
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-                <MuiLink
-                  type={Link}
-                  to="/signup"
-                  underline="none"
-                  style={{
-                    marginTop: 'auto'
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color={color}
-                    fullWidth
-                    size="large"
+                  <div
+                    style={{
+                      marginTop: 'auto'
+                    }}
                   >
-                    <Typography variant="h6" color="inherit">
-                      Get started
-                    </Typography>
-                  </Button>
-                </MuiLink>
-              </Paper>
-            </Grid>
-          )
-        })}
-      </Grid>
-    </main>
-  )
+                    {this.renderPlanButton(
+                      plan.name.includes('Basic') ? 'basic' : 'premium'
+                    )}
+                  </div>
+                </Paper>
+              </Grid>
+            )
+          })}
+        </Grid>
+      </main>
+    )
+  }
 }
 
 export default withStyles(style)(Pricing)

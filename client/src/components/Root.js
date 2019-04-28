@@ -9,6 +9,9 @@ import Login from './Login'
 import Pricing from './Pricing'
 import NotFound from './NotFound'
 import Career from './Career'
+import Profile from './Profile'
+import Dashboard from './Dashboard'
+import { UserContext } from './Context'
 
 const style = theme => ({
   root: {
@@ -29,26 +32,10 @@ class Root extends Component {
           ...newUserDetails
         }
       }))
-    },
-    reset: () => {
-      this.setState(state => ({
-        ...state,
-        userDetails: {}
-      }))
     }
   }
 
   state = { ...this.initialState }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.location.pathname !== this.props.location.pathname) {
-  //     // console.log('did update')
-  //     this.setState({
-  //       userEmail: localStorage.getItem('userEmail')
-  //     })
-  //     // console.log(this.props)
-  //   }
-  // }
 
   render() {
     const {
@@ -59,34 +46,36 @@ class Root extends Component {
 
     console.log('in root', this.state)
     return (
-      <div className={root}>
-        <AppBar user={this.state} />
-        <Switch>
-          <Route exact path="/" component={MainLanding} />
-          <Route
-            path="/signup"
-            render={props => (
-              <SignUp
-                resetTheme={resetTheme}
-                persistOutlinedBtn={persistOutlinedBtn}
-                user={this.state}
-                userType="customer"
-                {...props}
-              />
-            )}
-          />
-          <Route path="/login" component={Login} />
-          <Route path="/pricing" component={Pricing} />
-          <Route
-            path="/careers"
-            render={props => (
-              <Career user={this.state} userType="professional" {...props} />
-            )}
-          />
-          <Route component={NotFound} />
-        </Switch>
-        <Footer />
-      </div>
+      <UserContext.Provider value={this.state}>
+        <div className={root}>
+          <AppBar />
+          <Switch>
+            <Route exact path="/" component={MainLanding} />
+            <Route
+              path="/signup"
+              render={props => (
+                <SignUp
+                  resetTheme={resetTheme}
+                  persistOutlinedBtn={persistOutlinedBtn}
+                  userType="customer"
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              path="/careers"
+              render={props => <Career userType="professional" {...props} />}
+            />
+            <Route path="/login" component={Login} />
+            <Route path="/pricing" component={Pricing} />
+            <Route path="/profile" component={Profile} />
+            <Route path="/dashboard" component={Dashboard} />
+
+            <Route component={NotFound} />
+          </Switch>
+          <Footer />
+        </div>
+      </UserContext.Provider>
     )
   }
 }

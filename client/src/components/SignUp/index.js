@@ -8,6 +8,7 @@ import PaymentForm from './PaymentForm'
 import SignUpReview from './SignUpReview'
 import AccountForm from './AccountForm'
 import WorkForm from './WorkForm'
+import { UserContext } from '../Context'
 
 const style = theme => ({
   root: {
@@ -36,7 +37,8 @@ class SignUp extends Component {
   state = {
     activeStep: 0,
     userDetails: {
-      userType: this.props.userType
+      userType: this.props.userType,
+      plan: 'basic'
     },
     steps:
       this.props.userType === 'customer'
@@ -46,6 +48,8 @@ class SignUp extends Component {
             return step
           })
   }
+
+  static contextType = UserContext
 
   handleNext = () => {
     this.setState(state => ({
@@ -109,10 +113,10 @@ class SignUp extends Component {
     const {
       classes: { root, paper },
       history,
-      userType,
-      user
+      userType
     } = this.props
 
+    const user = this.context
     const { activeStep, steps, userDetails } = this.state
 
     const redirectUser = () => {

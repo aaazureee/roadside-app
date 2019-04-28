@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { withStyles } from '@material-ui/core/styles'
 import MuiLink from '../MuiLink'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -19,9 +19,12 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
+  Avatar
 } from '@material-ui/core'
-import { AccountCircle } from '@material-ui/icons'
+import { grey } from '@material-ui/core/colors'
+import { Person, CreditCard } from '@material-ui/icons'
+import { UserContext } from '../Context'
 
 const styles = theme => ({
   rightSide: {
@@ -49,8 +52,14 @@ const styles = theme => ({
     boxShadow:
       '0px 0px 4px -1px rgba(0,0,0,0.2), 0px 0px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
   },
+  avatar: {
+    color: grey[200],
+    background: '#AA47BC',
+    width: 32,
+    height: 32
+  },
   accountIcon: {
-    fontSize: 30
+    fontSize: 28
   },
   primaryText: {
     color: 'black',
@@ -65,6 +74,26 @@ const styles = theme => ({
     '&:focus': {
       outline: 'none'
     }
+  },
+  planText: {
+    fontWeight: 400,
+    fontSize: '1rem'
+  },
+  basicPlan: {
+    color: theme.palette.primary.main
+  },
+  premiumPlan: {
+    color: theme.palette.secondary.main
+  },
+  routerLink: {
+    display: 'block',
+    textDecoration: 'none'
+  },
+  divider: {
+    marginTop: 8,
+    marginBottom: 4,
+    // background: 'red',
+    height: '0.05rem'
   }
 })
 
@@ -72,6 +101,8 @@ class StyledAppBar extends Component {
   state = {
     open: false
   }
+
+  static contextType = UserContext
 
   handleToggle = () => {
     this.setState(state => ({
@@ -89,8 +120,10 @@ class StyledAppBar extends Component {
 
   handleLogout = event => {
     this.handleClose(event)
-    localStorage.removeItem('user')
-    this.props.user.reset()
+    setTimeout(() => {
+      localStorage.removeItem('user')
+      window.location.reload()
+    }, 500)
   }
 
   render() {
@@ -105,16 +138,20 @@ class StyledAppBar extends Component {
         accountIcon,
         primaryText,
         secondaryText,
-        nonHover
+        nonHover,
+        avatar,
+        planText,
+        basicPlan,
+        premiumPlan,
+        routerLink,
+        divider
       }
     } = this.props
 
-    const { email, firstName, lastName } = this.props.user.userDetails
+    const user = this.context
+    const { email, firstName, lastName, plan } = user.userDetails
 
     const { open } = this.state
-
-    console.log('App bar', this.props)
-    console.log('abc', this.state.open)
 
     return (
       <Fragment>
@@ -151,6 +188,26 @@ class StyledAppBar extends Component {
             >
               Careers
             </MuiLink>
+            <MuiLink
+              type={NavLink}
+              to="/profile"
+              variant="h6"
+              underline="none"
+              className={classNames(linkColor, linkMargin)}
+              activeClassName={activeLink}
+            >
+              Profile
+            </MuiLink>
+            <MuiLink
+              type={NavLink}
+              to="/dashboard"
+              variant="h6"
+              underline="none"
+              className={classNames(linkColor, linkMargin)}
+              activeClassName={activeLink}
+            >
+              Dashboard
+            </MuiLink>
 
             {/* Check if there is an authenticated user */}
             {email ? (
@@ -171,7 +228,9 @@ class StyledAppBar extends Component {
                     aria-haspopup="true"
                     onClick={this.handleToggle}
                   >
-                    <AccountCircle className={accountIcon} />
+                    <Avatar className={avatar}>
+                      <Person className={accountIcon} />
+                    </Avatar>
                   </IconButton>
                   <Popper
                     open={open}
@@ -183,40 +242,84 @@ class StyledAppBar extends Component {
                       <Fade {...TransitionProps}>
                         <Paper
                           style={{
-                            marginTop: -12
+                            marginTop: -8
                           }}
                         >
                           <ClickAwayListener onClickAway={this.handleClose}>
                             <MenuList>
-                              <MenuItem className={nonHover} button={false}>
-                                <List>
-                                  <ListItem disableGutters>
-                                    <ListItemIcon
-                                      style={{
-                                        marginRight: 0,
-                                        color: 'rgba(0, 0, 0, 0.9)'
-                                      }}
-                                    >
-                                      <AccountCircle className={accountIcon} />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                      primary={`${firstName} ${lastName}`}
-                                      secondary={email}
-                                      classes={{
-                                        primary: primaryText,
-                                        secondary: secondaryText
-                                      }}
-                                    />
-                                  </ListItem>
-                                </List>
-                              </MenuItem>
-                              <Divider
-                                style={{
-                                  marginTop: 8,
-                                  marginBottom: 4
-                                }}
-                              />
-                              <MenuItem>Profile</MenuItem>
+                              <Link to="/profile" className={routerLink}>
+                                <MenuItem
+                                  className={nonHover}
+                                  button={false}
+                                  onClick={this.handleClose}
+                                >
+                                  <List>
+                                    <ListItem disableGutters>
+                                      <ListItemIcon
+                                        style={{
+                                          marginRight: 0
+                                        }}
+                                      >
+                                        <Avatar className={avatar}>
+                                          <Person className={accountIcon} />
+                                        </Avatar>
+                                      </ListItemIcon>
+                                      <ListItemText
+                                        primary={`${firstName} ${lastName}`}
+                                        secondary={email}
+                                        classes={{
+                                          primary: primaryText,
+                                          secondary: secondaryText
+                                        }}
+                                      />
+                                    </ListItem>
+                                  </List>
+                                </MenuItem>
+                              </Link>
+                              <Divider className={divider} />
+
+                              <Link to="/pricing" className={routerLink}>
+                                <MenuItem
+                                  className={nonHover}
+                                  button={false}
+                                  onClick={this.handleClose}
+                                >
+                                  <List>
+                                    <ListItem disableGutters>
+                                      <ListItemIcon
+                                        style={{
+                                          marginRight: 0
+                                        }}
+                                      >
+                                        <CreditCard
+                                          className={classNames({
+                                            [basicPlan]: plan === 'basic',
+                                            [premiumPlan]: plan === 'premium'
+                                          })}
+                                        />
+                                      </ListItemIcon>
+                                      <ListItemText
+                                        primary={
+                                          plan === 'basic'
+                                            ? 'Basic Plan'
+                                            : 'Premium Plan'
+                                        }
+                                        classes={{
+                                          primary: classNames(planText)
+                                        }}
+                                      />
+                                    </ListItem>
+                                  </List>
+                                </MenuItem>
+                              </Link>
+                              <Divider className={divider} />
+
+                              <Link to="/profile" className={routerLink}>
+                                <MenuItem onClick={this.handleClose}>
+                                  Profile
+                                </MenuItem>
+                              </Link>
+
                               <MenuItem onClick={this.handleLogout}>
                                 Sign out
                               </MenuItem>

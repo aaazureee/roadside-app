@@ -245,13 +245,21 @@ class ItemForm extends Component {
     itemType: PropTypes.oneOf(['vehicle', 'card', 'account'])
   }
 
-  state = {
-    itemList: [
+  getItemList = () => {
+    if (this.props.populated) {
+      console.log(this.props.list)
+      return this.props.list
+    }
+    return [
       {
         id: 'item-0',
         ...this.props.itemSchema
       }
     ]
+  }
+
+  state = {
+    itemList: this.getItemList()
   }
 
   addItem = id => {
