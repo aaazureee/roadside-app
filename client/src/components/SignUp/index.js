@@ -31,14 +31,16 @@ const steps = ['Basic details', 'Vehicle details', 'Payment details', 'Review']
 
 class SignUp extends Component {
   componentDidMount() {
-    this.props.userType === 'customer' && this.props.persistOutlinedBtn()
+    if (this.props.userType === 'customer') {
+      this.props.persistOutlinedBtn()
+      this.updateUserDetails({ plan: 'basic' })
+    }
   }
 
   state = {
     activeStep: 0,
     userDetails: {
-      userType: this.props.userType,
-      plan: 'basic'
+      userType: this.props.userType
     },
     steps:
       this.props.userType === 'customer'

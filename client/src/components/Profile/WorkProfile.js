@@ -16,9 +16,10 @@ class WorkProfile extends Component {
 
   initState = () => {
     const user = this.context
-    const { workingRadius } = user.userDetails
+    const { workingRadius, abn } = user.userDetails
     return {
-      workingRadius
+      workingRadius,
+      abn
     }
   }
 
@@ -32,7 +33,10 @@ class WorkProfile extends Component {
     original = String(original)
     console.log('original', original)
     this.setState({
-      [event.target.name]: Number(event.target.value),
+      [event.target.name]:
+        event.target.name === 'workingRadius'
+          ? Number(event.target.value)
+          : event.target.value,
       diff: event.target.value !== original
     })
   }
@@ -43,16 +47,44 @@ class WorkProfile extends Component {
   }
 
   render() {
-    const { diff, workingRadius } = this.state
+    const { diff, workingRadius, abn } = this.state
 
     return (
       <Fragment>
-        <Typography variant="h6" color="primary" gutterBottom>
-          Work details
-        </Typography>
         <form onSubmit={this.handleSubmit}>
           <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <label htmlFor="abn">
+                <Typography variant="h6" color="primary">
+                  ABN
+                </Typography>
+              </label>
+              <TextField
+                required
+                id="abn"
+                name="abn"
+                helperText="Australian Business Number (11-digit)"
+                margin="dense"
+                InputLabelProps={{
+                  shrink: true
+                }}
+                inputProps={{
+                  minLength: 11,
+                  maxLength: 11,
+                  pattern: '\\d{11}'
+                }}
+                value={abn}
+                onChange={this.handleChange}
+                style={{
+                  marginTop: 0
+                }}
+                autoComplete="off"
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
+              <Typography variant="h6" color="primary">
+                Work Radius
+              </Typography>
               <FormControl>
                 <Input
                   id="customRadius"
@@ -61,15 +93,20 @@ class WorkProfile extends Component {
                     <InputAdornment position="end">km</InputAdornment>
                   }
                   style={{
-                    width: 70,
+                    width: 75,
                     fontSize: '0.875rem'
                   }}
                   type="number"
+                  inputProps={{
+                    min: 1
+                  }}
                   onChange={this.handleChange}
                   value={workingRadius}
                 />
 
-                <FormHelperText id="weight-helper-text">Radius</FormHelperText>
+                <FormHelperText id="weight-helper-text">
+                  Work Radius
+                </FormHelperText>
               </FormControl>
             </Grid>
 

@@ -72,9 +72,11 @@ class Profile extends Component {
 
         <Paper className={paper}>
           {value === 0 && <BasicProfile />}
+
           {value === 1 && userType === 'customer' && <VehicleProfile />}
-          {value === 1 && userType === 'professional' && <WorkProfile />}
           {value === 2 && userType === 'customer' && <PaymentProfile />}
+
+          {value === 1 && userType === 'professional' && <WorkProfile />}
           {value === 2 && userType === 'professional' && <AccountProfile />}
         </Paper>
       </main>

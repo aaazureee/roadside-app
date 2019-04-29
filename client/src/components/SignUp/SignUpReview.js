@@ -98,6 +98,7 @@ class SignUpReview extends Component {
       card,
       // professional
       workingRadius,
+      abn,
       account
     } = userDetails
 
@@ -292,6 +293,29 @@ class SignUpReview extends Component {
               <Grid item xs={12}>
                 <Paper className={paper}>
                   <Grid container spacing={24}>
+                    <Grid item xs={12}>
+                      <label htmlFor="abn">
+                        <Typography variant="h6">ABN</Typography>
+                      </label>
+
+                      <TextField
+                        required
+                        id="abn"
+                        name="abn"
+                        helperText="Australian Business Number (11-digit)"
+                        InputProps={{
+                          readOnly: true
+                        }}
+                        margin="dense"
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                        value={abn}
+                        style={{
+                          marginTop: 0
+                        }}
+                      />
+                    </Grid>
                     <Grid
                       item
                       xs={12}
@@ -300,7 +324,7 @@ class SignUpReview extends Component {
                         marginBottom: -16
                       }}
                     >
-                      <Typography variant="h6">{`Work radius`}</Typography>
+                      <Typography variant="h6">Work radius</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} className={denseGrid}>
                       <FormControl>
@@ -311,7 +335,7 @@ class SignUpReview extends Component {
                             <InputAdornment position="end">km</InputAdornment>
                           }
                           style={{
-                            width: 65,
+                            width: 75,
                             fontSize: '0.875rem',
                             marginTop: 18
                           }}
@@ -321,7 +345,7 @@ class SignUpReview extends Component {
                         />
 
                         <FormHelperText id="weight-helper-text">
-                          Radius
+                          Work Radius
                         </FormHelperText>
                       </FormControl>
                     </Grid>
@@ -346,7 +370,7 @@ class SignUpReview extends Component {
                 <Paper className={paper}>
                   <Grid container spacing={24}>
                     <Grid item xs={12} className={gridTitle}>
-                      <Typography variant="h6">{`Bank Account`}</Typography>
+                      <Typography variant="h6">Bank Account</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} className={denseGrid}>
                       <TextField

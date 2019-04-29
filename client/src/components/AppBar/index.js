@@ -149,7 +149,7 @@ class StyledAppBar extends Component {
     } = this.props
 
     const user = this.context
-    const { email, firstName, lastName, plan } = user.userDetails
+    const { email, firstName, lastName, plan, userType } = user.userDetails
 
     const { open } = this.state
 
@@ -157,57 +157,57 @@ class StyledAppBar extends Component {
       <Fragment>
         <AppBar position="fixed" className={appBar}>
           <Toolbar>
-            <MuiLink
-              type={NavLink}
-              exact
-              to="/"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, linkMargin)}
-              activeClassName={activeLink}
-            >
-              Home
-            </MuiLink>
-            <MuiLink
-              type={NavLink}
-              to="/pricing"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, linkMargin)}
-              activeClassName={activeLink}
-            >
-              Pricing
-            </MuiLink>
-            <MuiLink
-              type={NavLink}
-              to="/careers"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, linkMargin)}
-              activeClassName={activeLink}
-            >
-              Careers
-            </MuiLink>
-            <MuiLink
-              type={NavLink}
-              to="/profile"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, linkMargin)}
-              activeClassName={activeLink}
-            >
-              Profile
-            </MuiLink>
-            <MuiLink
-              type={NavLink}
-              to="/dashboard"
-              variant="h6"
-              underline="none"
-              className={classNames(linkColor, linkMargin)}
-              activeClassName={activeLink}
-            >
-              Dashboard
-            </MuiLink>
+            {email && (
+              <MuiLink
+                type={NavLink}
+                to="/dashboard"
+                variant="h6"
+                underline="none"
+                className={classNames(linkColor, linkMargin)}
+                activeClassName={activeLink}
+              >
+                Dashboard
+              </MuiLink>
+            )}
+            {!email && (
+              <MuiLink
+                type={NavLink}
+                exact
+                to="/"
+                variant="h6"
+                underline="none"
+                className={classNames(linkColor, linkMargin)}
+                activeClassName={activeLink}
+              >
+                Home
+              </MuiLink>
+            )}
+
+            {(!email || userType === 'customer') && (
+              <MuiLink
+                type={NavLink}
+                to="/pricing"
+                variant="h6"
+                underline="none"
+                className={classNames(linkColor, linkMargin)}
+                activeClassName={activeLink}
+              >
+                Pricing
+              </MuiLink>
+            )}
+
+            {!email && (
+              <MuiLink
+                type={NavLink}
+                to="/careers"
+                variant="h6"
+                underline="none"
+                className={classNames(linkColor, linkMargin)}
+                activeClassName={activeLink}
+              >
+                Careers
+              </MuiLink>
+            )}
 
             {/* Check if there is an authenticated user */}
             {email ? (
@@ -278,41 +278,46 @@ class StyledAppBar extends Component {
                               </Link>
                               <Divider className={divider} />
 
-                              <Link to="/pricing" className={routerLink}>
-                                <MenuItem
-                                  className={nonHover}
-                                  button={false}
-                                  onClick={this.handleClose}
-                                >
-                                  <List>
-                                    <ListItem disableGutters>
-                                      <ListItemIcon
-                                        style={{
-                                          marginRight: 0
-                                        }}
-                                      >
-                                        <CreditCard
-                                          className={classNames({
-                                            [basicPlan]: plan === 'basic',
-                                            [premiumPlan]: plan === 'premium'
-                                          })}
-                                        />
-                                      </ListItemIcon>
-                                      <ListItemText
-                                        primary={
-                                          plan === 'basic'
-                                            ? 'Basic Plan'
-                                            : 'Premium Plan'
-                                        }
-                                        classes={{
-                                          primary: classNames(planText)
-                                        }}
-                                      />
-                                    </ListItem>
-                                  </List>
-                                </MenuItem>
-                              </Link>
-                              <Divider className={divider} />
+                              {userType === 'customer' && (
+                                <div>
+                                  <Link to="/pricing" className={routerLink}>
+                                    <MenuItem
+                                      className={nonHover}
+                                      button={false}
+                                      onClick={this.handleClose}
+                                    >
+                                      <List>
+                                        <ListItem disableGutters>
+                                          <ListItemIcon
+                                            style={{
+                                              marginRight: 0
+                                            }}
+                                          >
+                                            <CreditCard
+                                              className={classNames({
+                                                [basicPlan]: plan === 'basic',
+                                                [premiumPlan]:
+                                                  plan === 'premium'
+                                              })}
+                                            />
+                                          </ListItemIcon>
+                                          <ListItemText
+                                            primary={
+                                              plan === 'basic'
+                                                ? 'Basic Plan'
+                                                : 'Premium Plan'
+                                            }
+                                            classes={{
+                                              primary: classNames(planText)
+                                            }}
+                                          />
+                                        </ListItem>
+                                      </List>
+                                    </MenuItem>
+                                  </Link>
+                                  <Divider className={divider} />
+                                </div>
+                              )}
 
                               <Link to="/profile" className={routerLink}>
                                 <MenuItem onClick={this.handleClose}>

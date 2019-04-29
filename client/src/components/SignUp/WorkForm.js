@@ -8,7 +8,8 @@ import {
   InputAdornment,
   Radio,
   RadioGroup,
-  Typography
+  Typography,
+  TextField
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import React, { Component } from 'react'
@@ -33,7 +34,14 @@ class AccountForm extends Component {
   state = {
     workingRadius: '',
     customSelected: false,
-    customValue: ''
+    customValue: '',
+    abn: ''
+  }
+
+  handleTextChange = event => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
   }
 
   handleChange = event => {
@@ -55,7 +63,8 @@ class AccountForm extends Component {
   handleSubmit = event => {
     event.preventDefault()
     this.props.updateUserDetails({
-      workingRadius: Number(this.state.workingRadius)
+      workingRadius: Number(this.state.workingRadius),
+      abn: this.state.abn
     })
     this.props.handleNext()
   }
@@ -66,13 +75,43 @@ class AccountForm extends Component {
       handleBack
     } = this.props
 
-    const { customSelected } = this.state
+    const { customSelected, abn } = this.state
 
-    console.log(this.state)
+    console.log('workform', this.state)
 
     return (
       <form onSubmit={this.handleSubmit}>
         <Grid container spacing={24} className={grid}>
+          <Grid item xs={12}>
+            <label htmlFor="abn">
+              <Typography variant="h6" color="primary">
+                ABN
+              </Typography>
+            </label>
+
+            <TextField
+              required
+              id="abn"
+              name="abn"
+              helperText="Australian Business Number (11-digit)"
+              margin="dense"
+              InputLabelProps={{
+                shrink: true
+              }}
+              inputProps={{
+                minLength: 11,
+                maxLength: 11,
+                pattern: '\\d{11}'
+              }}
+              value={abn}
+              onChange={this.handleTextChange}
+              style={{
+                marginTop: 0
+              }}
+              autoComplete="off"
+              // fullWidth
+            />
+          </Grid>
           <Grid item xs={12}>
             <FormControl component="fieldset">
               <Typography variant="h6" color="primary">
@@ -138,7 +177,7 @@ class AccountForm extends Component {
                       />
 
                       <FormHelperText id="weight-helper-text">
-                        Radius
+                        Work Radius
                       </FormHelperText>
                     </FormControl>
                   }
