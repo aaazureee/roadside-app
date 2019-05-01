@@ -4,6 +4,7 @@ import { DtoCustomerDetails } from '../dto/customer-details.dto';
 import { User } from '../entity/user.entity';
 import { Logger } from '@nestjs/common';
 import { UserRole } from '../user-role.interface';
+import { DtoCreditCard } from '../dto/credit-card.dto';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
@@ -28,6 +29,19 @@ export class CustomerRepository extends Repository<Customer> {
         });
       }
       return await this.manager.save(cust);
+    } catch (err) {
+      Logger.error(err, err.stack, 'CustomerRepository');
+      return null;
+    }
+  }
+
+  async setCreditCard(userId: string, card: DtoCreditCard): Promise<Customer> {
+    try {
+      const customer = await this.manager.findOneOrFail(Customer, userId);
+
+      customer.creditCard = card;
+
+      return await this.manager.save(customer);
     } catch (err) {
       Logger.error(err, err.stack, 'CustomerRepository');
       return null;

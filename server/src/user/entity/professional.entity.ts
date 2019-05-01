@@ -7,6 +7,7 @@ import {
   RelationId,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Point } from 'geojson';
 
 @Entity()
 export class Professional {
@@ -17,9 +18,18 @@ export class Professional {
   @PrimaryColumn({ type: 'uuid' })
   userId: string;
 
-  @Column({ nullable: true })
+  @Column()
   phone: string;
 
-  @Column({ nullable: true })
+  @Column()
+  address: string;
+
+  @Column()
   workingRange: number;
+
+  @Column('geography')
+  location: Point;
+
+  @Column({ type: 'char', length: 11 })
+  abn: string;
 }

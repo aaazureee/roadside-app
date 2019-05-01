@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Vehicle } from './vehicle.entity';
+import { CreditCard } from './credit-card.entity';
 
 @Entity()
 export class Customer {
@@ -37,4 +38,7 @@ export class Customer {
 
   @OneToMany(type => Vehicle, vehicle => vehicle.customer)
   vehicles: Vehicle[];
+
+  @Column(type => CreditCard)
+  creditCard: CreditCard;
 }

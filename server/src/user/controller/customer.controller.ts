@@ -6,15 +6,15 @@ import {
   Get,
   UseGuards,
 } from '@nestjs/common';
-import { CustomerService } from './customer.service';
-import { DtoCustomerDetails } from './dto/customer-details.dto';
+import { CustomerService } from '../service/customer.service';
+import { DtoCustomerDetails } from '../dto/customer-details.dto';
 import { ISession } from 'src/auth/session.interface';
 import {
   EndpointResponse,
   ResponseSuccess,
   ResponseError,
 } from 'src/server-response.dto';
-import { Customer } from './entity/customer.entity';
+import { Customer } from '../entity/customer.entity';
 import { RoleGuard } from 'src/auth/auth.guard';
 import { RequiresRoles } from 'src/auth/roles.decorator';
 
