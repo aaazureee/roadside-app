@@ -12,6 +12,7 @@ import Career from './Career'
 import Profile from './Profile'
 import Dashboard from './Dashboard'
 import { UserContext } from './Context'
+import api from './api'
 
 const style = theme => ({
   root: {
@@ -36,6 +37,15 @@ class Root extends Component {
   }
 
   state = { ...this.initialState }
+
+  componentDidMount() {
+    api
+      .get('/ping')
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(err => console.log(err))
+  }
 
   render() {
     const {
