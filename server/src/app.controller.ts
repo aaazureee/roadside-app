@@ -18,4 +18,11 @@ export class AppController {
   async testRelation(): Promise<object> {
     return this.appService.testRelationId();
   }
+
+  @Get('/ping')
+  testping() {
+    return {
+      value: 'hello',
+    };
+  }
 }
