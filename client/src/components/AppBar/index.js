@@ -122,7 +122,7 @@ class StyledAppBar extends Component {
     this.handleClose(event)
     setTimeout(() => {
       localStorage.removeItem('user')
-      window.location.reload()
+      window.location.replace('/')
     }, 500)
   }
 
@@ -279,46 +279,55 @@ class StyledAppBar extends Component {
                               <Divider className={divider} />
 
                               {userType === 'customer' && (
-                                <div>
-                                  <Link to="/pricing" className={routerLink}>
-                                    <MenuItem
-                                      className={nonHover}
-                                      button={false}
-                                      onClick={this.handleClose}
-                                    >
-                                      <List>
-                                        <ListItem disableGutters>
-                                          <ListItemIcon
-                                            style={{
-                                              marginRight: 0
-                                            }}
-                                          >
-                                            <CreditCard
-                                              className={classNames({
-                                                [basicPlan]: plan === 'basic',
-                                                [premiumPlan]:
-                                                  plan === 'premium'
-                                              })}
-                                            />
-                                          </ListItemIcon>
-                                          <ListItemText
-                                            primary={
-                                              plan === 'basic'
-                                                ? 'Basic Plan'
-                                                : 'Premium Plan'
-                                            }
-                                            classes={{
-                                              primary: classNames(planText)
-                                            }}
+                                <Link to="/pricing" className={routerLink}>
+                                  <MenuItem
+                                    className={nonHover}
+                                    button={false}
+                                    onClick={this.handleClose}
+                                  >
+                                    <List>
+                                      <ListItem disableGutters>
+                                        <ListItemIcon
+                                          style={{
+                                            marginRight: 0
+                                          }}
+                                        >
+                                          <CreditCard
+                                            className={classNames({
+                                              [basicPlan]: plan === 'basic',
+                                              [premiumPlan]: plan === 'premium'
+                                            })}
                                           />
-                                        </ListItem>
-                                      </List>
-                                    </MenuItem>
-                                  </Link>
-                                  <Divider className={divider} />
-                                </div>
+                                        </ListItemIcon>
+                                        <ListItemText
+                                          primary={
+                                            plan === 'basic'
+                                              ? 'Basic Plan'
+                                              : 'Premium Plan'
+                                          }
+                                          classes={{
+                                            primary: classNames(planText)
+                                          }}
+                                        />
+                                      </ListItem>
+                                    </List>
+                                  </MenuItem>
+                                </Link>
                               )}
 
+                              {userType === 'professional' && (
+                                <MenuItem
+                                  className={nonHover}
+                                  button={false}
+                                  style={{
+                                    cursor: 'initial'
+                                  }}
+                                >
+                                  Roadside Professional
+                                </MenuItem>
+                              )}
+
+                              <Divider className={divider} />
                               <Link to="/profile" className={routerLink}>
                                 <MenuItem onClick={this.handleClose}>
                                   Profile

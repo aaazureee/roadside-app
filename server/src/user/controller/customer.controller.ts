@@ -5,6 +5,7 @@ import {
   Session,
   Get,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { CustomerService } from '../service/customer.service';
 import { DtoCustomerDetails } from '../dto/customer-details.dto';
@@ -17,7 +18,9 @@ import {
 import { Customer } from '../entity/customer.entity';
 import { RoleGuard } from 'src/auth/auth.guard';
 import { RequiresRoles } from 'src/auth/roles.decorator';
-
+import { DtoCreditCard } from '../dto/credit-card.dto';
+import { DtoVehicle } from '../dto/vehicle.dto';
+import { PlanType } from '../interface/plan.enum';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
@@ -50,5 +53,79 @@ export class CustomerController {
     return result
       ? new ResponseSuccess(result)
       : new ResponseError('Could not get user details');
+  }
+
+  @Post('credit-card')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('customer')
+  async setCreditCard(
+    @Body() card: DtoCreditCard,
+    @Session() session: ISession,
+  ) {
+    const user = await this.customerService.getCustomerById(
+      session.user.userId,
+    );
+
+    if (!user) {
+      return new ResponseError('Invalid user');
+    }
+
+    const result = await this.customerService.setCreditCard(
+      session.user.userId,
+      card,
+    );
+    return result
+      ? new ResponseSuccess(result)
+      : new ResponseError('Could not get user details');
+  }
+
+  @Post('vehicles')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('customer')
+  async addVehicles(
+    @Session() session: ISession,
+    @Body() vehicles: DtoVehicle[],
+  ) {
+    const user = await this.customerService.getCustomerById(
+      session.user.userId,
+    );
+
+    if (!user) {
+      return new ResponseError('Invalid user');
+    }
+
+    const result = this.customerService.addVehicles(
+      session.user.userId,
+      vehicles,
+    );
+
+    return result
+      ? new ResponseSuccess(result)
+      : new ResponseError('Could not add vehicles');
+  }
+
+  @Put('plan')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('customer')
+  async changeSubscriptionPlan(
+    @Body() { newPlan }: { newPlan: PlanType },
+    @Session() session: ISession,
+  ) {
+    const user = await this.customerService.getCustomerById(
+      session.user.userId,
+    );
+
+    if (!user) {
+      return new ResponseError('Invalid user');
+    }
+
+    const result = await this.customerService.changePlan(
+      session.user.userId,
+      newPlan,
+    );
+
+    return result
+      ? new ResponseSuccess(result)
+      : new ResponseError('Could not change plan');
   }
 }

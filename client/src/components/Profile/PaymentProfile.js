@@ -35,6 +35,13 @@ class PaymentProfile extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log('payment', this.state)
+
+    const user = this.context
+    const card = { ...this.state }
+    delete card.diff
+    user.updateUserDetails({ card })
+    localStorage.setItem('user', JSON.stringify({ ...user.userDetails, card }))
+    alert('Changes are saved successfully.')
   }
 
   render() {

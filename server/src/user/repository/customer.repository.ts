@@ -5,7 +5,8 @@ import { User } from '../entity/user.entity';
 import { Logger } from '@nestjs/common';
 import { UserRole } from '../user-role.interface';
 import { DtoCreditCard } from '../dto/credit-card.dto';
-
+import { DtoVehicle } from '../dto/vehicle.dto';
+import { Vehicle } from '../entity/vehicle.entity';
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
   async setCustomerDetails(
@@ -39,7 +40,37 @@ export class CustomerRepository extends Repository<Customer> {
     try {
       const customer = await this.manager.findOneOrFail(Customer, userId);
 
-      customer.creditCard = card;
+      customer.creditCard = {
+        cardNumber: card.cardNumber,
+        name: card.name,
+        expireMonth: card.expireMonth,
+        expireYear: card.expireYear,
+        ccv: card.ccv,
+      };
+
+      return await this.manager.save(customer);
+    } catch (err) {
+      Logger.error(err, err.stack, 'CustomerRepository');
+      return null;
+    }
+  }
+
+  async addVehicles(userId: string, vehicles: DtoVehicle[]): Promise<Customer> {
+    try {
+      const customer = await this.manager.findOneOrFail(Customer, userId, {
+        relations: ['vehicles'],
+      });
+
+      const createdVehicles = await Promise.all(
+        vehicles.map(v => {
+          const newVehicle = this.manager.create(Vehicle, v);
+          return this.manager.save(newVehicle);
+        }),
+      );
+
+      for (const v of createdVehicles) {
+        customer.vehicles.push(v);
+      }
 
       return await this.manager.save(customer);
     } catch (err) {

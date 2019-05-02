@@ -29,6 +29,14 @@ class VehicleProfile extends Component {
       return cloneVehicle
     })
     console.log('vehicle', vehicleList)
+
+    const user = this.context
+    user.updateUserDetails({ vehicleList })
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ ...user.userDetails, vehicleList })
+    )
+    alert('Changes are saved successfully.')
   }
 
   render() {

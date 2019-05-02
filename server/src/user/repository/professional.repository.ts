@@ -5,7 +5,7 @@ import { Logger } from '@nestjs/common';
 import { User } from '../entity/user.entity';
 import { UserRole } from '../user-role.interface';
 
-@EntityRepository()
+@EntityRepository(Professional)
 export class ProfessionalRepository extends Repository<Professional> {
   async setProfesisonalDetails(
     userId: string,

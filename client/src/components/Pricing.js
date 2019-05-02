@@ -39,7 +39,7 @@ const style = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(700 + theme.spacing.unit * 3 * 2)]: {
-      width: 700,
+      width: 800,
       marginLeft: 'auto',
       marginRight: 'auto'
     },
@@ -47,7 +47,7 @@ const style = theme => ({
     flex: 1
   },
   gridItem: {
-    maxWidth: 350,
+    maxWidth: 400,
     margin: '0 auto',
     [theme.breakpoints.up(700 + theme.spacing.unit * 3 * 2)]: {
       flexBasis: '50%'
@@ -162,12 +162,16 @@ class Pricing extends Component {
       {
         name: 'Basic Plan',
         price: 'Flexible',
-        feature: ['ending scene', 'crown', 'euphoria']
+        feature: ['Unlimited callouts', 'Flat tyres', 'Flat batteries']
       },
       {
         name: 'Premium Plan',
         price: 9.99,
-        feature: ['seesaw', 'palette', 'dear name']
+        feature: [
+          'All Basic Plan benefits',
+          'Fixed price for future requests',
+          'Exclusive promotional offers'
+        ]
       }
     ]
 

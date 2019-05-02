@@ -33,7 +33,16 @@ class BasicProfile extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
-    console.log('basic', this.state)
+    const user = this.context
+    const basic = { ...this.state }
+    delete basic.diff
+    console.log('basic', basic)
+    user.updateUserDetails(basic)
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ ...user.userDetails, ...basic })
+    )
+    alert('Changes are saved successfully.')
   }
 
   render() {

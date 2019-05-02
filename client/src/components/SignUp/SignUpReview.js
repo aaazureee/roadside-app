@@ -11,6 +11,8 @@ import {
   InputAdornment,
   FormHelperText
 } from '@material-ui/core'
+import { UserContext } from '../Context'
+import api from '../api'
 
 const style = theme => ({
   backBtn: {
@@ -45,9 +47,66 @@ const style = theme => ({
 })
 
 class SignUpReview extends Component {
+  static contextType = UserContext
+
+  redirectUser = async () => {
+    const user = this.context
+    const { userDetails, userType, history } = this.props
+
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      phone,
+      address,
+      card: { ccName, ccNumber, ccExp, cvv }
+    } = userDetails
+
+    let { vehicleList } = userDetails
+
+    vehicleList = vehicleList.map(x => ({
+      model: x.carModel,
+      plateNumber: x.carPlate
+    }))
+
+    const result = await api.post('/auth/register', {
+      email,
+      password,
+      userType
+    })
+
+    if (result.data.success) {
+      await api.post('/customer/details', {
+        firstName,
+        lastName,
+        phone,
+        address
+      })
+      await api.post('/customer/credit-card', {
+        cardNumber: ccNumber,
+        name: ccName,
+        expireMonth: Number(ccExp.slice(0, 2)),
+        expireYear: Number('20' + ccExp.slice(3, 5)),
+        ccv: cvv
+      })
+      await api.post('/customer/vehicles', vehicleList)
+      console.log('register success')
+      localStorage.setItem('user', JSON.stringify(userDetails))
+      user.updateUserDetails(userDetails) // update root user
+      history.push('/')
+    } else {
+      alert(result.data.error)
+      window.location.replace('/signup')
+    }
+  }
+
   handleSubmit = event => {
     event.preventDefault()
     this.props.handleNext()
+    setTimeout(() => {
+      this.redirectUser()
+    }, 500)
   }
 
   render() {
@@ -65,27 +124,6 @@ class SignUpReview extends Component {
       userDetails,
       userType
     } = this.props
-
-    // console.log('In review', userDetails)
-
-    // userDetails = {
-    //   address: '5 Cowper Street, Fairy Meadow, Wollongong',
-    //   cardList: [
-    //     {
-    //       ccName: 'HC',
-    //       ccNumber: '1111111111111111',
-    //       ccExp: '09/20',
-    //       cvv: '123'
-    //     }
-    //   ],
-    //   email: 'aaazureee@gmail.com',
-    //   firstName: 'Hieu',
-    //   lastName: 'Chu',
-    //   password: '1',
-    //   phone: '416731359',
-    //   userType: 'customer',
-    //   vehicleList: [{ carModel: 'x', carPlate: 'x' }]
-    // }
 
     const {
       email,

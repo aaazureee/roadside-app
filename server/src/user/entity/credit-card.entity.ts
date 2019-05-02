@@ -5,7 +5,7 @@ export class CreditCard {
   @Column({ nullable: true })
   cardNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column({ type: 'int', nullable: true })

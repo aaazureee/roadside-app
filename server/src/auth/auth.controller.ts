@@ -15,6 +15,7 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() registerInfo: RegisterInfoDto,
+    @Session() session: ISession,
   ): Promise<RegisterResponeDto> {
     const { userType, email, password } = registerInfo;
 
@@ -25,6 +26,9 @@ export class AuthController {
         error: 'Email already existed.',
       };
     } else {
+      const { email, role, id } = user;
+      session.user = { email, userType: role, userId: id };
+
       return {
         success: true,
         email: user.email,

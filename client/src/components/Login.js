@@ -76,7 +76,6 @@ class Login extends Component {
     const {
       classes: { root, paper, titleText, checkboxDiv, checkboxLabel }
     } = this.props
-    console.log('Log in state', this.state)
     return (
       <main className={classNames('mainContent', root)}>
         <Paper className={paper}>

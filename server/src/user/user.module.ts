@@ -6,6 +6,7 @@ import { CustomerController } from './controller/customer.controller';
 import { CustomerRepository } from './repository/customer.repository';
 import { ProfessionalRepository } from './repository/professional.repository';
 import { ProfessionalController } from './controller/professional.controller';
+import { ProfessionalService } from './service/professional.service';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { ProfessionalController } from './controller/professional.controller';
     ]),
   ],
   exports: [TypeOrmModule],
-  providers: [CustomerService],
+  providers: [CustomerService, ProfessionalService],
   controllers: [CustomerController, ProfessionalController],
 })
 export class UserModule {}

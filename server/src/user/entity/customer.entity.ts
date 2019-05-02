@@ -10,6 +10,7 @@ import {
 import { User } from './user.entity';
 import { Vehicle } from './vehicle.entity';
 import { CreditCard } from './credit-card.entity';
+import { PlanType } from '../interface/plan.enum';
 
 @Entity()
 export class Customer {
@@ -41,4 +42,7 @@ export class Customer {
 
   @Column(type => CreditCard)
   creditCard: CreditCard;
+
+  @Column({ type: 'enum', enum: PlanType, default: PlanType.BASIC })
+  plan: PlanType;
 }

@@ -8,7 +8,6 @@ import PaymentForm from './PaymentForm'
 import SignUpReview from './SignUpReview'
 import AccountForm from './AccountForm'
 import WorkForm from './WorkForm'
-import { UserContext } from '../Context'
 
 const style = theme => ({
   root: {
@@ -50,8 +49,6 @@ class SignUp extends Component {
             return step
           })
   }
-
-  static contextType = UserContext
 
   handleNext = () => {
     this.setState(state => ({
@@ -104,6 +101,7 @@ class SignUp extends Component {
           <SignUpReview
             {...this.stepperOptions}
             userDetails={this.state.userDetails}
+            history={this.props.history}
           />
         )
       default:
@@ -114,20 +112,10 @@ class SignUp extends Component {
   render() {
     const {
       classes: { root, paper },
-      history,
       userType
     } = this.props
 
-    const user = this.context
-    const { activeStep, steps, userDetails } = this.state
-
-    const redirectUser = () => {
-      setTimeout(function() {
-        localStorage.setItem('user', JSON.stringify(userDetails))
-        user.updateUserDetails(userDetails) // update root user
-        history.push('/')
-      }, 1000)
-    }
+    const { activeStep, steps } = this.state
 
     return (
       <main className={classNames('mainContent', root)}>
@@ -151,7 +139,6 @@ class SignUp extends Component {
                 <Typography variant="subtitle1">
                   We will now redirect you to the dashboard.
                 </Typography>
-                {redirectUser()}
               </Fragment>
             ) : (
               <Fragment>

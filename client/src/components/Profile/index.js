@@ -8,6 +8,7 @@ import AccountProfile from './AccountProfile'
 import WorkProfile from './WorkProfile'
 import classNames from 'classnames'
 import { UserContext } from '../Context'
+import { Switch, Route, Link } from 'react-router-dom'
 
 const style = theme => ({
   root: {
