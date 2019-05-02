@@ -18,14 +18,29 @@ const style = theme => ({
 })
 
 class CustomerBasicForm extends Component {
+  initState = () => {
+    const {
+      firstName = '',
+      lastName = '',
+      email = '',
+      address = '',
+      phone = '',
+      password = ''
+    } = this.props.userDetails
+
+    return {
+      showPassword: false,
+      firstName,
+      lastName,
+      email,
+      address,
+      phone,
+      password
+    }
+  }
+
   state = {
-    showPassword: false,
-    firstName: '',
-    lastName: '',
-    email: '',
-    address: '',
-    phone: '',
-    password: ''
+    ...this.initState()
   }
 
   handleShowPassword = () => {

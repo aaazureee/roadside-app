@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Paper, Tabs, Tab, Typography } from '@material-ui/core'
 import BasicProfile from './BasicProfile'
@@ -8,7 +8,6 @@ import AccountProfile from './AccountProfile'
 import WorkProfile from './WorkProfile'
 import classNames from 'classnames'
 import { UserContext } from '../Context'
-import { Switch, Route, Link } from 'react-router-dom'
 
 const style = theme => ({
   root: {

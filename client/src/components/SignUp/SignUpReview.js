@@ -49,9 +49,14 @@ const style = theme => ({
 class SignUpReview extends Component {
   static contextType = UserContext
 
-  redirectUser = async () => {
+  redirectCustomer = async () => {
     const user = this.context
-    const { userDetails, userType, history } = this.props
+    const { userType, history } = this.props
+
+    // remove unnecessary info before storing on client-side
+    let { userDetails: extraUserDetails } = this.props
+    delete extraUserDetails.password
+    const userDetails = { ...extraUserDetails }
 
     const {
       email,
@@ -70,42 +75,66 @@ class SignUpReview extends Component {
       plateNumber: x.carPlate
     }))
 
-    const result = await api.post('/auth/register', {
-      email,
-      password,
-      userType
-    })
+    // const result = await api.post('/auth/register', {
+    //   email,
+    //   password,
+    //   userType
+    // })
 
-    if (result.data.success) {
-      await api.post('/customer/details', {
-        firstName,
-        lastName,
-        phone,
-        address
-      })
-      await api.post('/customer/credit-card', {
-        cardNumber: ccNumber,
-        name: ccName,
-        expireMonth: Number(ccExp.slice(0, 2)),
-        expireYear: Number('20' + ccExp.slice(3, 5)),
-        ccv: cvv
-      })
-      await api.post('/customer/vehicles', vehicleList)
-      console.log('register success')
-      localStorage.setItem('user', JSON.stringify(userDetails))
-      user.updateUserDetails(userDetails) // update root user
-      history.push('/')
-    } else {
-      alert(result.data.error)
-      window.location.replace('/signup')
-    }
+    // if (result.data.success) {
+    //   await api.post('/customer/details', {
+    //     firstName,
+    //     lastName,
+    //     phone,
+    //     address
+    //   })
+    //   await api.post('/customer/credit-card', {
+    //     cardNumber: ccNumber,
+    //     name: ccName,
+    //     expireMonth: Number(ccExp.slice(0, 2)),
+    //     expireYear: Number('20' + ccExp.slice(3, 5)),
+    //     ccv: cvv
+    //   })
+    //   await api.post('/customer/vehicles', vehicleList)
+    //   console.log('register success')
+    //   user.updateUserDetails(userDetails) // update root user
+    //   history.push('/')
+    // } else {
+    //   alert(result.data.error)
+    //   window.location.replace('/signup')
+    // }
+    console.log('register cust success')
+    user.updateUserDetails(userDetails) // update root user
+    history.push('/')
+  }
+
+  redirectProfessional = async () => {
+    const user = this.context
+    const { userType, history } = this.props
+
+    // remove unnecessary info before storing on client-side
+    let { userDetails: extraUserDetails } = this.props
+    delete extraUserDetails.password
+    delete extraUserDetails.customValue
+    delete extraUserDetails.customSelected
+    const userDetails = { ...extraUserDetails }
+
+    console.log('register prof success')
+    user.updateUserDetails(userDetails) // update root user
+    history.push('/')
   }
 
   handleSubmit = event => {
     event.preventDefault()
     this.props.handleNext()
+    const { userType } = this.props
+
     setTimeout(() => {
-      this.redirectUser()
+      if (userType === 'customer') {
+        this.redirectCustomer()
+      } else if (userType === 'professional') {
+        this.redirectProfessional()
+      }
     }, 500)
   }
 

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Grid, TextField, Button, Typography } from '@material-ui/core'
+import { Grid, Button, Typography } from '@material-ui/core'
 import { UserContext } from '../Context'
 import ItemForm from '../SignUp/utils/ItemForm'
 
@@ -32,10 +32,6 @@ class VehicleProfile extends Component {
 
     const user = this.context
     user.updateUserDetails({ vehicleList })
-    localStorage.setItem(
-      'user',
-      JSON.stringify({ ...user.userDetails, vehicleList })
-    )
     alert('Changes are saved successfully.')
   }
 

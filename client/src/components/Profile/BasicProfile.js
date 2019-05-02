@@ -38,10 +38,6 @@ class BasicProfile extends Component {
     delete basic.diff
     console.log('basic', basic)
     user.updateUserDetails(basic)
-    localStorage.setItem(
-      'user',
-      JSON.stringify({ ...user.userDetails, ...basic })
-    )
     alert('Changes are saved successfully.')
   }
 

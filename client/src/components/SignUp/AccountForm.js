@@ -16,9 +16,19 @@ const style = theme => ({
 })
 
 class AccountForm extends Component {
+  initState = () => {
+    const {
+      account: { bsb = '', accountNumber = '' } = {}
+    } = this.props.userDetails
+
+    return {
+      bsb,
+      accountNumber
+    }
+  }
+
   state = {
-    bsb: '',
-    accountNumber: ''
+    ...this.initState()
   }
 
   handleChange = event => {
@@ -33,10 +43,14 @@ class AccountForm extends Component {
     this.props.handleNext()
   }
 
+  handleCustomBack = () => {
+    this.props.updateUserDetails({ account: this.state })
+    this.props.handleBack()
+  }
+
   render() {
     const {
-      classes: { backBtn, denseGrid, grid },
-      handleBack
+      classes: { backBtn, denseGrid, grid }
     } = this.props
 
     return (
@@ -80,7 +94,7 @@ class AccountForm extends Component {
         </Grid>
 
         <Grid item container justify="flex-end" xs={12}>
-          <Button onClick={handleBack} className={backBtn}>
+          <Button onClick={this.handleCustomBack} className={backBtn}>
             Back
           </Button>
           <Button color="primary" variant="contained" type="submit">

@@ -33,6 +33,11 @@ class PaymentProfile extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log('account', this.state)
+    const user = this.context
+    const account = { ...this.state }
+    delete account.diff
+    user.updateUserDetails({ account })
+    alert('Changes are saved successfully.')
   }
 
   render() {

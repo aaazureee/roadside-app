@@ -44,6 +44,11 @@ class WorkProfile extends Component {
   handleSubmit = event => {
     event.preventDefault()
     console.log('work', this.state)
+    const user = this.context
+    const work = { ...this.state }
+    delete work.diff
+    user.updateUserDetails(work)
+    alert('Changes are saved successfully.')
   }
 
   render() {

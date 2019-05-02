@@ -40,7 +40,6 @@ class PaymentProfile extends Component {
     const card = { ...this.state }
     delete card.diff
     user.updateUserDetails({ card })
-    localStorage.setItem('user', JSON.stringify({ ...user.userDetails, card }))
     alert('Changes are saved successfully.')
   }
 

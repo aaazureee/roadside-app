@@ -72,34 +72,35 @@ class SignUp extends Component {
     }))
   }
 
-  stepperOptions = {
+  getStepperOptions = () => ({
     handleNext: this.handleNext,
     handleBack: this.handleBack,
     updateUserDetails: this.updateUserDetails,
-    userType: this.props.userType
-  }
+    userType: this.props.userType,
+    userDetails: this.state.userDetails
+  })
 
   getStepContent = step => {
     const { userType } = this.props
     switch (step) {
       case 0:
-        return <BasicForm {...this.stepperOptions} />
+        return <BasicForm {...this.getStepperOptions()} />
       case 1:
         if (userType === 'customer') {
-          return <CustomerVehicleForm {...this.stepperOptions} />
+          return <CustomerVehicleForm {...this.getStepperOptions()} />
         }
-        return <WorkForm {...this.stepperOptions} />
+        return <WorkForm {...this.getStepperOptions()} />
 
       case 2:
         if (userType === 'customer') {
-          return <PaymentForm {...this.stepperOptions} />
+          return <PaymentForm {...this.getStepperOptions()} />
         }
-        return <AccountForm {...this.stepperOptions} />
+        return <AccountForm {...this.getStepperOptions()} />
 
       case 3:
         return (
           <SignUpReview
-            {...this.stepperOptions}
+            {...this.getStepperOptions()}
             userDetails={this.state.userDetails}
             history={this.props.history}
           />

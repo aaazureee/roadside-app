@@ -31,11 +31,26 @@ const style = theme => ({
 })
 
 class AccountForm extends Component {
+  initState = () => {
+    let {
+      workingRadius = '',
+      customSelected = false,
+      customValue = '',
+      abn = ''
+    } = this.props.userDetails
+
+    workingRadius = String(workingRadius)
+
+    return {
+      workingRadius,
+      customSelected,
+      customValue,
+      abn
+    }
+  }
+
   state = {
-    workingRadius: '',
-    customSelected: false,
-    customValue: '',
-    abn: ''
+    ...this.initState()
   }
 
   handleTextChange = event => {
@@ -63,16 +78,23 @@ class AccountForm extends Component {
   handleSubmit = event => {
     event.preventDefault()
     this.props.updateUserDetails({
-      workingRadius: Number(this.state.workingRadius),
-      abn: this.state.abn
+      ...this.state,
+      workingRadius: Number(this.state.workingRadius)
     })
     this.props.handleNext()
   }
 
+  handleCustomBack = () => {
+    this.props.updateUserDetails({
+      ...this.state,
+      workingRadius: Number(this.state.workingRadius)
+    })
+    this.props.handleBack()
+  }
+
   render() {
     const {
-      classes: { backBtn, radio, grid },
-      handleBack
+      classes: { backBtn, radio, grid }
     } = this.props
 
     const { customSelected, abn } = this.state
@@ -109,7 +131,6 @@ class AccountForm extends Component {
                 marginTop: 0
               }}
               autoComplete="off"
-              // fullWidth
             />
           </Grid>
           <Grid item xs={12}>
@@ -124,19 +145,41 @@ class AccountForm extends Component {
               >
                 <FormControlLabel
                   value="5"
-                  control={<Radio required />}
+                  control={
+                    <Radio
+                      required
+                      checked={
+                        this.state.workingRadius === '5' &&
+                        !this.state.customSelected
+                      }
+                    />
+                  }
                   label="5 km"
                 />
                 <FormControlLabel
                   className={radio}
                   value="10"
-                  control={<Radio />}
+                  control={
+                    <Radio
+                      checked={
+                        this.state.workingRadius === '10' &&
+                        !this.state.customSelected
+                      }
+                    />
+                  }
                   label="10 km"
                 />
                 <FormControlLabel
                   className={radio}
                   value="15"
-                  control={<Radio />}
+                  control={
+                    <Radio
+                      checked={
+                        this.state.workingRadius === '15' &&
+                        !this.state.customSelected
+                      }
+                    />
+                  }
                   label="15 km"
                 />
                 <FormControlLabel
@@ -149,6 +192,7 @@ class AccountForm extends Component {
                       style={{
                         marginTop: -12
                       }}
+                      checked={this.state.customSelected}
                     />
                   }
                   style={{
@@ -160,13 +204,13 @@ class AccountForm extends Component {
                         id="customRadius"
                         name="workingRadius"
                         onChange={this.handleCustomChange}
+                        value={this.state.customValue}
                         endAdornment={
                           <InputAdornment position="end">km</InputAdornment>
                         }
                         style={{
                           width: 75,
                           fontSize: '0.875rem'
-                          // paddingTop: 16
                         }}
                         type="number"
                         inputProps={{
@@ -188,7 +232,7 @@ class AccountForm extends Component {
         </Grid>
 
         <Grid item container justify="flex-end" xs={12}>
-          <Button onClick={handleBack} className={backBtn}>
+          <Button onClick={this.handleCustomBack} className={backBtn}>
             Back
           </Button>
           <Button color="primary" variant="contained" type="submit">

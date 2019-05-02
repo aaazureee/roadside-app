@@ -26,25 +26,33 @@ class Root extends Component {
   initialState = {
     userDetails: { ...JSON.parse(localStorage.getItem('user')) },
     updateUserDetails: newUserDetails => {
-      this.setState(state => ({
-        ...state,
-        userDetails: {
-          ...state.userDetails,
-          ...newUserDetails
+      this.setState(
+        state => ({
+          ...state,
+          userDetails: {
+            ...state.userDetails,
+            ...newUserDetails
+          }
+        }),
+        () => {
+          localStorage.setItem(
+            'user',
+            JSON.stringify({ ...this.state.userDetails, ...newUserDetails })
+          )
         }
-      }))
+      )
     }
   }
 
   state = { ...this.initialState }
 
   componentDidMount() {
-    api
-      .get('/ping')
-      .then(res => {
-        console.log(res.data)
-      })
-      .catch(err => console.log(err))
+    // api
+    //   .get('/ping')
+    //   .then(res => {
+    //     console.log(res.data)
+    //   })
+    //   .catch(err => console.log(err))
   }
 
   render() {

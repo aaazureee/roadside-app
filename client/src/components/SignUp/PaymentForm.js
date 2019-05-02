@@ -21,11 +21,21 @@ const style = theme => ({
 })
 
 class PaymentForm extends Component {
+  initState = () => {
+    const {
+      card: { ccName = '', ccNumber = '', ccExp = '', cvv = '' } = {}
+    } = this.props.userDetails
+
+    return {
+      ccName,
+      ccNumber,
+      ccExp,
+      cvv
+    }
+  }
+
   state = {
-    ccName: '',
-    ccNumber: '',
-    ccExp: '',
-    cvv: ''
+    ...this.initState()
   }
 
   handleChange = event => {
@@ -40,10 +50,14 @@ class PaymentForm extends Component {
     this.props.handleNext()
   }
 
+  handleCustomBack = () => {
+    this.props.updateUserDetails({ card: this.state })
+    this.props.handleBack()
+  }
+
   render() {
     const {
-      classes: { backBtn, denseGrid, helperText, grid },
-      handleBack
+      classes: { backBtn, denseGrid, helperText, grid }
     } = this.props
 
     return (
@@ -132,7 +146,7 @@ class PaymentForm extends Component {
         </Grid>
 
         <Grid item container justify="flex-end" xs={12}>
-          <Button onClick={handleBack} className={backBtn}>
+          <Button onClick={this.handleCustomBack} className={backBtn}>
             Back
           </Button>
           <Button color="primary" variant="contained" type="submit">

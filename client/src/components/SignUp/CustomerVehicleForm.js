@@ -12,6 +12,20 @@ const style = theme => ({
 class CustomerVehicleForm extends Component {
   vehicleFormRef = null
 
+  initState = () => {
+    let { vehicleList = [] } = this.props.userDetails
+    if (vehicleList.length) {
+      vehicleList = vehicleList.map((vehicle, idx) => {
+        return { ...vehicle, id: `item-${idx}` }
+      })
+    }
+    return { vehicleList }
+  }
+
+  state = {
+    ...this.initState()
+  }
+
   handleSubmit = event => {
     event.preventDefault()
     let vehicleList = this.vehicleFormRef.state.itemList.map(vehicle => {
@@ -24,26 +38,51 @@ class CustomerVehicleForm extends Component {
     this.props.handleNext()
   }
 
+  handleBackCustom = () => {
+    let vehicleList = this.vehicleFormRef.state.itemList.map(vehicle => {
+      let cloneVehicle = { ...vehicle }
+      delete cloneVehicle.removeStatus
+      delete cloneVehicle.id
+      return cloneVehicle
+    })
+    this.props.updateUserDetails({ vehicleList })
+    this.props.handleBack()
+  }
+
   render() {
     const {
-      classes: { backBtn },
-      handleBack
+      classes: { backBtn }
     } = this.props
+
+    console.log('vehicle form', this.state)
 
     const itemSchema = {
       carModel: '',
       carPlate: ''
     }
 
+    const { vehicleList } = this.state
+
     return (
       <form onSubmit={this.handleSubmit}>
-        <ItemForm
-          itemSchema={itemSchema}
-          itemType="vehicle"
-          innerRef={vehicleFormRef => (this.vehicleFormRef = vehicleFormRef)}
-        />
+        {vehicleList.length ? (
+          <ItemForm
+            populated
+            list={vehicleList}
+            itemSchema={itemSchema}
+            itemType="vehicle"
+            innerRef={vehicleFormRef => (this.vehicleFormRef = vehicleFormRef)}
+          />
+        ) : (
+          <ItemForm
+            itemSchema={itemSchema}
+            itemType="vehicle"
+            innerRef={vehicleFormRef => (this.vehicleFormRef = vehicleFormRef)}
+          />
+        )}
+
         <Grid container justify="flex-end">
-          <Button onClick={handleBack} className={backBtn}>
+          <Button onClick={this.handleBackCustom} className={backBtn}>
             Back
           </Button>
           <Button color="primary" variant="contained" type="submit">

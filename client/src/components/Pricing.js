@@ -66,10 +66,6 @@ class Pricing extends Component {
     user.updateUserDetails({
       plan: planType
     })
-    localStorage.setItem(
-      'user',
-      JSON.stringify({ ...user.userDetails, plan: planType })
-    )
 
     // TODO handle payment backend
 
