@@ -100,6 +100,7 @@ class Login extends Component {
         delete userDetails.creditCard
         userDetails.card = formatCard
         userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
+          id: vehicle.id,
           carModel: vehicle.model,
           carPlate: vehicle.plateNumber
         }))
@@ -109,7 +110,22 @@ class Login extends Component {
         user.updateUserDetails(userDetails)
         this.props.history.push('/')
       } else if (result.userType === 'professional') {
-        // TODO professional
+        const { data: detailsResult } = await api.get('/professional/details')
+        const { data: userDetails } = detailsResult
+
+        console.log('prof data api', JSON.parse(JSON.stringify(userDetails)))
+        // transform data
+        userDetails.account = {
+          bsb: userDetails.bsb,
+          accountNumber: userDetails.accountNumber
+        }
+        userDetails.workingRadius = userDetails.workingRange
+
+        delete userDetails.workingRange
+        delete userDetails.bsb
+        delete userDetails.accountNumber
+        user.updateUserDetails(userDetails)
+        this.props.history.push('/')
       }
     } else {
       alert(result.error)

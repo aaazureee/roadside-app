@@ -98,7 +98,7 @@ class SignUpReview extends Component {
       delete userDetails.password
       console.log('register success')
       user.updateUserDetails(userDetails) // update root user
-      history.push('/')
+      window.location.replace('/')
     } else {
       alert(result.data.error)
       window.location.replace('/signup')
@@ -115,10 +115,52 @@ class SignUpReview extends Component {
     delete extraUserDetails.customSelected
     const userDetails = { ...extraUserDetails }
 
-    delete userDetails.password
-    console.log('register prof success')
-    user.updateUserDetails(userDetails) // update root user
-    history.push('/')
+    const {
+      email,
+      password,
+      account: { bsb, accountNumber },
+      firstName,
+      lastName,
+      phone,
+      address,
+      workingRadius,
+      abn,
+      lat,
+      lng
+    } = userDetails
+
+    console.log('here', userDetails)
+
+    const { data: result } = await api.post('/auth/register', {
+      email,
+      password,
+      userType
+    })
+
+    if (result.success) {
+      await api.post('/professional/details', {
+        firstName,
+        lastName,
+        phone,
+        address,
+        abn,
+        workingRange: workingRadius,
+        bsb,
+        accountNumber,
+        location: {
+          type: 'Point',
+          coordinates: [lat, lng]
+        }
+      })
+
+      delete userDetails.password
+      console.log('register prof success')
+      user.updateUserDetails(userDetails) // update root user
+      window.location.replace('/')
+    } else {
+      alert(result.error)
+      window.location.replace('/careers')
+    }
   }
 
   handleSubmit = event => {

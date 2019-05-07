@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Paper, Tabs, Tab, Typography } from '@material-ui/core'
 import MakeRequest from './MakeRequest'
+import HandleRequest from './HandleRequest'
 import classNames from 'classnames'
 import { UserContext } from '../Context'
 
@@ -41,7 +42,7 @@ class Dashboard extends Component {
     if (userType === 'customer') {
       return <MakeRequest />
     } else if (userType === 'professional') {
-      return <div>Professional dashboard handler</div>
+      return <HandleRequest />
     }
   }
 
@@ -68,7 +69,9 @@ class Dashboard extends Component {
           <Tab label="Roadside Request" />
         </Tabs>
 
-        <Paper className={paper}>{this.renderRequestView()}</Paper>
+        <Paper className={paper}>
+          {value === 0 && this.renderRequestView()}
+        </Paper>
       </main>
     )
   }

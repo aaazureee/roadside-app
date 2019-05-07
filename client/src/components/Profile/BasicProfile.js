@@ -46,6 +46,7 @@ class BasicProfile extends Component {
       }
     })
     const user = this.context
+    const { userType, firstName, lastName, phone, address } = user.userDetails
     const { diff, suggestions, ...basic } = this.state
 
     if (result.results) {
@@ -57,11 +58,20 @@ class BasicProfile extends Component {
     }
 
     console.log('basic', basic)
-    user.updateUserDetails(basic)
-    alert('Changes are saved successfully.')
-    this.setState({
-      diff: false
-    })
+    if (userType === 'customer') {
+      const { data: updateRes } = await axios.push('/customer/details', {
+        firstName,
+        lastName,
+        phone,
+        address
+      })
+
+      user.updateUserDetails(basic)
+      alert('Changes are saved successfully.')
+      this.setState({
+        diff: false
+      })
+    }
   }
 
   render() {

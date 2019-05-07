@@ -48,10 +48,13 @@ class Root extends Component {
 
   async componentDidMount() {
     const { data: result } = await api.get('/auth/login')
+    console.log(result)
     if (result.success) {
       if (result.userType === 'customer') {
         const { data: detailsResult } = await api.get('/customer/details')
         const { data: userDetails } = detailsResult
+
+        console.log('cust', JSON.parse(JSON.stringify(userDetails)))
         // transform data to correct object format
         userDetails.card = { ...userDetails.creditCard }
         let formatCard = {
@@ -66,13 +69,29 @@ class Root extends Component {
         delete userDetails.creditCard
         userDetails.card = formatCard
         userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
+          id: vehicle.id,
           carModel: vehicle.model,
           carPlate: vehicle.plateNumber
         }))
+        console.log('iam', userDetails)
         delete userDetails.vehicles
         this.initialState.updateUserDetails(userDetails)
-      } else if (result.userType === 'prossional') {
-        // TODO
+      } else if (result.userType === 'professional') {
+        const { data: detailsResult } = await api.get('/professional/details')
+        const { data: userDetails } = detailsResult
+
+        console.log('prof data api', JSON.parse(JSON.stringify(userDetails)))
+        // transform data
+        userDetails.account = {
+          bsb: userDetails.bsb,
+          accountNumber: userDetails.accountNumber
+        }
+        userDetails.workingRadius = userDetails.workingRange
+
+        delete userDetails.workingRange
+        delete userDetails.bsb
+        delete userDetails.accountNumber
+        console.log('after', userDetails)
       }
     }
   }

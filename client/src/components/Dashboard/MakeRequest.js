@@ -81,6 +81,7 @@ class MakeRequest extends Component {
 
     return {
       vehicleList: vehicleList.map(vehicle => ({
+        id: vehicle.id,
         details: `${vehicle.carModel} - ${vehicle.carPlate}`
       })),
       address
@@ -100,11 +101,21 @@ class MakeRequest extends Component {
     isLoading: true,
     vehicle: '',
     description: '',
-    loadingResponse: false
+    loadingResponse: false,
+    vehicleId: ''
   }
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value })
+  }
+
+  handleVehicleChange = event => {
+    event.persist()
+    this.setState(state => ({
+      vehicle: event.target.value,
+      vehicleId: state.vehicleList.find(x => x.details === event.target.value)
+        .id
+    }))
   }
 
   handleSubmit = event => {
@@ -121,6 +132,8 @@ class MakeRequest extends Component {
 
     const user = this.context
     // const { userType } = user.userDetails
+
+    console.log(this.state)
 
     const {
       address,
@@ -174,7 +187,7 @@ class MakeRequest extends Component {
                             native
                             required
                             value={vehicle}
-                            onChange={this.handleChange}
+                            onChange={this.handleVehicleChange}
                             input={
                               <Input name="vehicle" id="vehicle" required />
                             }
