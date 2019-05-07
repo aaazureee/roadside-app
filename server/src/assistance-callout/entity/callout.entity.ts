@@ -10,6 +10,7 @@ import {
 import { Customer } from 'src/user/entity/customer.entity';
 import { Point } from 'geojson';
 import { Professional } from 'src/user/entity/professional.entity';
+import { Vehicle } from 'src/user/entity/vehicle.entity';
 
 @Entity()
 export class Callout {
@@ -41,6 +42,13 @@ export class Callout {
 
   @Column({ nullable: true })
   description: string;
+
+  @ManyToOne(type => Vehicle)
+  @JoinColumn({ name: 'vehicleId' })
+  vehicle: Vehicle;
+
+  @Column({ type: 'integer' })
+  vehicleId: number;
 
   @CreateDateColumn()
   readonly createdDate: Date;
