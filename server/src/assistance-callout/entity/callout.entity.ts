@@ -24,7 +24,7 @@ export class Callout {
   @Column({ type: 'uuid', nullable: true })
   customerId: string;
 
-  @Column({ type: 'geometry', spatialFeatureType: 'Point', srid: 4326 })
+  @Column({ type: 'geography' })
   location: Point;
 
   @Column()

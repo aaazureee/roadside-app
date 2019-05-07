@@ -27,10 +27,7 @@ export class Professional {
   @Column()
   workingRange: number;
 
-  @Column('geometry', {
-    spatialFeatureType: 'Point',
-    srid: 4326,
-  })
+  @Column('geography')
   location: Point;
 
   @Column({ type: 'char', length: 11 })
