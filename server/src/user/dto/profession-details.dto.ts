@@ -27,6 +27,15 @@ export class DtoProfessionalDetails {
   @IsNumberString()
   abn: string;
 
+  @IsOptional()
   @IsString()
   address: string;
+
+  @IsOptional()
+  @Length(6, 6)
+  bsb: string;
+
+  @IsOptional()
+  @IsString()
+  accountNumber: string;
 }

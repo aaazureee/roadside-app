@@ -32,4 +32,10 @@ export class Professional {
 
   @Column({ type: 'char', length: 11 })
   abn: string;
+
+  @Column()
+  bsb: string;
+
+  @Column()
+  accountNumber: string;
 }
