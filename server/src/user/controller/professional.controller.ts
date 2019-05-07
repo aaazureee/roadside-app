@@ -5,6 +5,7 @@ import {
   Session,
   Post,
   Body,
+  Logger,
 } from '@nestjs/common';
 import { ProfessionalService } from '../service/professional.service';
 import { RoleGuard } from 'src/auth/auth.guard';
@@ -25,7 +26,11 @@ export class ProfessionalController {
       session.user.userId,
     );
     return result
-      ? new ResponseSuccess(result)
+      ? new ResponseSuccess({
+          ...result,
+          userType: 'professional',
+          email: session.user.email,
+        })
       : new ResponseError('Could not get user details');
   }
 
@@ -37,7 +42,7 @@ export class ProfessionalController {
     @Session() session: ISession,
   ) {
     const userId = session.user.userId;
-
+    Logger.log(details);
     const result = await this.professionalService.setProfessionalDetails(
       userId,
       details,

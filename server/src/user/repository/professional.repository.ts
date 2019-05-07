@@ -28,7 +28,7 @@ export class ProfessionalRepository extends Repository<Professional> {
           ...details,
         });
       }
-
+      Logger.log(prof.location);
       return await this.manager.save(prof);
     } catch (err) {
       Logger.error(err, err.stack, 'CustomerRepository');

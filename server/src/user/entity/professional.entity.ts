@@ -38,4 +38,10 @@ export class Professional {
 
   @Column()
   accountNumber: string;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
 }

@@ -15,7 +15,9 @@ export class ProfessionalService {
   }
 
   async getProfessionalById(userId: string): Promise<Professional> {
-    const result = await this.professionalRepo.findByIds([userId]);
+    const result = await this.professionalRepo.findByIds([userId], {
+      relations: ['user'],
+    });
 
     if (result.length !== 1) {
       return null;

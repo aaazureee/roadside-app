@@ -11,7 +11,6 @@ import { Point } from 'geojson';
 
 export class DtoProfessionalDetails {
   @IsOptional()
-  @IsPhoneNumber('AU')
   phone: string;
 
   @IsOptional()
@@ -19,7 +18,6 @@ export class DtoProfessionalDetails {
   workingRange: number;
 
   @IsOptional()
-  @IsJSON()
   location: Point;
 
   @IsOptional()
@@ -32,10 +30,18 @@ export class DtoProfessionalDetails {
   address: string;
 
   @IsOptional()
-  @Length(6, 6)
+  @IsString()
   bsb: string;
 
   @IsOptional()
   @IsString()
   accountNumber: string;
+
+  @IsOptional()
+  @IsString()
+  firstName: string;
+
+  @IsOptional()
+  @IsString()
+  lastName: string;
 }
