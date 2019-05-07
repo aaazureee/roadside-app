@@ -46,13 +46,35 @@ class Root extends Component {
 
   state = { ...this.initialState }
 
-  componentDidMount() {
-    // api
-    //   .get('/ping')
-    //   .then(res => {
-    //     console.log(res.data)
-    //   })
-    //   .catch(err => console.log(err))
+  async componentDidMount() {
+    const { data: result } = await api.get('/auth/login')
+    if (result.success) {
+      if (result.userType === 'customer') {
+        const { data: detailsResult } = await api.get('/customer/details')
+        const { data: userDetails } = detailsResult
+        // transform data to correct object format
+        userDetails.card = { ...userDetails.creditCard }
+        let formatCard = {
+          ccNumber: userDetails.card.cardNumber,
+          ccName: userDetails.card.name,
+          ccExp:
+            String(userDetails.card.expireMonth) +
+            '/' +
+            String(userDetails.card.expireYear).slice(2, 4),
+          cvv: userDetails.card.ccv
+        }
+        delete userDetails.creditCard
+        userDetails.card = formatCard
+        userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
+          carModel: vehicle.model,
+          carPlate: vehicle.plateNumber
+        }))
+        delete userDetails.vehicles
+        this.initialState.updateUserDetails(userDetails)
+      } else if (result.userType === 'prossional') {
+        // TODO
+      }
+    }
   }
 
   render() {

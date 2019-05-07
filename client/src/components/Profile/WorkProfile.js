@@ -49,6 +49,9 @@ class WorkProfile extends Component {
     delete work.diff
     user.updateUserDetails(work)
     alert('Changes are saved successfully.')
+    this.setState({
+      diff: false
+    })
   }
 
   render() {

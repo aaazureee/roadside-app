@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import classNames from 'classnames'
+import { UserContext } from './Context'
+import api from './api'
 
 const style = theme => ({
   root: {
@@ -45,6 +47,8 @@ const style = theme => ({
 })
 
 class Login extends Component {
+  static contextType = UserContext
+
   state = {
     showPassword: false,
     email: '',
@@ -68,8 +72,48 @@ class Login extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
+    const { email, password, rememberMe } = this.state
+    const user = this.context
+    const { data: result } = await api.post('/auth/login', {
+      email,
+      password,
+      rememberMe
+    })
+
+    if (result.success) {
+      if (result.userType === 'customer') {
+        const { data: detailsResult } = await api.get('/customer/details')
+        const { data: userDetails } = detailsResult
+        // transform data to correct object format
+        userDetails.card = { ...userDetails.creditCard }
+        let formatCard = {
+          ccNumber: userDetails.card.cardNumber,
+          ccName: userDetails.card.name,
+          ccExp:
+            String(userDetails.card.expireMonth) +
+            '/' +
+            String(userDetails.card.expireYear).slice(2, 4),
+          cvv: userDetails.card.ccv
+        }
+        delete userDetails.creditCard
+        userDetails.card = formatCard
+        userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
+          carModel: vehicle.model,
+          carPlate: vehicle.plateNumber
+        }))
+        delete userDetails.vehicles
+
+        console.log('after log in', userDetails)
+        user.updateUserDetails(userDetails)
+        this.props.history.push('/')
+      } else if (result.userType === 'professional') {
+        // TODO professional
+      }
+    } else {
+      alert(result.error)
+    }
   }
 
   render() {

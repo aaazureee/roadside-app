@@ -38,6 +38,9 @@ class PaymentProfile extends Component {
     delete account.diff
     user.updateUserDetails({ account })
     alert('Changes are saved successfully.')
+    this.setState({
+      diff: false
+    })
   }
 
   render() {

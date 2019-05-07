@@ -25,15 +25,16 @@ import {
 import { grey } from '@material-ui/core/colors'
 import { Person, CreditCard } from '@material-ui/icons'
 import { UserContext } from '../Context'
+import api from '../api'
 
 const styles = theme => ({
   rightSide: {
     marginLeft: 'auto'
   },
   linkColor: {
-    color: theme.palette.primary.contrastText,
+    color: grey[300],
     '&:hover': {
-      color: theme.palette.secondary.light,
+      color: 'white',
       transition: theme.transitions.create(['color'])
     }
   },
@@ -44,7 +45,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit * 2
   },
   activeLink: {
-    color: theme.palette.secondary.light
+    color: 'white'
   },
   appBar: {
     zIndex: 999,
@@ -118,12 +119,11 @@ class StyledAppBar extends Component {
     this.setState({ open: false })
   }
 
-  handleLogout = event => {
+  handleLogout = async event => {
     this.handleClose(event)
-    setTimeout(() => {
-      localStorage.removeItem('user')
-      window.location.replace('/')
-    }, 500)
+    await api.get('/auth/logout')
+    localStorage.removeItem('user')
+    window.location.replace('/')
   }
 
   render() {

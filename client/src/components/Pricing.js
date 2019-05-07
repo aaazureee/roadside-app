@@ -16,6 +16,8 @@ import { Check } from '@material-ui/icons'
 import MuiLink from './MuiLink'
 import { Link } from 'react-router-dom'
 import { UserContext } from './Context'
+import api from './api'
+import { grey } from '@material-ui/core/colors'
 
 const style = theme => ({
   root: {
@@ -54,30 +56,33 @@ const style = theme => ({
     }
   },
   listItemText: {
-    padding: 0
+    padding: 0,
+    fontWeight: 500,
+    color: grey[600]
   }
 })
 
 class Pricing extends Component {
   static contextType = UserContext
 
-  selectPlan = planType => {
+  selectPlan = async planType => {
     const user = this.context
-    user.updateUserDetails({
-      plan: planType
+
+    //handle payment backend
+    const { data: result } = await api.put('/customer/plan', {
+      newPlan: planType
     })
-
-    // TODO handle payment backend
-
-    // if (planType === 'basic') {
-
-    // } else {
-
-    // }
-    alert(
-      `You are now subscribed to ${planType[0].toUpperCase() +
-        planType.slice(1)} plan`
-    )
+    if (result.success) {
+      alert(
+        `You are now subscribed to ${planType[0].toUpperCase() +
+          planType.slice(1)} plan`
+      )
+      user.updateUserDetails({
+        plan: planType
+      })
+    } else {
+      alert(result.error)
+    }
   }
 
   renderPlanButton = uiPlan => {
@@ -157,15 +162,15 @@ class Pricing extends Component {
     const plans = [
       {
         name: 'Basic Plan',
-        price: 'Flexible',
-        feature: ['Unlimited callouts', 'Flat tyres', 'Flat batteries']
+        price: 'Pay on demand',
+        feature: ['Service callouts', 'Flat tyres', 'Flat batteries']
       },
       {
         name: 'Premium Plan',
         price: 9.99,
         feature: [
           'All Basic Plan benefits',
-          'Fixed price for future requests',
+          'Unlimited services',
           'Exclusive promotional offers'
         ]
       }
@@ -208,7 +213,8 @@ class Pricing extends Component {
                         <ListItemText
                           primary={feature}
                           classes={{
-                            root: listItemText
+                            root: listItemText,
+                            primary: listItemText
                           }}
                         />
                       </ListItem>

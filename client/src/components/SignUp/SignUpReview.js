@@ -55,7 +55,6 @@ class SignUpReview extends Component {
 
     // remove unnecessary info before storing on client-side
     let { userDetails: extraUserDetails } = this.props
-    delete extraUserDetails.password
     const userDetails = { ...extraUserDetails }
 
     const {
@@ -75,37 +74,35 @@ class SignUpReview extends Component {
       plateNumber: x.carPlate
     }))
 
-    // const result = await api.post('/auth/register', {
-    //   email,
-    //   password,
-    //   userType
-    // })
+    const result = await api.post('/auth/register', {
+      email,
+      password,
+      userType
+    })
 
-    // if (result.data.success) {
-    //   await api.post('/customer/details', {
-    //     firstName,
-    //     lastName,
-    //     phone,
-    //     address
-    //   })
-    //   await api.post('/customer/credit-card', {
-    //     cardNumber: ccNumber,
-    //     name: ccName,
-    //     expireMonth: Number(ccExp.slice(0, 2)),
-    //     expireYear: Number('20' + ccExp.slice(3, 5)),
-    //     ccv: cvv
-    //   })
-    //   await api.post('/customer/vehicles', vehicleList)
-    //   console.log('register success')
-    //   user.updateUserDetails(userDetails) // update root user
-    //   history.push('/')
-    // } else {
-    //   alert(result.data.error)
-    //   window.location.replace('/signup')
-    // }
-    console.log('register cust success')
-    user.updateUserDetails(userDetails) // update root user
-    history.push('/')
+    if (result.data.success) {
+      await api.post('/customer/details', {
+        firstName,
+        lastName,
+        phone,
+        address
+      })
+      await api.post('/customer/credit-card', {
+        cardNumber: ccNumber,
+        name: ccName,
+        expireMonth: Number(ccExp.slice(0, 2)),
+        expireYear: Number('20' + ccExp.slice(3, 5)),
+        ccv: cvv
+      })
+      await api.post('/customer/vehicles', vehicleList)
+      delete userDetails.password
+      console.log('register success')
+      user.updateUserDetails(userDetails) // update root user
+      history.push('/')
+    } else {
+      alert(result.data.error)
+      window.location.replace('/signup')
+    }
   }
 
   redirectProfessional = async () => {
@@ -114,11 +111,11 @@ class SignUpReview extends Component {
 
     // remove unnecessary info before storing on client-side
     let { userDetails: extraUserDetails } = this.props
-    delete extraUserDetails.password
     delete extraUserDetails.customValue
     delete extraUserDetails.customSelected
     const userDetails = { ...extraUserDetails }
 
+    delete userDetails.password
     console.log('register prof success')
     user.updateUserDetails(userDetails) // update root user
     history.push('/')

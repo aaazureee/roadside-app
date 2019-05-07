@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { Grid, TextField, Button, Typography } from '@material-ui/core'
 import { UserContext } from '../Context'
+import MapsAddressProfile from './MapsAddressProfile'
+import axios from 'axios'
 
 class BasicProfile extends Component {
   static contextType = UserContext
@@ -19,6 +21,7 @@ class BasicProfile extends Component {
 
   state = {
     ...this.initState(),
+    suggestions: [],
     diff: false
   }
 
@@ -31,18 +34,46 @@ class BasicProfile extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
+    const geocodeURL =
+      'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json'
+
+    const { data: result } = await axios.get(geocodeURL, {
+      params: {
+        address: this.state.address,
+        key: process.env.REACT_APP_GOOGLE_MAPS_API
+      }
+    })
     const user = this.context
-    const basic = { ...this.state }
-    delete basic.diff
+    const { diff, suggestions, ...basic } = this.state
+
+    if (result.results) {
+      console.log('geocode result', result.results[0])
+      basic.lat = result.results[0].geometry.location.lat
+      basic.lng = result.results[0].geometry.location.lng
+    } else {
+      console.log('no result found!')
+    }
+
     console.log('basic', basic)
     user.updateUserDetails(basic)
     alert('Changes are saved successfully.')
+    this.setState({
+      diff: false
+    })
   }
 
   render() {
-    const { diff, firstName, lastName, email, phone, address } = this.state
+    const {
+      diff,
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      suggestions
+    } = this.state
 
     return (
       <Fragment>
@@ -93,15 +124,18 @@ class BasicProfile extends Component {
             </Grid>
 
             <Grid item xs={12}>
-              <TextField
-                required
-                id="address"
-                name="address"
-                label="Address"
-                type="text"
-                fullWidth
-                onChange={this.handleChange}
-                value={address}
+              <MapsAddressProfile
+                onChange={(address, suggestions) => {
+                  const { address: original } = this.initState()
+                  console.log('original', original)
+                  this.setState({
+                    address,
+                    suggestions,
+                    diff: address !== original
+                  })
+                }}
+                address={address}
+                suggestions={suggestions}
               />
             </Grid>
 

@@ -9,6 +9,8 @@ import {
 } from '@material-ui/core'
 
 import { Visibility, VisibilityOff } from '@material-ui/icons'
+import MapsAdress from './MapsAdress'
+import axios from 'axios'
 
 const style = theme => ({
   denseGrid: {
@@ -25,7 +27,8 @@ class CustomerBasicForm extends Component {
       email = '',
       address = '',
       phone = '',
-      password = ''
+      password = '',
+      suggestions = []
     } = this.props.userDetails
 
     return {
@@ -35,7 +38,8 @@ class CustomerBasicForm extends Component {
       email,
       address,
       phone,
-      password
+      password,
+      suggestions
     }
   }
 
@@ -53,9 +57,28 @@ class CustomerBasicForm extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
-    const { showPassword, ...newUserDetails } = this.state
+    const { showPassword, suggestions, ...newUserDetails } = this.state
+
+    const geocodeURL =
+      'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json'
+
+    console.log('Address', this.state.address)
+    const { data: result } = await axios.get(geocodeURL, {
+      params: {
+        address: this.state.address,
+        key: process.env.REACT_APP_GOOGLE_MAPS_API
+      }
+    })
+    if (result.results) {
+      console.log('geocode result', result.results[0])
+      newUserDetails.lat = result.results[0].geometry.location.lat
+      newUserDetails.lng = result.results[0].geometry.location.lng
+    } else {
+      console.log('no result found!')
+    }
+
     this.props.updateUserDetails(newUserDetails)
     this.props.handleNext()
   }
@@ -106,15 +129,15 @@ class CustomerBasicForm extends Component {
           </Grid>
 
           <Grid item xs={12} className={denseGrid}>
-            <TextField
-              required
-              id="address"
-              name="address"
-              label="Address"
-              type="text"
-              fullWidth
-              onChange={this.handleChange}
-              value={this.state.address}
+            <MapsAdress
+              onChange={(address, suggestions) => {
+                this.setState({
+                  address,
+                  suggestions
+                })
+              }}
+              address={this.state.address}
+              suggestions={this.state.suggestions}
             />
           </Grid>
 

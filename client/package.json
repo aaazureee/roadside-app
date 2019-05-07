@@ -5,6 +5,7 @@
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "axios": "^0.18.0",
+    "downshift": "^3.2.10",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-router-dom": "^4.4.0",
@@ -12,7 +13,7 @@
     "source-map-explorer": "^1.7.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "analyze": "source-map-explorer build/static/js/*.js",
     "test": "react-scripts test",
