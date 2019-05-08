@@ -76,10 +76,16 @@ export class CalloutService {
 
   async getCalloutsInRange(professionalId: string): Promise<DtoCalloutInfo[]> {
     const calloutMatches = await this.entityManager.find(CalloutMatching, {
-      where: {
-        professionalId: professionalId,
-        accepted: Not(false),
-      },
+      where: [
+        {
+          professionalId,
+          accepted: true,
+        },
+        {
+          professionalId,
+          accepted: null,
+        },
+      ],
       relations: ['callout', 'callout.customer', 'callout.vehicle'],
     });
 
@@ -112,7 +118,7 @@ export class CalloutService {
   ) {
     await this.entityManager.update(
       CalloutMatching,
-      { calloutId: calloutId },
+      { calloutId: calloutId, professionalId },
       { accepted: true, proposedPrice: proposedPrice },
     );
   }

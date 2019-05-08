@@ -119,7 +119,7 @@ class Login extends Component {
           bsb: userDetails.bsb,
           accountNumber: userDetails.accountNumber
         }
-        userDetails.workingRadius = userDetails.workingRange
+        userDetails.workingRadius = userDetails.workingRange / 1000
 
         delete userDetails.workingRange
         delete userDetails.bsb

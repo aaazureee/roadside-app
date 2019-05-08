@@ -31,7 +31,8 @@ const styles = theme => ({
     fontWeight: 500
   },
   secondaryText: {
-    fontWeight: 400
+    fontWeight: 400,
+    color: 'rgba(0, 0, 0, 0.60)'
   },
   paper: {
     marginTop: 8,
@@ -92,7 +93,7 @@ class ResponseList extends Component {
                           <span
                             style={{
                               fontWeight: 400,
-                              color: 'rgba(0, 0, 0, 0.46)'
+                              color: 'rgba(0, 0, 0, 0.60)'
                             }}
                           >
                             Roadside Professional

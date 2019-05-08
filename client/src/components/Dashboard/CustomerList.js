@@ -23,9 +23,10 @@ import {
   InputLabel,
   InputAdornment
 } from '@material-ui/core'
-
 import { Person } from '@material-ui/icons'
 import { grey } from '@material-ui/core/colors'
+import { UserContext } from '../Context'
+import api from '../api'
 
 const styles = theme => ({
   avatar: {
@@ -41,7 +42,8 @@ const styles = theme => ({
     fontWeight: 500
   },
   secondaryText: {
-    fontWeight: 400
+    fontWeight: 400,
+    color: 'rgba(0, 0, 0, 0.60)'
   },
   paper: {
     marginTop: 8,
@@ -59,6 +61,7 @@ const styles = theme => ({
   },
   gridItem: {
     minWidth: 400,
+    width: '100%',
     marginLeft: 0,
     [theme.breakpoints.up(890)]: {
       flexBasis: '50%'
@@ -66,20 +69,63 @@ const styles = theme => ({
   }
 })
 class CustomerList extends Component {
+  static contextType = UserContext
   // TODO post API to get list => map to render
   state = {
     open: false,
-    price: ''
+    price: '',
+    isLoading: true,
+    calloutId: ''
+  }
+
+  async componentDidMount() {
+    const { data: result } = await api.get('/callout/professional')
+    if (result.success) {
+      console.log('nearby callout data', result.data)
+      const { customerConfirmed, nearbyCallouts } = result.data
+      this.props.handleInnerChange({ customerConfirmed })
+      this.setState({
+        nearbyCallouts,
+        isLoading: false
+      })
+    } else {
+      alert(result.error)
+    }
   }
 
   handleDecline = something => {}
 
-  handleAccept = event => {
+  handleAccept = async (event, calloutId, price) => {
     event.preventDefault()
+    const { data: result } = await api.post(
+      '/callout/professional/accept-callout',
+      {
+        id: calloutId,
+        price: Number(price)
+      }
+    )
+    if (result.success) {
+      console.log(result)
+      this.setState(state => ({
+        nearbyCallouts: state.nearbyCallouts.map(callout => {
+          if (callout.id === calloutId) {
+            return {
+              ...callout,
+              price
+            }
+          } else {
+            return callout
+          }
+        }),
+        open: false
+      }))
+    } else {
+      console.log(result.error)
+    }
   }
 
-  handleOpen = () => {
-    this.setState({ open: true })
+  handleOpen = calloutId => {
+    this.setState({ open: true, calloutId })
   }
 
   handleClose = () => {
@@ -106,7 +152,12 @@ class CustomerList extends Component {
       }
     } = this.props
 
-    const { price } = this.state
+    const { price, nearbyCallouts, isLoading } = this.state
+
+    if (isLoading)
+      return (
+        <Typography variant="body2">Loading nearby customers...</Typography>
+      )
 
     return (
       <Fragment>
@@ -114,163 +165,190 @@ class CustomerList extends Component {
           Nearby callout request
         </Typography>
         <Fragment>
-          <Typography varian="body2">Loading nearby customers...</Typography>
           <Grid container spacing={16}>
-            <Grid item className={gridItem}>
-              <Paper className={paper}>
-                <List disablePadding>
-                  <ListItem disableGutters>
-                    <ListItemText
-                      primary={
-                        <div>
-                          Hieu Chu •{' '}
-                          <span
-                            style={{
-                              fontWeight: 400,
-                              color: 'rgba(0, 0, 0, 0.46)'
-                            }}
-                          >
-                            Basic Customer
-                          </span>
-                        </div>
-                      }
-                      secondary={'Relative distance: 0.8km'}
-                      classes={{
-                        primary: primaryText,
-                        secondary: secondaryText
-                      }}
-                    />
-                    <ListItemIcon
-                      style={{
-                        marginRight: 0
-                      }}
-                    >
-                      <Avatar className={avatar}>
-                        <Person className={accountIcon} />
-                      </Avatar>
-                    </ListItemIcon>
-                  </ListItem>
-                </List>
-                <Fragment>
-                  <Fragment />
-                  <Typography variant="body1" className={bodyText}>
-                    <span
-                      style={{
-                        fontWeight: 500
-                      }}
-                    >
-                      Current location:
-                    </span>{' '}
-                    Keira Street, Wollongong
-                  </Typography>
-                  <Typography variant="body1" className={bodyText}>
-                    <span
-                      style={{
-                        fontWeight: 500
-                      }}
-                    >
-                      Vehicle:
-                    </span>{' '}
-                    Car model 1 - Car plate 1
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    className={bodyText}
-                    style={{
-                      marginBottom: 4
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontWeight: 500
-                      }}
-                    >
-                      Description:
-                    </span>
-                  </Typography>
-                  <Typography variant="body1" className={bodyText}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    pretium ipsum dolor, a bibendum tortor malesuada eget.
-                    Vivamus tempor vehicula orci, in maximus mi commodo a. Donec
-                    tincidunt sed sem eu suscipit.
-                  </Typography>
-                </Fragment>
+            {nearbyCallouts.map((callout, idx) => {
+              const {
+                id: calloutId,
+                customerName,
+                customerId,
+                vehicle,
+                description,
+                location: { coordinate },
+                address,
+                plan,
+                price: fetchedPrice
+              } = callout
 
-                <Grid container justify="flex-end">
-                  <Grid item>
-                    <Button
-                      color="primary"
-                      onClick={() => this.handleDecline()}
-                    >
-                      Decline
-                    </Button>
-                    <Button color="primary" onClick={this.handleOpen}>
-                      Accept
-                    </Button>
-                  </Grid>
-                </Grid>
-
-                <Dialog
-                  open={this.state.open}
-                  onClose={this.handleClose}
-                  aria-labelledby="form-dialog-title"
-                  classes={{
-                    paper: dialogPaper
-                  }}
-                >
-                  <form onSubmit={this.handleAccept}>
-                    <DialogTitle id="form-dialog-title">
-                      Provide quote
-                    </DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        To provide service for this customer, please enter your
-                        service price.
-                      </DialogContentText>
-                      <FormControl
-                        fullWidth
-                        required
+              return (
+                <Grid item className={gridItem} key={calloutId}>
+                  <Paper className={paper}>
+                    <List disablePadding>
+                      <ListItem disableGutters>
+                        <ListItemText
+                          primary={
+                            <div>
+                              {customerName} •{' '}
+                              <span
+                                style={{
+                                  fontWeight: 400,
+                                  color: 'rgba(0, 0, 0, 0.60)'
+                                }}
+                              >
+                                {plan[0].toUpperCase() + plan.slice(1)} Customer
+                              </span>
+                            </div>
+                          }
+                          secondary={'Relative distance: 0.8km'}
+                          classes={{
+                            primary: primaryText,
+                            secondary: secondaryText
+                          }}
+                        />
+                        <ListItemIcon
+                          style={{
+                            marginRight: 0
+                          }}
+                        >
+                          <Avatar className={avatar}>
+                            <Person className={accountIcon} />
+                          </Avatar>
+                        </ListItemIcon>
+                      </ListItem>
+                    </List>
+                    <Fragment>
+                      <Fragment />
+                      <Typography variant="body1" className={bodyText}>
+                        <span
+                          style={{
+                            fontWeight: 500
+                          }}
+                        >
+                          Current location:
+                        </span>{' '}
+                        {address}
+                      </Typography>
+                      <Typography variant="body1" className={bodyText}>
+                        <span
+                          style={{
+                            fontWeight: 500
+                          }}
+                        >
+                          Vehicle:
+                        </span>{' '}
+                        {`${vehicle.model} - ${vehicle.plateNumber}`}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        className={bodyText}
                         style={{
-                          marginTop: 8
+                          marginBottom: 4
                         }}
                       >
-                        <InputLabel htmlFor="price">Price</InputLabel>
-                        <Input
-                          required
-                          autoFocus
-                          id="price"
-                          name="price"
-                          startAdornment={
-                            <InputAdornment position="start">$</InputAdornment>
-                          }
-                          inputProps={{
-                            pattern: '\\d+',
-                            title: 'Please enter a numeric value.',
-                            autoComplete: 'off'
+                        <span
+                          style={{
+                            fontWeight: 500
                           }}
-                          type="text"
-                          onChange={this.handlePriceChange}
-                        />
-                      </FormControl>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={this.handleClose} color="primary">
-                        Cancel
-                      </Button>
-                      <Button color="primary" type="submit">
-                        Submit
-                      </Button>
-                    </DialogActions>
-                  </form>
-                </Dialog>
-              </Paper>
-            </Grid>
-            <Grid item className={gridItem}>
-              <Paper className={paper}>123</Paper>
-            </Grid>
-            <Grid item className={gridItem}>
-              <Paper className={paper}>456</Paper>
-            </Grid>
+                        >
+                          Description:
+                        </span>
+                      </Typography>
+                      <Typography variant="body1" className={bodyText}>
+                        {description}
+                      </Typography>
+                    </Fragment>
+
+                    <Grid container justify="flex-end">
+                      <Grid item>
+                        {!fetchedPrice ? (
+                          <Fragment>
+                            <Button
+                              color="primary"
+                              onClick={() => this.handleDecline()}
+                            >
+                              Decline
+                            </Button>
+                            <Button
+                              color="primary"
+                              onClick={() => this.handleOpen(calloutId)}
+                            >
+                              Accept
+                            </Button>
+                          </Fragment>
+                        ) : (
+                          <Typography variant="body1" className={bodyText}>
+                            <span
+                              style={{
+                                fontWeight: 500
+                              }}
+                            >
+                              Your proposed price:
+                            </span>{' '}
+                            ${fetchedPrice}
+                          </Typography>
+                        )}
+                      </Grid>
+                    </Grid>
+
+                    <Dialog
+                      open={this.state.open}
+                      onClose={this.handleClose}
+                      classes={{
+                        paper: dialogPaper
+                      }}
+                    >
+                      <form
+                        onSubmit={evt =>
+                          this.handleAccept(evt, this.state.calloutId, price)
+                        }
+                      >
+                        <DialogTitle>Provide quote {calloutId}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            To provide service for this customer, please enter
+                            your service price.
+                          </DialogContentText>
+                          <FormControl
+                            fullWidth
+                            required
+                            style={{
+                              marginTop: 8
+                            }}
+                          >
+                            <InputLabel htmlFor="price">Price</InputLabel>
+                            <Input
+                              required
+                              autoFocus
+                              id="price"
+                              name="price"
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  $
+                                </InputAdornment>
+                              }
+                              inputProps={{
+                                pattern: '\\d+',
+                                title: 'Please enter a numeric value.',
+                                autoComplete: 'off'
+                              }}
+                              type="text"
+                              onChange={this.handlePriceChange}
+                            />
+                          </FormControl>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={this.handleClose} color="primary">
+                            Cancel
+                          </Button>
+                          <Button color="primary" type="submit">
+                            Submit
+                          </Button>
+                        </DialogActions>
+                      </form>
+                    </Dialog>
+                  </Paper>
+                </Grid>
+              )
+            })}
           </Grid>
         </Fragment>
       </Fragment>

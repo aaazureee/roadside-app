@@ -6,6 +6,7 @@ import { UserContext } from '../Context'
 import MakeRequest from './MakeRequest'
 import ResponseList from './ResponseList'
 import CustomerList from './CustomerList'
+import api from '../api'
 
 const style = theme => ({
   root: {
@@ -31,7 +32,8 @@ class Dashboard extends Component {
   static contextType = UserContext
   state = {
     value: 0,
-    loadingResponse: sessionStorage.getItem('loadingResponse') || false
+    isLoading: this.context.userDetails.userType === 'customer',
+    customerConfirmed: false
   }
 
   handleTabChange = (event, value) => {
@@ -44,8 +46,27 @@ class Dashboard extends Component {
     })
   }
 
+  async componentDidMount() {
+    const { userType } = this.context.userDetails
+    if (userType === 'customer') {
+      const { data: result } = await api.get('/callout/customer')
+      if (result.success) {
+        const { hasActiveCallout } = result.data
+        this.setState({
+          loadingResponse: hasActiveCallout,
+          isLoading: false
+        })
+      } else {
+        alert(result.error)
+      }
+    }
+  }
+
   renderRequestView = () => {
-    const { loadingResponse } = this.state
+    const { loadingResponse, isLoading } = this.state
+    if (isLoading) {
+      return <Typography variant="body2">Loading...</Typography>
+    }
     const user = this.context
     const { userType } = user.userDetails
     if (userType === 'customer') {
@@ -55,7 +76,7 @@ class Dashboard extends Component {
         return <ResponseList />
       }
     } else if (userType === 'professional') {
-      return <CustomerList />
+      return <CustomerList handleInnerChange={this.handleInnerChange} />
     }
   }
 

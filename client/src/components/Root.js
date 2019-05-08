@@ -41,6 +41,17 @@ class Root extends Component {
           )
         }
       )
+    },
+    resetUserDetails: () => {
+      this.setState(
+        state => ({
+          ...state,
+          userDetails: {}
+        }),
+        () => {
+          localStorage.removeItem('user')
+        }
+      )
     }
   }
 
@@ -86,13 +97,15 @@ class Root extends Component {
           bsb: userDetails.bsb,
           accountNumber: userDetails.accountNumber
         }
-        userDetails.workingRadius = userDetails.workingRange
+        userDetails.workingRadius = userDetails.workingRange / 1000
 
         delete userDetails.workingRange
         delete userDetails.bsb
         delete userDetails.accountNumber
         console.log('after', userDetails)
       }
+    } else {
+      this.initialState.resetUserDetails()
     }
   }
 

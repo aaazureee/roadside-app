@@ -8,15 +8,12 @@ import {
   InputLabel,
   Select,
   Input,
-  MenuItem,
-  FormHelperText,
   Button
 } from '@material-ui/core'
-import { grey } from '@material-ui/core/colors'
 import { UserContext } from '../Context'
 import axios from 'axios'
 import MapsCurrentRequest from './MapsCurrentRequest'
-import ResponseList from './ResponseList'
+import api from '../api'
 
 const style = theme => ({
   root: {
@@ -118,11 +115,44 @@ class MakeRequest extends Component {
     }))
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
-    const { handleInnerChange } = this.props
-    handleInnerChange({ loadingResponse: true })
-    sessionStorage.setItem('loadingResponse', true)
+    const geocodeURL =
+      'https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/geocode/json'
+
+    const { data: geocodeResult } = await axios.get(geocodeURL, {
+      params: {
+        address: this.state.address,
+        key: process.env.REACT_APP_GOOGLE_MAPS_API
+      }
+    })
+
+    if (geocodeResult.results) {
+      console.log('geocode result', geocodeResult.results[0])
+      const { lat, lng } = geocodeResult.results[0].geometry.location
+      const { address, vehicleId, description } = this.state
+      const { data: result } = await api.post('/callout/customer/create', {
+        location: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        },
+        address,
+        vehicleId,
+        description
+      })
+
+      if (result.success) {
+        console.log(result)
+        const { handleInnerChange } = this.props
+        handleInnerChange({ loadingResponse: true })
+        // sessionStorage.setItem('loadingResponse', true)
+      } else {
+        alert(result.error)
+      }
+    } else {
+      alert('no result found!')
+      return
+    }
   }
 
   render() {
