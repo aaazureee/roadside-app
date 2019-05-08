@@ -51,7 +51,7 @@ class WorkProfile extends Component {
 
     const { workingRadius, abn } = work
     const { data: resultRes } = await api.post('/professional/details', {
-      workingRange: workingRadius,
+      workingRange: Number(workingRadius) * 1000,
       abn
     })
 

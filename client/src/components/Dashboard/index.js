@@ -15,9 +15,10 @@ const style = theme => ({
   },
   paper: {
     padding: theme.spacing.unit * 2,
+    width: '100%',
     [theme.breakpoints.up(600 + theme.spacing.unit * 2 * 2)]: {
       padding: theme.spacing.unit * 3,
-      width: '100%'
+      width: '85%'
     }
   },
   tab: {

@@ -45,10 +45,10 @@ const styles = theme => ({
     // color: 'black'
   },
   gridItem: {
-    minWidth: 400,
+    minWidth: 370,
     width: '100%',
     marginLeft: 0,
-    [theme.breakpoints.up(890)]: {
+    [theme.breakpoints.up(957)]: {
       flexBasis: '50%'
     }
   }

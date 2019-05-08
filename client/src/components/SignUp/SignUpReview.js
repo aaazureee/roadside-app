@@ -144,7 +144,7 @@ class SignUpReview extends Component {
         phone,
         address,
         abn,
-        workingRange: workingRadius,
+        workingRange: Number(workingRadius) * 1000,
         bsb,
         accountNumber,
         location: {

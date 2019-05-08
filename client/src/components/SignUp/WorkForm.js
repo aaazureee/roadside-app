@@ -30,7 +30,7 @@ const style = theme => ({
   }
 })
 
-class AccountForm extends Component {
+class WorkForm extends Component {
   initState = () => {
     let {
       workingRadius = '',
@@ -244,4 +244,4 @@ class AccountForm extends Component {
   }
 }
 
-export default withStyles(style)(AccountForm)
+export default withStyles(style)(WorkForm)
