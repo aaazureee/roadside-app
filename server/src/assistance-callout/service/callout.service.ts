@@ -126,7 +126,7 @@ export class CalloutService {
   async declineCallout(professionalId: string, calloutId: string) {
     await this.entityManager.update(
       CalloutMatching,
-      { calloutId: calloutId },
+      { calloutId, professionalId },
       { accepted: false },
     );
   }

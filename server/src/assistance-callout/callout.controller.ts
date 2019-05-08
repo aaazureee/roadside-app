@@ -20,6 +20,7 @@ import { DtoAcceptCallout } from './dto/accept-callout.dto';
 import { DtoChooseProfessional } from './dto/choose-professional.dto';
 import { DtoCustomerCalloutResponse } from './dto/customer-callout-response.dto';
 import { DtoProfessionalCalloutResponse } from './dto/professional-callout-response.dto';
+import { DtoDeclineCallout } from './dto/decline-callout.dto';
 
 @Controller('callout')
 export class CalloutController {
@@ -159,6 +160,20 @@ export class CalloutController {
       data.id,
       data.price,
     );
+
+    return new ResponseSuccess({});
+  }
+
+  @Post('professional/decline-callout')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('professional')
+  async declineCalloutRequest(
+    @Body() data: DtoDeclineCallout,
+    @Session() session: ISession,
+  ) {
+    const { userId } = session.user;
+
+    await this.calloutService.declineCallout(userId, data.id);
 
     return new ResponseSuccess({});
   }
