@@ -133,16 +133,16 @@ export class CalloutController {
     return new ResponseSuccess(result);
   }
 
-  @Get('professional/available-callouts')
-  @UseGuards(RoleGuard)
-  @RequiresRoles('professional')
-  async getCalloutsInRange(@Session() session: ISession) {
-    const { userId } = session.user;
+  //   @Get('professional/available-callouts')
+  //   @UseGuards(RoleGuard)
+  //   @RequiresRoles('professional')
+  //   async getCalloutsInRange(@Session() session: ISession) {
+  //     const { userId } = session.user;
 
-    const result = await this.calloutService.getCalloutsInRange(userId);
+  //     const result = await this.calloutService.getCalloutsInRange(userId);
 
-    return new ResponseSuccess(result);
-  }
+  //     return new ResponseSuccess(result);
+  //   }
 
   @Post('professional/accept-callout')
   @UseGuards(RoleGuard)

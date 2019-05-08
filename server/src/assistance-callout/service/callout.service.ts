@@ -80,7 +80,6 @@ export class CalloutService {
         professionalId: professionalId,
       },
       relations: ['callout', 'callout.customer', 'callout.vehicle'],
-      select: ['callout'],
     });
 
     const calloutInfos: DtoCalloutInfo[] = calloutMatches
@@ -274,7 +273,7 @@ export class CalloutService {
     const [result, count] = await this.entityManager
       .createQueryBuilder(Callout, 'callout')
       .where(
-        'callout.customerId = :customerId AND callout.isCompleted = false)',
+        'callout.customerId = :customerId AND callout.isCompleted = false',
         {
           customerId,
         },
