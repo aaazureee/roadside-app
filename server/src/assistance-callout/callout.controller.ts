@@ -106,6 +106,7 @@ export class CalloutController {
           customerName: currentCallout.customer.fullName,
           description: currentCallout.description,
           vehicle: currentCallout.vehicle,
+          plan: currentCallout.customer.plan,
         },
       };
 
@@ -194,5 +195,18 @@ export class CalloutController {
       data.id,
     );
     return new ResponseSuccess({});
+  }
+
+  @Post('customer/complete')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('customer')
+  async customerCompleteCallout(@Session() session: ISession) {
+    const { userId } = session.user;
+
+    const activeCallout = await this.calloutService.customerGetCurrentActiveCallout(
+      userId,
+    );
+
+    await this.calloutService.completeCallout(activeCallout.id);
   }
 }

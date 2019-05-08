@@ -78,6 +78,7 @@ export class CalloutService {
     const calloutMatches = await this.entityManager.find(CalloutMatching, {
       where: {
         professionalId: professionalId,
+        accepted: Not(false),
       },
       relations: ['callout', 'callout.customer', 'callout.vehicle'],
     });
@@ -96,6 +97,8 @@ export class CalloutService {
           description: callout.description,
           location: callout.location,
           address: callout.address,
+          plan: callout.customer.plan,
+          price: match.proposedPrice,
         };
       });
 
@@ -228,11 +231,10 @@ export class CalloutService {
   //   return calloutInfos;
   // }
 
-  async professionalCompleteCallout(professionalId: string, calloutId: string) {
+  async completeCallout(calloutId: string) {
     const callout = await this.entityManager.findOneOrFail(Callout, {
       where: {
         id: calloutId,
-        acceptedProfessionalId: professionalId,
         isCompleted: false,
       },
       relations: ['acceptedProfessional'],
