@@ -11,6 +11,7 @@ import { Customer } from 'src/user/entity/customer.entity';
 import { Point } from 'geojson';
 import { Professional } from 'src/user/entity/professional.entity';
 import { Vehicle } from 'src/user/entity/vehicle.entity';
+import { CalloutState } from '../callout-state.enum';
 
 @Entity()
 export class Callout {
@@ -41,6 +42,9 @@ export class Callout {
   acceptedProfessionalId: string;
 
   @Column({ nullable: true })
+  price: number;
+
+  @Column({ nullable: true })
   description: string;
 
   @ManyToOne(type => Vehicle)
@@ -52,4 +56,7 @@ export class Callout {
 
   @CreateDateColumn()
   readonly createdDate: Date;
+
+  @Column({ type: 'enum', enum: CalloutState, default: CalloutState.SUBMITTED })
+  state: CalloutState;
 }

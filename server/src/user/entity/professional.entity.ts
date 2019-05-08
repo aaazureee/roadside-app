@@ -44,4 +44,11 @@ export class Professional {
 
   @Column()
   lastName: string;
+
+  @Column({ default: false })
+  busy: boolean;
+
+  get fullName() {
+    return this.firstName + ' ' + this.lastName;
+  }
 }

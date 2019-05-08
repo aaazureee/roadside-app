@@ -17,4 +17,10 @@ export class CalloutMatching {
   @ManyToOne(type => Professional)
   @JoinColumn({ name: 'professionalId' })
   professional: Professional;
+
+  @Column('boolean', { default: null, nullable: true })
+  accepted: boolean;
+
+  @Column({ nullable: true })
+  proposedPrice: number;
 }
