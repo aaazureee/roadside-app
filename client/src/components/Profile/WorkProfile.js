@@ -10,6 +10,7 @@ import {
   FormHelperText
 } from '@material-ui/core'
 import { UserContext } from '../Context'
+import api from '../api'
 
 class WorkProfile extends Component {
   static contextType = UserContext
@@ -41,17 +42,28 @@ class WorkProfile extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
     console.log('work', this.state)
     const user = this.context
     const work = { ...this.state }
     delete work.diff
-    user.updateUserDetails(work)
-    alert('Changes are saved successfully.')
-    this.setState({
-      diff: false
+
+    const { workingRadius, abn } = work
+    const { data: resultRes } = await api.post('/professional/details', {
+      workingRange: workingRadius,
+      abn
     })
+
+    if (resultRes.success) {
+      user.updateUserDetails(work)
+      alert('Changes are saved successfully.')
+      this.setState({
+        diff: false
+      })
+    } else {
+      console.log(resultRes.error)
+    }
   }
 
   render() {

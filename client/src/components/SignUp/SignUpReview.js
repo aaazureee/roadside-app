@@ -149,7 +149,7 @@ class SignUpReview extends Component {
         accountNumber,
         location: {
           type: 'Point',
-          coordinates: [lat, lng]
+          coordinates: [lng, lat]
         }
       })
 

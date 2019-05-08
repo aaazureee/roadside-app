@@ -55,7 +55,7 @@ const styles = theme => ({
   },
   avatar: {
     color: grey[200],
-    background: '#AA47BC',
+    background: theme.palette.primary.main,
     width: 32,
     height: 32
   },

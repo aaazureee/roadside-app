@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Paper, Tabs, Tab, Typography } from '@material-ui/core'
-import MakeRequest from './MakeRequest'
-import HandleRequest from './HandleRequest'
 import classNames from 'classnames'
 import { UserContext } from '../Context'
+import MakeRequest from './MakeRequest'
+import ResponseList from './ResponseList'
+import CustomerList from './CustomerList'
 
 const style = theme => ({
   root: {
@@ -28,21 +29,32 @@ const style = theme => ({
 class Dashboard extends Component {
   static contextType = UserContext
   state = {
-    value: 0
+    value: 0,
+    loadingResponse: sessionStorage.getItem('loadingResponse') || false
   }
 
   handleTabChange = (event, value) => {
     this.setState({ value })
   }
 
+  handleInnerChange = newChange => {
+    this.setState({
+      ...newChange
+    })
+  }
+
   renderRequestView = () => {
-    const { value } = this.state
+    const { loadingResponse } = this.state
     const user = this.context
     const { userType } = user.userDetails
     if (userType === 'customer') {
-      return <MakeRequest />
+      if (!loadingResponse) {
+        return <MakeRequest handleInnerChange={this.handleInnerChange} />
+      } else if (loadingResponse) {
+        return <ResponseList />
+      }
     } else if (userType === 'professional') {
-      return <HandleRequest />
+      return <CustomerList />
     }
   }
 

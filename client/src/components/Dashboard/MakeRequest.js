@@ -16,6 +16,7 @@ import { grey } from '@material-ui/core/colors'
 import { UserContext } from '../Context'
 import axios from 'axios'
 import MapsCurrentRequest from './MapsCurrentRequest'
+import ResponseList from './ResponseList'
 
 const style = theme => ({
   root: {
@@ -101,7 +102,6 @@ class MakeRequest extends Component {
     isLoading: true,
     vehicle: '',
     description: '',
-    loadingResponse: false,
     vehicleId: ''
   }
 
@@ -120,9 +120,9 @@ class MakeRequest extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
-    this.setState({
-      loadingResponse: true
-    })
+    const { handleInnerChange } = this.props
+    handleInnerChange({ loadingResponse: true })
+    sessionStorage.setItem('loadingResponse', true)
   }
 
   render() {
@@ -141,8 +141,7 @@ class MakeRequest extends Component {
       description,
       isLoading,
       vehicleList,
-      vehicle,
-      loadingResponse
+      vehicle
     } = this.state
 
     console.log(this.state)
@@ -174,53 +173,35 @@ class MakeRequest extends Component {
                         }}
                         address={address}
                         suggestions={suggestions}
-                        loadingResponse={loadingResponse}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      {!loadingResponse ? (
-                        <FormControl fullWidth>
-                          <InputLabel shrink htmlFor="vehicle">
-                            Vehicle
-                          </InputLabel>
-                          <Select
-                            native
-                            required
-                            value={vehicle}
-                            onChange={this.handleVehicleChange}
-                            input={
-                              <Input name="vehicle" id="vehicle" required />
-                            }
-                            inputProps={{
-                              name: 'vehicle',
-                              id: 'vehicle'
-                            }}
-                            classes={{
-                              select: noFocus
-                            }}
-                          >
-                            <option value="">None</option>
-                            {vehicleList.map((vehicle, idx) => (
-                              <option value={vehicle.details} key={idx}>
-                                {vehicle.details}
-                              </option>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      ) : (
-                        <TextField
+                      <FormControl fullWidth>
+                        <InputLabel shrink htmlFor="vehicle">
+                          Vehicle
+                        </InputLabel>
+                        <Select
+                          native
                           required
-                          id="vehicle"
-                          name="vehicle"
-                          label="Vehicle"
-                          type="text"
-                          fullWidth
                           value={vehicle}
-                          InputProps={{
-                            readOnly: true
+                          onChange={this.handleVehicleChange}
+                          input={<Input name="vehicle" id="vehicle" required />}
+                          inputProps={{
+                            name: 'vehicle',
+                            id: 'vehicle'
                           }}
-                        />
-                      )}
+                          classes={{
+                            select: noFocus
+                          }}
+                        >
+                          <option value="">None</option>
+                          {vehicleList.map((vehicle, idx) => (
+                            <option value={vehicle.details} key={idx}>
+                              {vehicle.details}
+                            </option>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
@@ -239,44 +220,18 @@ class MakeRequest extends Component {
                         InputLabelProps={{
                           shrink: true
                         }}
-                        InputProps={{
-                          readOnly: loadingResponse
-                        }}
                       />
                     </Grid>
-                    {!loadingResponse && (
-                      <Grid item container justify="flex-end" xs={12}>
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          type="submit"
-                        >
-                          Submit
-                        </Button>
-                      </Grid>
-                    )}
+                    <Grid item container justify="flex-end" xs={12}>
+                      <Button color="primary" variant="contained" type="submit">
+                        Submit
+                      </Button>
+                    </Grid>
                   </Grid>
                 </form>
               </Grid>
             </Grid>
           </Grid>
-
-          {loadingResponse && (
-            <Grid
-              item
-              style={{
-                width: 450,
-                border: '2px solid black'
-              }}
-            >
-              <Typography variant="h6" color="primary" gutterBottom>
-                Available Professionals
-              </Typography>
-              <div>
-                <Typography varian="body2">Waiting for responses...</Typography>
-              </div>
-            </Grid>
-          )}
         </Grid>
       </Fragment>
     )

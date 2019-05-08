@@ -3,6 +3,7 @@ import { Grid, TextField, Button, Typography } from '@material-ui/core'
 import { UserContext } from '../Context'
 import MapsAddressProfile from './MapsAddressProfile'
 import axios from 'axios'
+import api from '../api'
 
 class BasicProfile extends Component {
   static contextType = UserContext
@@ -46,7 +47,7 @@ class BasicProfile extends Component {
       }
     })
     const user = this.context
-    const { userType, firstName, lastName, phone, address } = user.userDetails
+    const { userType } = user.userDetails
     const { diff, suggestions, ...basic } = this.state
 
     if (result.results) {
@@ -54,23 +55,49 @@ class BasicProfile extends Component {
       basic.lat = result.results[0].geometry.location.lat
       basic.lng = result.results[0].geometry.location.lng
     } else {
-      console.log('no result found!')
+      alert('no result found!')
+      return
     }
 
     console.log('basic', basic)
     if (userType === 'customer') {
-      const { data: updateRes } = await axios.push('/customer/details', {
+      const { firstName, lastName, phone, address } = basic
+      const { data: updateRes } = await api.post('/customer/details', {
         firstName,
         lastName,
         phone,
         address
       })
-
-      user.updateUserDetails(basic)
-      alert('Changes are saved successfully.')
-      this.setState({
-        diff: false
+      if (updateRes.success) {
+        user.updateUserDetails(basic)
+        alert('Changes are saved successfully.')
+        this.setState({
+          diff: false
+        })
+      } else {
+        alert(updateRes.error)
+      }
+    } else if (userType === 'professional') {
+      const { firstName, lastName, phone, address, lat, lng } = basic
+      const { data: updateRes } = await api.post('/professional/details', {
+        firstName,
+        lastName,
+        phone,
+        address,
+        location: {
+          type: 'Point',
+          coordinates: [lng, lat]
+        }
       })
+      if (updateRes.success) {
+        user.updateUserDetails(basic)
+        alert('Changes are saved successfully.')
+        this.setState({
+          diff: false
+        })
+      } else {
+        alert(updateRes.error)
+      }
     }
   }
 

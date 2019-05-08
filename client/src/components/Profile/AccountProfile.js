@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Grid, TextField, Button, Typography } from '@material-ui/core'
 import { UserContext } from '../Context'
+import api from '../api'
 
 class PaymentProfile extends Component {
   static contextType = UserContext
@@ -30,17 +31,29 @@ class PaymentProfile extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
     console.log('account', this.state)
     const user = this.context
     const account = { ...this.state }
     delete account.diff
-    user.updateUserDetails({ account })
-    alert('Changes are saved successfully.')
-    this.setState({
-      diff: false
+
+    const { bsb, accountNumber } = account
+
+    const { data: resultRes } = await api.post('/professional/details', {
+      bsb,
+      accountNumber
     })
+
+    if (resultRes.success) {
+      user.updateUserDetails({ account })
+      alert('Changes are saved successfully.')
+      this.setState({
+        diff: false
+      })
+    } else {
+      alert(resultRes.error)
+    }
   }
 
   render() {

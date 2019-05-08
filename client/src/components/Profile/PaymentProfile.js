@@ -1,15 +1,20 @@
 import React, { Component, Fragment } from 'react'
 import { Grid, TextField, Button, Typography } from '@material-ui/core'
 import { UserContext } from '../Context'
+import api from '../api'
 
 class PaymentProfile extends Component {
   static contextType = UserContext
 
   initState = () => {
     const user = this.context
-    const {
+    let {
       card: { ccName, ccNumber, ccExp, cvv }
     } = user.userDetails
+
+    if (ccExp.length === 4) {
+      ccExp = '0' + ccExp
+    }
     return {
       ccName,
       ccNumber,
@@ -32,18 +37,37 @@ class PaymentProfile extends Component {
     })
   }
 
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault()
     console.log('payment', this.state)
 
     const user = this.context
     const card = { ...this.state }
     delete card.diff
-    user.updateUserDetails({ card })
-    alert('Changes are saved successfully.')
-    this.setState({
-      diff: false
-    })
+
+    const { userType } = user.userDetails
+
+    if (userType === 'customer') {
+      const { ccName, ccNumber, ccExp, cvv } = card
+
+      const { data: resultRes } = await api.post('/customer/credit-card', {
+        cardNumber: ccNumber,
+        name: ccName,
+        expireMonth: Number(ccExp.split('/')[0]),
+        expireYear: Number('20' + ccExp.split('/')[1]),
+        ccv: cvv
+      })
+
+      if (resultRes.success) {
+        user.updateUserDetails({ card })
+        alert('Changes are saved successfully.')
+        this.setState({
+          diff: false
+        })
+      } else {
+        alert(resultRes.error)
+      }
+    }
   }
 
   render() {
