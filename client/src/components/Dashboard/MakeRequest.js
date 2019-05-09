@@ -25,9 +25,6 @@ const style = theme => ({
     '&:focus': {
       background: 'white'
     }
-  },
-  container: {
-    maxWidth: 800
   }
 })
 
@@ -145,7 +142,6 @@ class MakeRequest extends Component {
         console.log(result)
         const { handleInnerChange } = this.props
         handleInnerChange({ loadingResponse: true })
-        // sessionStorage.setItem('loadingResponse', true)
       } else {
         alert(result.error)
       }
@@ -157,11 +153,8 @@ class MakeRequest extends Component {
 
   render() {
     const {
-      classes: { noFocus, container }
+      classes: { noFocus }
     } = this.props
-
-    const user = this.context
-    // const { userType } = user.userDetails
 
     console.log(this.state)
 

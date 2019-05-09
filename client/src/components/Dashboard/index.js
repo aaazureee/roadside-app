@@ -6,6 +6,7 @@ import { UserContext } from '../Context'
 import MakeRequest from './MakeRequest'
 import ResponseList from './ResponseList'
 import CustomerList from './CustomerList'
+import CustFinal from './CustFinal'
 import api from '../api'
 
 const style = theme => ({
@@ -32,8 +33,10 @@ class Dashboard extends Component {
   static contextType = UserContext
   state = {
     value: 0,
-    isLoading: this.context.userDetails.userType === 'customer',
-    customerConfirmed: false
+    isLoading: true,
+    confirmProfessional: null, // for customer
+    customerConfirmed: null, // for professional
+    loadingResponse: false
   }
 
   handleTabChange = (event, value) => {
@@ -51,9 +54,21 @@ class Dashboard extends Component {
     if (userType === 'customer') {
       const { data: result } = await api.get('/callout/customer')
       if (result.success) {
-        const { hasActiveCallout } = result.data
+        const { hasActiveCallout, chosenProfessional } = result.data
         this.setState({
           loadingResponse: hasActiveCallout,
+          confirmProfessional: chosenProfessional,
+          isLoading: false
+        })
+      } else {
+        alert(result.error)
+      }
+    } else if (userType === 'professional') {
+      const { data: result } = await api.get('/callout/professional')
+      if (result.success) {
+        const { calloutInfo } = result.data
+        this.setState({
+          customerConfirmed: calloutInfo,
           isLoading: false
         })
       } else {
@@ -63,19 +78,35 @@ class Dashboard extends Component {
   }
 
   renderRequestView = () => {
-    const { loadingResponse, isLoading } = this.state
+    const {
+      loadingResponse,
+      isLoading,
+      confirmProfessional,
+      customerConfirmed
+    } = this.state
+
     if (isLoading) {
       return <Typography variant="body2">Loading...</Typography>
     }
     const user = this.context
     const { userType } = user.userDetails
     if (userType === 'customer') {
+      if (confirmProfessional) {
+        return <CustFinal handleInnerChange={this.handleInnerChange} />
+      }
       if (!loadingResponse) {
         return <MakeRequest handleInnerChange={this.handleInnerChange} />
-      } else if (loadingResponse) {
-        return <ResponseList />
       }
+      return <ResponseList handleInnerChange={this.handleInnerChange} />
     } else if (userType === 'professional') {
+      if (customerConfirmed) {
+        return (
+          <div>
+            Customer has confirmed your request offer.{' '}
+            {JSON.stringify(customerConfirmed)}
+          </div>
+        )
+      }
       return <CustomerList handleInnerChange={this.handleInnerChange} />
     }
   }
@@ -103,9 +134,7 @@ class Dashboard extends Component {
           <Tab label="Roadside Request" />
         </Tabs>
 
-        <Paper className={paper}>
-          {value === 0 && this.renderRequestView()}
-        </Paper>
+        {value === 0 && this.renderRequestView()}
       </main>
     )
   }

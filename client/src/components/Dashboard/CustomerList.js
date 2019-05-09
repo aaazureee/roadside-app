@@ -6,17 +6,14 @@ import {
   Paper,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemIcon,
   Avatar,
   ListItemText,
-  Divider,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
-  TextField,
   DialogActions,
   FormControl,
   Input,
@@ -66,24 +63,25 @@ const styles = theme => ({
     [theme.breakpoints.up(890)]: {
       flexBasis: '50%'
     }
+  },
+  span: {
+    fontWeight: 500
   }
 })
 class CustomerList extends Component {
   static contextType = UserContext
-  // TODO post API to get list => map to render
+
   state = {
     open: false,
     price: '',
-    isLoading: true,
-    calloutId: ''
+    calloutId: '',
+    isLoading: true
   }
 
   async componentDidMount() {
     const { data: result } = await api.get('/callout/professional')
     if (result.success) {
-      console.log('nearby callout data', result.data)
-      const { customerConfirmed, nearbyCallouts } = result.data
-      this.props.handleInnerChange({ customerConfirmed })
+      const { nearbyCallouts } = result.data
       this.setState({
         nearbyCallouts,
         isLoading: false
@@ -93,6 +91,7 @@ class CustomerList extends Component {
     }
   }
 
+  // TODO decline
   handleDecline = something => {}
 
   handleAccept = async (event, calloutId, price) => {
@@ -105,9 +104,8 @@ class CustomerList extends Component {
       }
     )
     if (result.success) {
-      console.log(result)
       this.setState(state => ({
-        nearbyCallouts: state.nearbyCallouts.map(callout => {
+        nearbyCallouts: this.state.nearbyCallouts.map(callout => {
           if (callout.id === calloutId) {
             return {
               ...callout,
@@ -148,209 +146,201 @@ class CustomerList extends Component {
         bodyText,
         paper,
         dialogPaper,
-        gridItem
+        gridItem,
+        span
       }
     } = this.props
 
-    const { price, nearbyCallouts, isLoading } = this.state
+    const { price, isLoading, nearbyCallouts } = this.state
 
-    if (isLoading)
+    if (isLoading) {
+      return <Typography variant="body2">Loading...</Typography>
+    }
+
+    if (!nearbyCallouts || !nearbyCallouts.length) {
       return (
-        <Typography variant="body2">Loading nearby customers...</Typography>
+        <Typography
+          variant="body2"
+          style={{
+            fontSize: '1rem'
+          }}
+        >
+          There are currently no nearby roadside requests. Please try again
+          later.
+        </Typography>
       )
+    }
 
     return (
       <Fragment>
         <Typography variant="h6" color="primary" gutterBottom>
           Nearby callout request
         </Typography>
-        <Fragment>
-          <Grid container spacing={16}>
-            {nearbyCallouts.map((callout, idx) => {
-              const {
-                id: calloutId,
-                customerName,
-                customerId,
-                vehicle,
-                description,
-                location: { coordinate },
-                address,
-                plan,
-                price: fetchedPrice
-              } = callout
+        <Grid container spacing={16}>
+          {nearbyCallouts.map(callout => {
+            const {
+              id: calloutId,
+              customerName,
+              vehicle,
+              description,
+              location: { coordinates },
+              address,
+              plan,
+              price: fetchedPrice
+            } = callout
 
-              return (
-                <Grid item className={gridItem} key={calloutId}>
-                  <Paper className={paper}>
-                    <List disablePadding>
-                      <ListItem disableGutters>
-                        <ListItemText
-                          primary={
-                            <div>
-                              {customerName} •{' '}
-                              <span
-                                style={{
-                                  fontWeight: 400,
-                                  color: 'rgba(0, 0, 0, 0.60)'
-                                }}
-                              >
-                                {plan[0].toUpperCase() + plan.slice(1)} Customer
-                              </span>
-                            </div>
-                          }
-                          secondary={'Relative distance: 0.8km'}
-                          classes={{
-                            primary: primaryText,
-                            secondary: secondaryText
-                          }}
-                        />
-                        <ListItemIcon
-                          style={{
-                            marginRight: 0
-                          }}
-                        >
-                          <Avatar className={avatar}>
-                            <Person className={accountIcon} />
-                          </Avatar>
-                        </ListItemIcon>
-                      </ListItem>
-                    </List>
-                    <Fragment>
-                      <Fragment />
-                      <Typography variant="body1" className={bodyText}>
-                        <span
-                          style={{
-                            fontWeight: 500
-                          }}
-                        >
-                          Current location:
-                        </span>{' '}
-                        {address}
-                      </Typography>
-                      <Typography variant="body1" className={bodyText}>
-                        <span
-                          style={{
-                            fontWeight: 500
-                          }}
-                        >
-                          Vehicle:
-                        </span>{' '}
-                        {`${vehicle.model} - ${vehicle.plateNumber}`}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        className={bodyText}
-                        style={{
-                          marginBottom: 4
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontWeight: 500
-                          }}
-                        >
-                          Description:
-                        </span>
-                      </Typography>
-                      <Typography variant="body1" className={bodyText}>
-                        {description}
-                      </Typography>
-                    </Fragment>
-
-                    <Grid container justify="flex-end">
-                      <Grid item>
-                        {!fetchedPrice ? (
-                          <Fragment>
-                            <Button
-                              color="primary"
-                              onClick={() => this.handleDecline()}
-                            >
-                              Decline
-                            </Button>
-                            <Button
-                              color="primary"
-                              onClick={() => this.handleOpen(calloutId)}
-                            >
-                              Accept
-                            </Button>
-                          </Fragment>
-                        ) : (
-                          <Typography variant="body1" className={bodyText}>
+            return (
+              <Grid item className={gridItem} key={calloutId}>
+                <Paper className={paper}>
+                  <List disablePadding>
+                    <ListItem disableGutters>
+                      <ListItemText
+                        primary={
+                          <div>
+                            {customerName} •{' '}
                             <span
                               style={{
-                                fontWeight: 500
+                                fontWeight: 400,
+                                color: 'rgba(0, 0, 0, 0.60)'
                               }}
                             >
-                              Your proposed price:
-                            </span>{' '}
-                            ${fetchedPrice}
-                          </Typography>
-                        )}
-                      </Grid>
-                    </Grid>
-
-                    <Dialog
-                      open={this.state.open}
-                      onClose={this.handleClose}
-                      classes={{
-                        paper: dialogPaper
+                              {plan[0].toUpperCase() + plan.slice(1)} Customer
+                            </span>
+                          </div>
+                        }
+                        // secondary={'Driving distance: 0.8km'}
+                        classes={{
+                          primary: primaryText,
+                          secondary: secondaryText
+                        }}
+                      />
+                      <ListItemIcon
+                        style={{
+                          marginRight: 0
+                        }}
+                      >
+                        <Avatar className={avatar}>
+                          <Person className={accountIcon} />
+                        </Avatar>
+                      </ListItemIcon>
+                    </ListItem>
+                  </List>
+                  <Fragment>
+                    <Fragment />
+                    <Typography variant="body1" className={bodyText}>
+                      <span className={span}>Current location:</span> {address}
+                    </Typography>
+                    <Typography variant="body1" className={bodyText}>
+                      <span className={span}>Vehicle:</span>{' '}
+                      {`${vehicle.model} - ${vehicle.plateNumber}`}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className={bodyText}
+                      style={{
+                        marginBottom: 4
                       }}
                     >
-                      <form
-                        onSubmit={evt =>
-                          this.handleAccept(evt, this.state.calloutId, price)
-                        }
-                      >
-                        <DialogTitle>Provide quote {calloutId}</DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            To provide service for this customer, please enter
-                            your service price.
-                          </DialogContentText>
-                          <FormControl
-                            fullWidth
-                            required
+                      <span className={span}>Description:</span>
+                    </Typography>
+                    <Typography variant="body1" className={bodyText}>
+                      {description}
+                    </Typography>
+                  </Fragment>
+
+                  <Grid container justify="flex-end">
+                    <Grid item>
+                      {!fetchedPrice ? (
+                        <Fragment>
+                          <Button
+                            color="primary"
+                            onClick={() => this.handleDecline()}
+                          >
+                            Decline
+                          </Button>
+                          <Button
+                            color="primary"
+                            onClick={() => this.handleOpen(calloutId)}
+                          >
+                            Accept
+                          </Button>
+                        </Fragment>
+                      ) : (
+                        <Typography variant="body1" className={bodyText}>
+                          <span
                             style={{
-                              marginTop: 8
+                              fontWeight: 500
                             }}
                           >
-                            <InputLabel htmlFor="price">Price</InputLabel>
-                            <Input
-                              required
-                              autoFocus
-                              id="price"
-                              name="price"
-                              startAdornment={
-                                <InputAdornment position="start">
-                                  $
-                                </InputAdornment>
-                              }
-                              inputProps={{
-                                pattern: '\\d+',
-                                title: 'Please enter a numeric value.',
-                                autoComplete: 'off'
-                              }}
-                              type="text"
-                              onChange={this.handlePriceChange}
-                            />
-                          </FormControl>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button onClick={this.handleClose} color="primary">
-                            Cancel
-                          </Button>
-                          <Button color="primary" type="submit">
-                            Submit
-                          </Button>
-                        </DialogActions>
-                      </form>
-                    </Dialog>
-                  </Paper>
-                </Grid>
-              )
-            })}
-          </Grid>
-        </Fragment>
+                            Your proposed price:
+                          </span>{' '}
+                          ${fetchedPrice}
+                        </Typography>
+                      )}
+                    </Grid>
+                  </Grid>
+
+                  <Dialog
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    classes={{
+                      paper: dialogPaper
+                    }}
+                  >
+                    <form
+                      onSubmit={evt =>
+                        this.handleAccept(evt, this.state.calloutId, price)
+                      }
+                    >
+                      <DialogTitle>Provide quote {calloutId}</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          To provide service for this customer, please enter
+                          your service price.
+                        </DialogContentText>
+                        <FormControl
+                          fullWidth
+                          required
+                          style={{
+                            marginTop: 8
+                          }}
+                        >
+                          <InputLabel htmlFor="price">Price</InputLabel>
+                          <Input
+                            required
+                            autoFocus
+                            id="price"
+                            name="price"
+                            startAdornment={
+                              <InputAdornment position="start">
+                                $
+                              </InputAdornment>
+                            }
+                            inputProps={{
+                              pattern: '\\d+',
+                              title: 'Please enter a numeric value.',
+                              autoComplete: 'off'
+                            }}
+                            type="text"
+                            onChange={this.handlePriceChange}
+                          />
+                        </FormControl>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                          Cancel
+                        </Button>
+                        <Button color="primary" type="submit">
+                          Submit
+                        </Button>
+                      </DialogActions>
+                    </form>
+                  </Dialog>
+                </Paper>
+              </Grid>
+            )
+          })}
+        </Grid>
       </Fragment>
     )
   }

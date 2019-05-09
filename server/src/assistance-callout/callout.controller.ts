@@ -13,7 +13,7 @@ import { DtoCalloutCreate } from './dto/callout-create.dto';
 import { ISession } from 'src/auth/session.interface';
 import { UserRole } from 'src/user/user-role.interface';
 import { CalloutService } from './service/callout.service';
-import { ResponseSuccess } from 'src/server-response.dto';
+import { ResponseSuccess, ResponseError } from 'src/server-response.dto';
 import { RoleGuard } from 'src/auth/auth.guard';
 import { RequiresRoles } from 'src/auth/roles.decorator';
 import { DtoAcceptCallout } from './dto/accept-callout.dto';
@@ -46,6 +46,10 @@ export class CalloutController {
       const res: DtoCustomerCalloutResponse = {
         hasActiveCallout: true,
         calloutId: currentActiveCallout.id,
+        address: currentActiveCallout.address,
+        location: currentActiveCallout.location,
+        description: currentActiveCallout.description,
+        vehicle: currentActiveCallout.vehicle,
         acceptedProfessionals: acceptedProfs,
       };
 
@@ -62,6 +66,10 @@ export class CalloutController {
       const res: DtoCustomerCalloutResponse = {
         hasActiveCallout: true,
         calloutId: currentActiveCallout.id,
+        address: currentActiveCallout.address,
+        location: currentActiveCallout.location,
+        description: currentActiveCallout.description,
+        vehicle: currentActiveCallout.vehicle,
         chosenProfessional: chosenProf,
       };
 
@@ -205,10 +213,15 @@ export class CalloutController {
     const activeCallout = await this.calloutService.customerGetCurrentActiveCallout(
       userId,
     );
-    await this.calloutService.customerChooseProfessional(
-      activeCallout.id,
-      data.id,
-    );
+    try {
+      await this.calloutService.customerChooseProfessional(
+        activeCallout.id,
+        data.id,
+      );
+    } catch (err) {
+      return new ResponseError('The selected professional is currently busy.');
+    }
+
     return new ResponseSuccess({});
   }
 
@@ -223,5 +236,6 @@ export class CalloutController {
     );
 
     await this.calloutService.completeCallout(activeCallout.id);
+    return new ResponseSuccess({});
   }
 }
