@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Callout } from '../entity/callout.entity';
 import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager, Not } from 'typeorm';
+import { EntityManager, Not, IsNull } from 'typeorm';
 import { Point } from 'geojson';
 import { Vehicle } from 'src/user/entity/vehicle.entity';
 import { Professional } from 'src/user/entity/professional.entity';
@@ -302,7 +302,7 @@ export class CalloutService {
       where: {
         id: calloutId,
         isCompleted: false,
-        acceptedProfessionalId: Not(null),
+        acceptedProfessionalId: Not(IsNull()),
       },
       relations: ['acceptedProfessional'],
     });
