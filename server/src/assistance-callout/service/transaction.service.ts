@@ -3,6 +3,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
 import { PlanType, getPlanPrice } from 'src/user/interface/plan.enum';
 import { Transaction, TransactionType } from '../entity/transaction.entity';
+import { Customer } from 'src/user/entity/customer.entity';
 
 @Injectable()
 export class TransactionService {
@@ -30,6 +31,14 @@ export class TransactionService {
     calloutId: string,
     amount: number,
   ) {
+    const customer = await this.entityManager.findOne(Customer, {
+      where: {
+        userId: customerId,
+      },
+    });
+
+    const feeWaived = customer.plan == PlanType.PREMIUM;
+
     const payment = this.entityManager.create(Transaction, {
       amount,
       customerId,
@@ -37,6 +46,7 @@ export class TransactionService {
       type: TransactionType.SERVICE_PAYMENT,
       dateCreated: new Date(),
       calloutId,
+      waived: feeWaived,
     });
 
     return await this.entityManager.save(payment);

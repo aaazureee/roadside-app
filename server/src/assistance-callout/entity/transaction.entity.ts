@@ -49,4 +49,7 @@ export class Transaction {
 
   @Column({ type: 'uuid', nullable: true })
   calloutId?: string;
+
+  @Column()
+  waived: boolean;
 }
