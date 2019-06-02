@@ -9,11 +9,13 @@ import { CalloutMatching } from '../entity/callout-matching.entity';
 import { DtoCalloutInfo } from '../dto/callout-info.dto';
 import { DtoAcceptedProfessional } from '../dto/accepted-professional.dto';
 import { CalloutState } from '../callout-state.enum';
+import { TransactionService } from './transaction.service';
 
 @Injectable()
 export class CalloutService {
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async createCalloutRequest(options: {
@@ -183,7 +185,7 @@ export class CalloutService {
             professionalId,
           },
           {
-            relations: ['professional'],
+            relations: ['professional', 'callout'],
           },
         );
 
@@ -206,6 +208,15 @@ export class CalloutService {
           CalloutMatching,
           { calloutId, professionalId: Not(professionalId) },
           { accepted: false },
+        );
+
+        //createTransaction
+        const callout = match.callout;
+        await this.transactionService.createServicePayment(
+          callout.customerId,
+          professionalId,
+          callout.id,
+          match.proposedPrice,
         );
       });
     } catch (err) {
@@ -237,7 +248,11 @@ export class CalloutService {
   //   return calloutInfos;
   // }
 
-  async completeCallout(calloutId: string) {
+  async completeCallout(
+    calloutId: string,
+    rating: number = 0,
+    comment: string = null,
+  ) {
     const callout = await this.entityManager.findOneOrFail(Callout, {
       where: {
         id: calloutId,
@@ -251,7 +266,17 @@ export class CalloutService {
     const prof = callout.acceptedProfessional;
     prof.busy = false;
 
-    await this.entityManager.save([callout, prof]);
+    callout.review.rating = rating;
+    callout.review.comment = comment;
+
+    //delete related callout matching
+    const deleteResult = this.entityManager.delete(CalloutMatching, {
+      calloutId: callout.id,
+    });
+
+    const saveResult = this.entityManager.save([callout, prof]);
+
+    await Promise.all([deleteResult, saveResult]);
   }
 
   async professionalGetInProgressCallout(professionalId: string) {

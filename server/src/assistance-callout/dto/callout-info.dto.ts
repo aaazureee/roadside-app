@@ -20,4 +20,6 @@ export class DtoCalloutInfo {
   plan: PlanType;
 
   price?: number;
+
+  customerPhone: string;
 }
