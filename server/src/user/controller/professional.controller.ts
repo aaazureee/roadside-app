@@ -60,8 +60,6 @@ export class ProfessionalController {
 
   @Get('info/:id')
   async getProfessionalInfo(@Param('id') professionalId) {
-    const r = await this.reviewService.getAllReviewsOf(professionalId);
-
     const [info, reviews] = await Promise.all([
       this.professionalService.getProfessionalById(professionalId),
       this.reviewService.getAllReviewsOf(professionalId),

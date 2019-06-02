@@ -55,9 +55,23 @@ const styles = theme => ({
 class RatingReviewList extends Component {
   static contextType = UserContext
 
-  initState = () => {}
+  state = {
+    isLoading: true
+  }
 
-  state = {}
+  async componentDidMount() {
+    const { userId } = this.context.userDetails
+    const { data: result } = await api.get(`/professional/info/${userId}`)
+
+    if (result.success) {
+      console.log(result)
+      this.setState({
+        isLoading: false
+      })
+    } else {
+      alert(result.error)
+    }
+  }
 
   renderStars = (starCount, starStyle) => {
     const stars = [1, 2, 3, 4, 5]
@@ -100,6 +114,7 @@ class RatingReviewList extends Component {
         date: '08/05/2019, 9:30AM'
       }
     ]
+    const { isLoading } = this.state
 
     const {
       classes: {
@@ -112,6 +127,8 @@ class RatingReviewList extends Component {
         star: starStyle
       }
     } = this.props
+
+    if (isLoading) return <Typography variant="body2">Loading...</Typography>
 
     return (
       <Fragment>

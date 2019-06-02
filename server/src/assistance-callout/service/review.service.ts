@@ -15,7 +15,6 @@ export class ReviewService {
       where: {
         acceptedProfessionalId: professionalId,
       },
-      select: ['review'],
     });
 
     return callouts.map(callout => callout.review);
