@@ -12,6 +12,7 @@ import { Point } from 'geojson';
 import { Professional } from 'src/user/entity/professional.entity';
 import { Vehicle } from 'src/user/entity/vehicle.entity';
 import { CalloutState } from '../callout-state.enum';
+import { Review } from './review.entity';
 
 @Entity()
 export class Callout {
@@ -59,4 +60,7 @@ export class Callout {
 
   @Column({ type: 'enum', enum: CalloutState, default: CalloutState.SUBMITTED })
   state: CalloutState;
+
+  @Column(type => Review)
+  review: Review;
 }

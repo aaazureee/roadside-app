@@ -237,7 +237,11 @@ export class CalloutService {
   //   return calloutInfos;
   // }
 
-  async completeCallout(calloutId: string) {
+  async completeCallout(
+    calloutId: string,
+    rating: number = 0,
+    comment: string = null,
+  ) {
     const callout = await this.entityManager.findOneOrFail(Callout, {
       where: {
         id: calloutId,
@@ -251,7 +255,17 @@ export class CalloutService {
     const prof = callout.acceptedProfessional;
     prof.busy = false;
 
-    await this.entityManager.save([callout, prof]);
+    callout.review.rating = rating;
+    callout.review.comment = comment;
+
+    //delete related callout matching
+    const deleteResult = this.entityManager.delete(CalloutMatching, {
+      calloutId: callout.id,
+    });
+
+    const saveResult = this.entityManager.save([callout, prof]);
+
+    await Promise.all([deleteResult, saveResult]);
   }
 
   async professionalGetInProgressCallout(professionalId: string) {
