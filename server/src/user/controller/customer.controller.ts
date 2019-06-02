@@ -22,6 +22,7 @@ import { DtoCreditCard } from '../dto/credit-card.dto';
 import { DtoVehicle } from '../dto/vehicle.dto';
 import { PlanType } from '../interface/plan.enum';
 import { TransactionService } from 'src/assistance-callout/service/transaction.service';
+import { DtoEditVehicles } from '../dto/edit-vehicles.dto';
 @Controller('customer')
 export class CustomerController {
   constructor(
@@ -159,5 +160,18 @@ export class CustomerController {
     });
 
     return new ResponseSuccess(result);
+  }
+
+  @Post('edit-vehicles')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('customer')
+  async editVehicles(@Body() body: DtoEditVehicles, @Session() sess: ISession) {
+    const userId = sess.user.userId;
+
+    const { add, remove, ...rest } = body;
+
+    await this.customerService.addVehicles(userId, add);
+
+    await this.customerService.deleteVehicles(userId, remove.map(el => el.id));
   }
 }

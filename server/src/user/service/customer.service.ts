@@ -6,11 +6,14 @@ import { DtoCreditCard } from '../dto/credit-card.dto';
 import { DtoVehicle } from '../dto/vehicle.dto';
 import { PlanType, isPlanType } from '../interface/plan.enum';
 import { TransactionService } from 'src/assistance-callout/service/transaction.service';
+import { EntityManager } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 @Injectable()
 export class CustomerService {
   constructor(
     private readonly customerRepository: CustomerRepository,
     private readonly transactionService: TransactionService,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
 
   async setCustomerDetails(
@@ -21,9 +24,25 @@ export class CustomerService {
   }
 
   async getCustomerById(userId: string) {
-    const customer = await this.customerRepository.findOneOrFail(userId, {
-      relations: ['vehicles', 'user'],
-    });
+    // const c = await this.customerRepository.findOneOrFail(userId, {
+    //   where: {
+    //     vehicles: {
+    //       active: true,
+    //     },
+    //   },
+    //   relations: ['vehicles', 'user'],
+    // });
+
+    const customer = await this.customerRepository
+      .createQueryBuilder('customer')
+      .leftJoinAndSelect(
+        'customer.vehicles',
+        'vehicle',
+        'vehicle.active = true',
+      )
+      .leftJoinAndSelect('customer.user', 'user')
+      .where('customer.userId = :userId', { userId })
+      .getOne();
 
     const { user, ...rest } = customer;
     const { email, id, role } = user;
@@ -51,5 +70,27 @@ export class CustomerService {
       Logger.error(err.message, err.stack, 'Change sub plan');
       return null;
     }
+  }
+
+  async deleteVehicles(userId: string, vehicleIds: number[]) {
+    const customer = await this.customerRepository
+      .createQueryBuilder('customer')
+      .leftJoinAndSelect(
+        'customer.vehicles',
+        'vehicle',
+        'vehicle.active = true',
+      )
+      .leftJoinAndSelect('customer.user', 'user')
+      .where('customer.userId = :userId', { userId })
+      .getOne();
+
+    customer.vehicles = customer.vehicles.map(vehicle => {
+      if (vehicleIds.includes(vehicle.id)) {
+        vehicle.active = false;
+      }
+      return vehicle;
+    });
+
+    await this.entityManager.save(customer.vehicles);
   }
 }

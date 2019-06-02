@@ -17,4 +17,7 @@ export class Vehicle {
 
   @ManyToOne(type => Customer, customer => customer.vehicles)
   customer: Customer;
+
+  @Column({ default: true })
+  active: boolean;
 }

@@ -61,18 +61,47 @@ export class CustomerRepository extends Repository<Customer> {
         relations: ['vehicles'],
       });
 
-      const createdVehicles = await Promise.all(
-        vehicles.map(v => {
-          const newVehicle = this.manager.create(Vehicle, v);
-          return this.manager.save(newVehicle);
-        }),
-      );
+      // const createdVehicles = await Promise.all(
+      //   vehicles.map(v => {
+      //     const newVehicle = this.manager.create(Vehicle, v);
+      //     return this.manager.save(newVehicle);
+      //   }),
+      // );
 
-      for (const v of createdVehicles) {
-        customer.vehicles.push(v);
+      const createdVehicles = vehicles.map(v => {
+        v.plateNumber = v.plateNumber.toUpperCase();
+        const newVehicle = this.manager.create(Vehicle, v);
+        newVehicle.customer = customer;
+        return newVehicle;
+      });
+
+      for (let i = 0; i < createdVehicles.length; i++) {
+        const existingVehicle = customer.vehicles.find((element: Vehicle) => {
+          return element.plateNumber == createdVehicles[i].plateNumber;
+        });
+        if (existingVehicle) {
+          existingVehicle.active = true;
+          createdVehicles[i] = existingVehicle;
+        }
       }
 
-      return await this.manager.save(customer);
+      await this.manager.save(createdVehicles);
+
+      // while (createdVehicles.length != 0) {
+      //   const v = createdVehicles.pop();
+      //   const existingVehicle = customer.vehicles.find((element: Vehicle) => {
+      //     return (
+      //       element.plateNumber == v.plateNumber
+      //     );
+      //   });
+      //   if (existingVehicle) {
+      //     existingVehicle.active = true;
+      //   } else {
+      //     customer.vehicles.push(v);
+      //   }
+      // }
+
+      return await this.manager.findOne(Customer, customer);
     } catch (err) {
       Logger.error(err, err.stack, 'CustomerRepository');
       return null;
