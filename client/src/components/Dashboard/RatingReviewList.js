@@ -66,7 +66,8 @@ class RatingReviewList extends Component {
     if (result.success) {
       console.log(result)
       this.setState({
-        isLoading: false
+        isLoading: false,
+        sampleList: result.data.reviews
       })
     } else {
       alert(result.error)

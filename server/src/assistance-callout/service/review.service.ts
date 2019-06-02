@@ -15,9 +15,14 @@ export class ReviewService {
       where: {
         acceptedProfessionalId: professionalId,
       },
+      relations: ['customer'],
     });
 
-    return callouts.map(callout => callout.review);
+    return callouts.map(callout => ({
+      fullName: callout.customer.fullName,
+      rating: callout.review.rating,
+      comment: callout.review.comment,
+    }));
   }
 
   //   async getAvgRatingOf(professionalId: string): Promise<{count: number, average: number}> {
