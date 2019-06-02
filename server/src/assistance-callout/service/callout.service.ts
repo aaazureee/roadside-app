@@ -101,6 +101,7 @@ export class CalloutService {
           id: callout.id,
           customerName: callout.customer.fullName,
           customerId: callout.customerId,
+          customerPhone: callout.customer.phone,
           vehicle: callout.vehicle,
           description: callout.description,
           location: callout.location,

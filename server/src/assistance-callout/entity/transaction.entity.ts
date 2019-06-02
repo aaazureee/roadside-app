@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Customer } from 'src/user/entity/customer.entity';
 import { Professional } from 'src/user/entity/professional.entity';
 import { Callout } from './callout.entity';
@@ -10,6 +17,9 @@ export enum TransactionType {
 
 @Entity()
 export class Transaction {
+  @PrimaryGeneratedColumn()
+  id: string;
+
   @ManyToOne(type => Customer)
   customer: Customer;
 

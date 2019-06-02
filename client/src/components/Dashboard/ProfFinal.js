@@ -39,7 +39,8 @@ class ProfFinal extends Component {
       address,
       customerName,
       description,
-      vehicle
+      vehicle,
+      customerPhone
     } = this.props.customerConfirmed
 
     const user = this.context
@@ -61,7 +62,7 @@ class ProfFinal extends Component {
               <span className={span}>Name:</span> {customerName}
             </Typography>
             <Typography variant="body1" className={bodyText}>
-              <span className={span}>Phone number:</span> {1111}
+              <span className={span}>Phone number:</span> {customerPhone}
             </Typography>
           </Fragment>
 

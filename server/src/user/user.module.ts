@@ -7,6 +7,7 @@ import { CustomerRepository } from './repository/customer.repository';
 import { ProfessionalRepository } from './repository/professional.repository';
 import { ProfessionalController } from './controller/professional.controller';
 import { ProfessionalService } from './service/professional.service';
+import { CalloutModule } from 'src/assistance-callout/callout.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProfessionalService } from './service/professional.service';
       CustomerRepository,
       ProfessionalRepository,
     ]),
+    CalloutModule,
   ],
   exports: [TypeOrmModule],
   providers: [CustomerService, ProfessionalService],

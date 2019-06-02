@@ -75,7 +75,11 @@ class RatingReviewModal extends Component {
 
   handleFinalSubmit = async event => {
     event.preventDefault()
-    const { data: result } = await api.post('/callout/customer/complete')
+    const { starCount, review } = this.state
+    const { data: result } = await api.post('/callout/customer/complete', {
+      rating: starCount,
+      comment: review
+    })
     if (result.success) {
       const { handleInnerChange } = this.props
       handleInnerChange({
