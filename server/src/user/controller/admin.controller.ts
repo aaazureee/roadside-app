@@ -78,11 +78,11 @@ export class AdminController {
 
   @Get('customers')
   async getCustomers() {
-    return await this.adminService.getAllCustomers();
+    return new ResponseSuccess(await this.adminService.getAllCustomers());
   }
 
   @Get('professional')
   async getProfessionals() {
-    return await this.adminService.getAllProfessionals();
+    return new ResponseSuccess(await this.adminService.getAllProfessionals());
   }
 }

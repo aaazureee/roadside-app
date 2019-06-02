@@ -11,7 +11,7 @@ export class AdminService {
       where: {
         role: UserRole.CUSTOMER,
       },
-      relations: ['customerInfo'],
+      relations: ['customerInfo', 'customerInfo.vehicles'],
     });
   }
 

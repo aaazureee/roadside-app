@@ -60,7 +60,7 @@ class Root extends Component {
   async componentDidMount() {
     const { data: result } = await api.get('/auth/login')
     console.log(result)
-    if (result.success) {
+    if (result.success && !result.suspended) {
       if (result.userType === 'customer') {
         const { data: detailsResult } = await api.get('/customer/details')
         const { data: userDetails } = detailsResult
@@ -85,6 +85,7 @@ class Root extends Component {
           carPlate: vehicle.plateNumber,
           make: vehicle.make
         }))
+        userDetails.suspended = false
         console.log('iam', userDetails)
         delete userDetails.vehicles
         this.initialState.updateUserDetails(userDetails)
@@ -103,12 +104,17 @@ class Root extends Component {
         delete userDetails.workingRange
         delete userDetails.bsb
         delete userDetails.accountNumber
+        userDetails.suspended = false
         console.log('after', userDetails)
         this.initialState.updateUserDetails(userDetails)
       } else if (result.userType === 'admin') {
         this.initialState.updateUserDetails(result)
       }
-    } else {
+    } else if (result.success && result.suspended) {
+      this.initialState.updateUserDetails({
+        suspended: true
+      })
+    } else if (!result.success) {
       this.initialState.resetUserDetails()
     }
   }
@@ -121,34 +127,52 @@ class Root extends Component {
     } = this.props
 
     console.log('in root', this.state)
+
+    const { suspended } = this.state.userDetails
+
     return (
       <UserContext.Provider value={this.state}>
         <div className={root}>
           <AppBar />
-          <Switch>
-            <Route exact path="/" component={MainLanding} />
-            <Route
-              path="/signup"
-              render={props => (
-                <SignUp
-                  resetTheme={resetTheme}
-                  persistOutlinedBtn={persistOutlinedBtn}
-                  userType="customer"
-                  {...props}
-                />
-              )}
-            />
-            <Route
-              path="/careers"
-              render={props => <Career userType="professional" {...props} />}
-            />
-            <Route path="/login" component={Login} />
-            <Route path="/pricing" component={Pricing} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/dashboard" component={Dashboard} />
+          {suspended ? (
+            <Switch>
+              <Route
+                render={() => (
+                  <NotFound
+                    titleText="Your account has been suspended"
+                    bodyText="Please contact an admin for more details."
+                    btn={false}
+                  />
+                )}
+              />
+            </Switch>
+          ) : (
+            <Switch>
+              <Route exact path="/" component={MainLanding} />
+              <Route
+                path="/signup"
+                render={props => (
+                  <SignUp
+                    resetTheme={resetTheme}
+                    persistOutlinedBtn={persistOutlinedBtn}
+                    userType="customer"
+                    {...props}
+                  />
+                )}
+              />
+              <Route
+                path="/careers"
+                render={props => <Career userType="professional" {...props} />}
+              />
+              <Route path="/login" component={Login} />
+              <Route path="/pricing" component={Pricing} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/dashboard" component={Dashboard} />
 
-            <Route component={NotFound} />
-          </Switch>
+              <Route component={NotFound} />
+            </Switch>
+          )}
+
           <Footer />
         </div>
       </UserContext.Provider>

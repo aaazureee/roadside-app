@@ -40,27 +40,45 @@ class MainLanding extends Component {
   static defaultProps = {
     titleText: 'Roadside Assistance Service',
     bodyText:
-      'Join now to get access to an exciting range of products, services and experiences with 24/7 support.'
+      'Join now to get access to an exciting range of products, services and experiences with 24/7 support.',
+    showButton: true
   }
 
   render() {
     const {
       classes: { root, bodyTextStyle, intro, btn, btnText },
       titleText,
-      bodyText
+      bodyText,
+      showButton
     } = this.props
 
     const { userType } = this.context.userDetails
+
     return (
       <main className={classNames('mainContent', root)}>
         <div className={intro}>
-          <Typography variant="h3" color="inherit">
+          <Typography
+            variant="h3"
+            color="inherit"
+            style={{
+              display: 'inline-block',
+              width: 700
+            }}
+          >
             {titleText}
           </Typography>
-          <Typography variant="body1" color="inherit" className={bodyTextStyle}>
+          <Typography
+            variant="body1"
+            color="inherit"
+            className={bodyTextStyle}
+            style={{
+              display: 'inline-block',
+              width: 700
+            }}
+          >
             {bodyText}
           </Typography>
-          {(!userType || userType === 'customer') && (
+          {(!userType || userType === 'customer') && showButton && (
             <MuiLink type={Link} to="/pricing" underline="none">
               <Button color="secondary" variant="contained" className={btn}>
                 <Typography variant="h6" color="inherit" className={btnText}>

@@ -173,5 +173,7 @@ export class CustomerController {
     await this.customerService.addVehicles(userId, add);
 
     await this.customerService.deleteVehicles(userId, remove.map(el => el.id));
+
+    return new ResponseSuccess({});
   }
 }

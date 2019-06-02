@@ -84,12 +84,11 @@ export class CustomerService {
       .where('customer.userId = :userId', { userId })
       .getOne();
 
-    customer.vehicles = customer.vehicles.map(vehicle => {
-      if (vehicleIds.includes(vehicle.id)) {
-        vehicle.active = false;
+    for (let v of customer.vehicles) {
+      if (vehicleIds.includes(v.id)) {
+        v.active = false;
       }
-      return vehicle;
-    });
+    }
 
     await this.entityManager.save(customer.vehicles);
   }

@@ -16,6 +16,9 @@ export class ReviewService {
         acceptedProfessionalId: professionalId,
       },
       relations: ['customer'],
+      order: {
+        completedDate: 'DESC',
+      },
     });
 
     return callouts.map(callout => ({

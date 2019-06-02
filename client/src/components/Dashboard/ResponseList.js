@@ -16,7 +16,7 @@ import {
   DialogContentText,
   DialogActions
 } from '@material-ui/core'
-
+import moment from 'moment'
 import { Person } from '@material-ui/icons'
 import { grey } from '@material-ui/core/colors'
 import api from '../api'
@@ -69,7 +69,9 @@ class ResponseList extends Component {
   state = {
     isLoading: true,
     modalOpen: false,
-    currentProf: {}
+    currentProf: {},
+    sampleList: [],
+    isReviewLoading: true
   }
 
   async componentDidMount() {
@@ -110,15 +112,31 @@ class ResponseList extends Component {
 
   handleClose = () => {
     this.setState({
-      modalOpen: false
+      modalOpen: false,
+      isReviewLoading: true
     })
   }
 
-  handleOpen = selectedProf => {
-    this.setState({
-      modalOpen: true,
-      currentProf: selectedProf
-    })
+  handleOpen = async selectedProf => {
+    this.setState(
+      {
+        modalOpen: true,
+        currentProf: selectedProf
+      },
+      async () => {
+        const { data: result } = await api.get(
+          `/professional/info/${this.state.currentProf.professionalId}`
+        )
+        if (result.success) {
+          this.setState({
+            sampleList: result.data.reviews,
+            isReviewLoading: false
+          })
+        } else {
+          alert(result.error)
+        }
+      }
+    )
   }
 
   renderStars = (starCount, starStyle) => {
@@ -142,45 +160,6 @@ class ResponseList extends Component {
   }
 
   render() {
-    let sampleList = [
-      {
-        custName: 'customer 1',
-        rating: 4,
-        review: 'something good',
-        date: '20/05/2019, 8:40PM'
-      },
-      {
-        custName: 'customer 2',
-        rating: 3,
-        review: '',
-        date: '10/05/2019, 5:40PM'
-      },
-      {
-        custName: 'customer 3',
-        rating: 2,
-        review: 'hello world',
-        date: '08/05/2019, 9:30AM'
-      },
-      {
-        custName: 'customer 3',
-        rating: 2,
-        review: 'hello world',
-        date: '08/05/2019, 9:30AM'
-      },
-      {
-        custName: 'customer 3',
-        rating: 2,
-        review: 'hello world',
-        date: '08/05/2019, 9:30AM'
-      },
-      {
-        custName: 'customer 3',
-        rating: 2,
-        review: 'hello world',
-        date: '08/05/2019, 9:30AM'
-      }
-    ]
-
     const {
       classes: {
         avatar,
@@ -196,7 +175,12 @@ class ResponseList extends Component {
       }
     } = this.props
 
-    const { acceptedProfessionals, isLoading } = this.state
+    const {
+      acceptedProfessionals,
+      isLoading,
+      sampleList,
+      isReviewLoading
+    } = this.state
 
     if (isLoading) {
       return <Typography variant="body2">Loading...</Typography>
@@ -339,68 +323,77 @@ class ResponseList extends Component {
                       }`}
                     </DialogTitle>
                     <DialogContent>
-                      <Grid container spacing={16}>
-                        {sampleList.map((item, index) => {
-                          const { custName, rating, review, date } = item
+                      {isReviewLoading ? (
+                        <Typography variant="body2">Loading...</Typography>
+                      ) : (
+                        <Grid container spacing={16}>
+                          {sampleList.map((item, index) => {
+                            const { fullName, rating, comment, date } = item
 
-                          return (
-                            <Grid
-                              item
-                              style={{
-                                width: 500
-                              }}
-                              key={index}
-                            >
-                              <Paper className={paper}>
-                                <List disablePadding>
-                                  <ListItem disableGutters>
-                                    <ListItemText
-                                      primary={
-                                        <div>
-                                          {custName} •{' '}
-                                          {this.renderStars(rating, starStyle)}
-                                        </div>
-                                      }
-                                      secondary={date}
-                                      classes={{
-                                        primary: primaryText,
-                                        secondary: secondaryText
-                                      }}
-                                    />
-                                    <ListItemIcon
-                                      style={{
-                                        marginRight: 0
-                                      }}
-                                    >
-                                      <Avatar className={avatar}>
-                                        <Person className={accountIcon} />
-                                      </Avatar>
-                                    </ListItemIcon>
-                                  </ListItem>
-                                </List>
-                                <Fragment>
-                                  <Typography
-                                    variant="body1"
-                                    className={bodyText}
-                                  >
-                                    {review}
-                                    {!review && (
-                                      <span
+                            return (
+                              <Grid
+                                item
+                                style={{
+                                  width: 500
+                                }}
+                                key={index}
+                              >
+                                <Paper className={paper}>
+                                  <List disablePadding>
+                                    <ListItem disableGutters>
+                                      <ListItemText
+                                        primary={
+                                          <div>
+                                            {fullName} •{' '}
+                                            {this.renderStars(
+                                              rating,
+                                              starStyle
+                                            )}
+                                          </div>
+                                        }
+                                        secondary={moment(date).format(
+                                          'DD/MM/YYYY, H:mm A'
+                                        )}
+                                        classes={{
+                                          primary: primaryText,
+                                          secondary: secondaryText
+                                        }}
+                                      />
+                                      <ListItemIcon
                                         style={{
-                                          color: 'rgba(0,0,0,0.5)',
-                                          fontStyle: 'italic'
+                                          marginRight: 0
                                         }}
                                       >
-                                        No review provided
-                                      </span>
-                                    )}
-                                  </Typography>
-                                </Fragment>
-                              </Paper>
-                            </Grid>
-                          )
-                        })}
-                      </Grid>
+                                        <Avatar className={avatar}>
+                                          <Person className={accountIcon} />
+                                        </Avatar>
+                                      </ListItemIcon>
+                                    </ListItem>
+                                  </List>
+                                  <Fragment>
+                                    <Typography
+                                      variant="body1"
+                                      className={bodyText}
+                                    >
+                                      {comment}
+                                      {!comment && (
+                                        <span
+                                          style={{
+                                            color: 'rgba(0,0,0,0.5)',
+                                            fontStyle: 'italic'
+                                          }}
+                                        >
+                                          No review provided
+                                        </span>
+                                      )}
+                                    </Typography>
+                                  </Fragment>
+                                </Paper>
+                              </Grid>
+                            )
+                          })}
+                        </Grid>
+                      )}
                     </DialogContent>
                     <DialogActions>
                       <Button onClick={this.handleClose} color="primary">

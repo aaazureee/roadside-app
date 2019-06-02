@@ -79,6 +79,13 @@ const theme = {
       root: {
         fontWeight: 500
       }
+    },
+    MUIDataTableSelectCell: {
+      root: {
+        '@media (max-width:959.95px)': {
+          display: 'table-cell'
+        }
+      }
     }
   },
   typography: {

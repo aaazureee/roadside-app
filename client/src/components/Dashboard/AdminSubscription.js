@@ -13,7 +13,7 @@ import api from '../api'
 
 const styles = theme => ({})
 
-class Subscription extends Component {
+class AdminSubscription extends Component {
   static contextType = UserContext
 
   getMuiTheme = () =>
@@ -21,7 +21,7 @@ class Subscription extends Component {
       overrides: {
         MUIDataTable: {
           paper: {
-            maxWidth: 800
+            maxWidth: 900
           }
         }
       },
@@ -35,14 +35,16 @@ class Subscription extends Component {
   }
 
   async componentDidMount() {
-    const { data: result } = await api.get('/customer/subscriptions')
+    const { data: result } = await api.get('/admin/subscriptions')
     if (result.success) {
       let subscriptions = result.data
+      console.log(result.data)
       subscriptions = subscriptions.map(x => {
         const expiryDate = new Date(x.date)
         expiryDate.setFullYear(expiryDate.getFullYear() + 1)
 
         return {
+          customerName: x.customerName,
           subscriptionType:
             Number(x.amount) === 0 ? 'Basic plan' : 'Premium plan',
           amount: Number(x.amount),
@@ -51,8 +53,6 @@ class Subscription extends Component {
             Number(x.amount) === 0 ? 'None' : expiryDate.getTime()
         }
       })
-
-      console.log('here', subscriptions)
 
       this.setState({
         isLoading: false,
@@ -68,6 +68,13 @@ class Subscription extends Component {
     if (isLoading) return <Typography variant="body2">Loading...</Typography>
 
     const columns = [
+      {
+        name: 'customerName',
+        label: 'Customer',
+        options: {
+          filter: false
+        }
+      },
       {
         name: 'subscriptionType',
         label: 'Subscription to'
@@ -119,7 +126,7 @@ class Subscription extends Component {
     return (
       <MuiThemeProvider theme={this.getMuiTheme()}>
         <MUIDataTable
-          title={'Subscription History'}
+          title={'System Subscription History'}
           data={subscriptions}
           columns={columns}
           options={options}
@@ -129,4 +136,4 @@ class Subscription extends Component {
   }
 }
 
-export default withStyles(styles)(Subscription)
+export default withStyles(styles)(AdminSubscription)

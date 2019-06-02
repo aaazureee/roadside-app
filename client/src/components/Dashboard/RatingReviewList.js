@@ -15,6 +15,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { UserContext } from '../Context'
 import { grey } from '@material-ui/core/colors'
 import { Person } from '@material-ui/icons'
+import moment from 'moment'
 import { ReactComponent as StarBorder } from '../../svg/star-border.svg'
 import { ReactComponent as Star } from '../../svg/star.svg'
 import api from '../api'
@@ -95,27 +96,27 @@ class RatingReviewList extends Component {
   }
 
   render() {
-    let sampleList = [
-      {
-        custName: 'customer 1',
-        rating: 4,
-        review: 'something good',
-        date: '20/05/2019, 8:40PM'
-      },
-      {
-        custName: 'customer 2',
-        rating: 3,
-        review: '',
-        date: '10/05/2019, 5:40PM'
-      },
-      {
-        custName: 'customer 3',
-        rating: 2,
-        review: 'hello world',
-        date: '08/05/2019, 9:30AM'
-      }
-    ]
-    const { isLoading } = this.state
+    // let sampleList = [
+    //   {
+    //     custName: 'customer 1',
+    //     rating: 4,
+    //     review: 'something good',
+    //     date: '20/05/2019, 8:40PM'
+    //   },
+    //   {
+    //     custName: 'customer 2',
+    //     rating: 3,
+    //     review: '',
+    //     date: '10/05/2019, 5:40PM'
+    //   },
+    //   {
+    //     custName: 'customer 3',
+    //     rating: 2,
+    //     review: 'hello world',
+    //     date: '08/05/2019, 9:30AM'
+    //   }
+    // ]
+    const { isLoading, sampleList } = this.state
 
     const {
       classes: {
@@ -134,7 +135,7 @@ class RatingReviewList extends Component {
     return (
       <Fragment>
         <Typography variant="h6" color="primary" gutterBottom>
-          Rating and Review
+          Ratings and Reviews
         </Typography>
         <Grid
           container
@@ -143,8 +144,15 @@ class RatingReviewList extends Component {
             width: 500
           }}
         >
+          {!sampleList.length && (
+            <Grid item>
+              <Typography variant="body2">
+                There are currently no ratings and reviews available.
+              </Typography>
+            </Grid>
+          )}
           {sampleList.map((item, index) => {
-            const { custName, rating, review, date } = item
+            const { fullName, rating, comment, date } = item
 
             return (
               <Grid
@@ -160,10 +168,10 @@ class RatingReviewList extends Component {
                       <ListItemText
                         primary={
                           <div>
-                            {custName} • {this.renderStars(rating, starStyle)}
+                            {fullName} • {this.renderStars(rating, starStyle)}
                           </div>
                         }
-                        secondary={date}
+                        secondary={moment(date).format('DD/MM/YYYY, H:mm A')}
                         classes={{
                           primary: primaryText,
                           secondary: secondaryText
@@ -182,8 +190,8 @@ class RatingReviewList extends Component {
                   </List>
                   <Fragment>
                     <Typography variant="body1" className={bodyText}>
-                      {review}
-                      {!review && (
+                      {comment}
+                      {!comment && (
                         <span
                           style={{
                             color: 'rgba(0,0,0,0.5)',

@@ -56,7 +56,8 @@ export class AuthController {
       } else if (err instanceof AccountBannedError) {
         return {
           success: false,
-          error: 'You have been banned. Please contact an admin for details',
+          error:
+            'Your account has been suspended. Please contact an admin for more details.',
         };
       }
     }
@@ -82,11 +83,22 @@ export class AuthController {
 
   @Get('login')
   async checkLogin(@Session() session: ISession) {
-    if (session.user && this.authService.isUserValid(session.user.userId)) {
+    if (
+      session.user &&
+      (await this.authService.isUserValid(session.user.userId))
+    ) {
       return {
         success: true,
         email: session.user.email,
         userType: session.user.userType,
+      };
+    } else if (
+      session.user &&
+      !(await this.authService.isUserValid(session.user.userId))
+    ) {
+      return {
+        success: true,
+        suspended: true,
       };
     } else {
       return {

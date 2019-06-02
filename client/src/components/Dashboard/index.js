@@ -9,8 +9,13 @@ import CustomerList from './CustomerList'
 import CustFinal from './CustFinal'
 import ProfFinal from './ProfFinal'
 import RatingReviewList from './RatingReviewList'
-import Transaction from './Transaction'
+import CustomerTransaction from './CustomerTransaction'
+import ProfTransaction from './ProfTransaction'
 import Subscription from './Subscription'
+import AdminSubscription from './AdminSubscription'
+import AdminTransaction from './AdminTransaction'
+import AdminCustomerList from './AdminCustomerList'
+import AdminProfList from './AdminProfList'
 import api from '../api'
 
 const style = theme => ({
@@ -117,11 +122,13 @@ class Dashboard extends Component {
   renderTabContents = (userType, value) => {
     if (userType === 'admin') {
       if (value === 0) {
-        return <div>User list</div>
+        return <AdminCustomerList />
       } else if (value === 1) {
-        return <div>System Transactions</div>
+        return <AdminProfList />
       } else if (value === 2) {
-        return <div>System Subscriptions</div>
+        return <AdminTransaction />
+      } else if (value === 3) {
+        return <AdminSubscription />
       }
     }
 
@@ -129,7 +136,7 @@ class Dashboard extends Component {
       if (value === 0) {
         return this.renderRequestView()
       } else if (value === 1) {
-        return <Transaction />
+        return <CustomerTransaction />
       } else if (value === 2) {
         return <Subscription />
       }
@@ -139,7 +146,7 @@ class Dashboard extends Component {
       if (value === 0) {
         return this.renderRequestView()
       } else if (value === 1) {
-        return <Transaction />
+        return <ProfTransaction />
       } else if (value === 2) {
         return <RatingReviewList />
       }
@@ -168,20 +175,21 @@ class Dashboard extends Component {
           className={tab}
         >
           {userType === 'admin' && [
-            <Tab key="1" label="User list" />,
-            <Tab key="2" label="Transaction" />,
-            <Tab key="3" label="Subscription" />
+            <Tab key="1" label="Customers" />,
+            <Tab key="2" label="Professionals" />,
+            <Tab key="3" label="Service Payments" />,
+            <Tab key="4" label="Subscriptions" />
           ]}
 
           {userType === 'customer' && [
             <Tab key="1" label="Roadside Request" />,
-            <Tab key="2" label="Transaction" />,
-            <Tab key="3" label="Subscription" />
+            <Tab key="2" label="Service Payments" />,
+            <Tab key="3" label="Subscriptions" />
           ]}
 
           {userType === 'professional' && [
             <Tab key="1" label="Roadside Request" />,
-            <Tab key="2" label="Transaction" />,
+            <Tab key="2" label="Service Payments" />,
             <Tab key="3" label="Ratings and Reviews" />
           ]}
         </Tabs>

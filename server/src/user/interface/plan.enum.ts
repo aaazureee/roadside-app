@@ -10,8 +10,8 @@ export function isPlanType(arg): arg is PlanType {
 export function getPlanPrice(plan: PlanType): number {
   switch (plan) {
     case PlanType.BASIC:
-      return 5;
+      return 0;
     case PlanType.PREMIUM:
-      return 10;
+      return 59.99;
   }
 }

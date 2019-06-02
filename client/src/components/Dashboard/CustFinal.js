@@ -98,7 +98,7 @@ class CustFinal extends Component {
       description
     } = this.state
 
-    const user = this.context
+    const { plan } = this.context.userDetails
     const vehicleDetails = `${vehicle.make} ${vehicle.model} • ${
       vehicle.plateNumber
     }`
@@ -121,7 +121,8 @@ class CustFinal extends Component {
               <span className={span}>Phone number:</span> {phone}
             </Typography>
             <Typography variant="body1" className={bodyText}>
-              <span className={span}>Pricing:</span> ${price}
+              <span className={span}>Pricing:</span> ${price}{' '}
+              {plan === 'premium' && ' (Free)'}
             </Typography>
           </Fragment>
 
