@@ -5,9 +5,13 @@ import { Customer } from '../entity/customer.entity';
 import { DtoCreditCard } from '../dto/credit-card.dto';
 import { DtoVehicle } from '../dto/vehicle.dto';
 import { PlanType, isPlanType } from '../interface/plan.enum';
+import { TransactionService } from 'src/assistance-callout/service/transaction.service';
 @Injectable()
 export class CustomerService {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(
+    private readonly customerRepository: CustomerRepository,
+    private readonly transactionService: TransactionService,
+  ) {}
 
   async setCustomerDetails(
     userId: string,
@@ -41,6 +45,7 @@ export class CustomerService {
         return null;
       }
       await this.customerRepository.update(userId, { plan: newPlan });
+      await this.transactionService.createSubscription(userId, newPlan);
       return newPlan;
     } catch (err) {
       Logger.error(err.message, err.stack, 'Change sub plan');

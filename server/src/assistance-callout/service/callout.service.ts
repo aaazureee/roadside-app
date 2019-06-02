@@ -9,11 +9,13 @@ import { CalloutMatching } from '../entity/callout-matching.entity';
 import { DtoCalloutInfo } from '../dto/callout-info.dto';
 import { DtoAcceptedProfessional } from '../dto/accepted-professional.dto';
 import { CalloutState } from '../callout-state.enum';
+import { TransactionService } from './transaction.service';
 
 @Injectable()
 export class CalloutService {
   constructor(
     @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly transactionService: TransactionService,
   ) {}
 
   async createCalloutRequest(options: {
@@ -183,7 +185,7 @@ export class CalloutService {
             professionalId,
           },
           {
-            relations: ['professional'],
+            relations: ['professional', 'callout'],
           },
         );
 
@@ -206,6 +208,15 @@ export class CalloutService {
           CalloutMatching,
           { calloutId, professionalId: Not(professionalId) },
           { accepted: false },
+        );
+
+        //createTransaction
+        const callout = match.callout;
+        await this.transactionService.createServicePayment(
+          callout.customerId,
+          professionalId,
+          callout.id,
+          match.proposedPrice,
         );
       });
     } catch (err) {

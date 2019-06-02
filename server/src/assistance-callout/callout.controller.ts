@@ -21,6 +21,7 @@ import { DtoChooseProfessional } from './dto/choose-professional.dto';
 import { DtoCustomerCalloutResponse } from './dto/customer-callout-response.dto';
 import { DtoProfessionalCalloutResponse } from './dto/professional-callout-response.dto';
 import { DtoDeclineCallout } from './dto/decline-callout.dto';
+import { DtoReview } from './dto/review.dto';
 
 @Controller('callout')
 export class CalloutController {
@@ -215,13 +216,20 @@ export class CalloutController {
   @Post('customer/complete')
   @UseGuards(RoleGuard)
   @RequiresRoles('customer')
-  async customerCompleteCallout(@Session() session: ISession) {
+  async customerCompleteCallout(
+    @Session() session: ISession,
+    @Body() review: DtoReview,
+  ) {
     const { userId } = session.user;
 
     const activeCallout = await this.calloutService.customerGetCurrentActiveCallout(
       userId,
     );
 
-    await this.calloutService.completeCallout(activeCallout.id);
+    await this.calloutService.completeCallout(
+      activeCallout.id,
+      review.rating,
+      review.comment,
+    );
   }
 }
