@@ -106,6 +106,7 @@ export class CalloutController {
           location: currentCallout.location,
           customerId: currentCallout.customerId,
           customerName: currentCallout.customer.fullName,
+          customerPhone: currentCallout.customer.phone,
           description: currentCallout.description,
           vehicle: currentCallout.vehicle,
           plan: currentCallout.customer.plan,
