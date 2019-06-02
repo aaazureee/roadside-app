@@ -178,6 +178,8 @@ export class CalloutService {
     professionalId: string,
   ): Promise<boolean> {
     try {
+      const now = new Date();
+
       await this.entityManager.transaction(async entityManager => {
         const match = await entityManager.findOneOrFail(
           CalloutMatching,
@@ -203,6 +205,7 @@ export class CalloutService {
           {
             acceptedProfessionalId: professionalId,
             price: match.proposedPrice,
+            completedDate: now,
           },
         );
         await entityManager.update(

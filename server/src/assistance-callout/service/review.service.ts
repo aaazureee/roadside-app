@@ -22,6 +22,7 @@ export class ReviewService {
       fullName: callout.customer.fullName,
       rating: callout.review.rating,
       comment: callout.review.comment,
+      date: callout.completedDate,
     }));
   }
 

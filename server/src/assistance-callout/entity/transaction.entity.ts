@@ -21,6 +21,7 @@ export class Transaction {
   id: string;
 
   @ManyToOne(type => Customer)
+  @JoinColumn({ name: 'customerId' })
   customer: Customer;
 
   @Column({ type: 'uuid' })
@@ -30,6 +31,7 @@ export class Transaction {
   amount: number;
 
   @ManyToOne(type => Professional, { nullable: true })
+  @JoinColumn({ name: 'professionalId' })
   professional?: Professional;
 
   @Column({ type: 'uuid', nullable: true })

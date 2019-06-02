@@ -63,4 +63,7 @@ export class Callout {
 
   @Column(type => Review)
   review: Review;
+
+  @Column({ type: 'timestamp', nullable: true })
+  completedDate: Date;
 }
