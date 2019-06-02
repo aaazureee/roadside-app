@@ -82,7 +82,8 @@ class Root extends Component {
         userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
           id: vehicle.id,
           carModel: vehicle.model,
-          carPlate: vehicle.plateNumber
+          carPlate: vehicle.plateNumber,
+          make: vehicle.make
         }))
         console.log('iam', userDetails)
         delete userDetails.vehicles
@@ -103,6 +104,9 @@ class Root extends Component {
         delete userDetails.bsb
         delete userDetails.accountNumber
         console.log('after', userDetails)
+        this.initialState.updateUserDetails(userDetails)
+      } else if (result.userType === 'admin') {
+        this.initialState.updateUserDetails(result)
       }
     } else {
       this.initialState.resetUserDetails()

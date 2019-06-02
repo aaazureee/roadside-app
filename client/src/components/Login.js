@@ -102,7 +102,8 @@ class Login extends Component {
         userDetails.vehicleList = userDetails.vehicles.map(vehicle => ({
           id: vehicle.id,
           carModel: vehicle.model,
-          carPlate: vehicle.plateNumber
+          carPlate: vehicle.plateNumber,
+          make: vehicle.make
         }))
         delete userDetails.vehicles
 
@@ -125,6 +126,9 @@ class Login extends Component {
         delete userDetails.bsb
         delete userDetails.accountNumber
         user.updateUserDetails(userDetails)
+        this.props.history.push('/')
+      } else if (result.userType === 'admin') {
+        user.updateUserDetails(result)
         this.props.history.push('/')
       }
     } else {

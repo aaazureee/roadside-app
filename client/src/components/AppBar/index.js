@@ -265,8 +265,14 @@ class StyledAppBar extends Component {
                                         </Avatar>
                                       </ListItemIcon>
                                       <ListItemText
-                                        primary={`${firstName} ${lastName}`}
-                                        secondary={email}
+                                        primary={
+                                          userType === 'admin'
+                                            ? email
+                                            : `${firstName} ${lastName}`
+                                        }
+                                        secondary={
+                                          userType === 'admin' ? '' : email
+                                        }
                                         classes={{
                                           primary: primaryText,
                                           secondary: secondaryText
@@ -327,12 +333,26 @@ class StyledAppBar extends Component {
                                 </MenuItem>
                               )}
 
-                              <Divider className={divider} />
-                              <Link to="/profile" className={routerLink}>
-                                <MenuItem onClick={this.handleClose}>
-                                  Profile
+                              {userType === 'admin' && (
+                                <MenuItem
+                                  className={nonHover}
+                                  button={false}
+                                  style={{
+                                    cursor: 'initial'
+                                  }}
+                                >
+                                  Admin User
                                 </MenuItem>
-                              </Link>
+                              )}
+
+                              <Divider className={divider} />
+                              {userType === 'admin' ? null : (
+                                <Link to="/profile" className={routerLink}>
+                                  <MenuItem onClick={this.handleClose}>
+                                    Profile
+                                  </MenuItem>
+                                </Link>
+                              )}
 
                               <MenuItem onClick={this.handleLogout}>
                                 Sign out

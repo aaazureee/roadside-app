@@ -9,12 +9,22 @@ import {
   ListItemIcon,
   Avatar,
   ListItemText,
-  Button
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@material-ui/core'
 
 import { Person } from '@material-ui/icons'
 import { grey } from '@material-ui/core/colors'
 import api from '../api'
+import { UserContext } from '../Context'
+import { calcDistance } from './utils'
+import { ReactComponent as StarBorder } from '../../svg/star-border.svg'
+import { ReactComponent as Star } from '../../svg/star.svg'
+import axios from 'axios'
 
 const styles = theme => ({
   avatar: {
@@ -43,29 +53,37 @@ const styles = theme => ({
     marginBottom: 8,
     fontSize: '0.95rem'
   },
-  gridItem: {
-    minWidth: 370,
-    width: '100%',
-    marginLeft: 0,
-    [theme.breakpoints.up(957)]: {
-      flexBasis: '50%'
-    }
-  },
   span: {
     fontWeight: 500
+  },
+  dialogPaper: {
+    width: 500
+  },
+  star: {
+    width: 20,
+    verticalAlign: -2
   }
 })
 class ResponseList extends Component {
+  static contextType = UserContext
   state = {
-    isLoading: true
+    isLoading: true,
+    modalOpen: false,
+    currentProf: {}
   }
 
   async componentDidMount() {
     const { data: result } = await api.get('/callout/customer')
     if (result.success) {
-      const { acceptedProfessionals } = result.data
+      const {
+        acceptedProfessionals,
+        location: { coordinates }
+      } = result.data
+
       this.setState({
         acceptedProfessionals,
+        myLat: coordinates[1],
+        myLng: coordinates[0],
         isLoading: false
       })
     } else {
@@ -90,7 +108,79 @@ class ResponseList extends Component {
     }
   }
 
+  handleClose = () => {
+    this.setState({
+      modalOpen: false
+    })
+  }
+
+  handleOpen = selectedProf => {
+    this.setState({
+      modalOpen: true,
+      currentProf: selectedProf
+    })
+  }
+
+  renderStars = (starCount, starStyle) => {
+    const stars = [1, 2, 3, 4, 5]
+
+    return stars.map(star => {
+      if (star > starCount) {
+        return <StarBorder key={`star-${star}`} className={starStyle} />
+      } else {
+        return (
+          <Star
+            key={`star-${star}`}
+            className={starStyle}
+            style={{
+              fill: '#8E2DE2'
+            }}
+          />
+        )
+      }
+    })
+  }
+
   render() {
+    let sampleList = [
+      {
+        custName: 'customer 1',
+        rating: 4,
+        review: 'something good',
+        date: '20/05/2019, 8:40PM'
+      },
+      {
+        custName: 'customer 2',
+        rating: 3,
+        review: '',
+        date: '10/05/2019, 5:40PM'
+      },
+      {
+        custName: 'customer 3',
+        rating: 2,
+        review: 'hello world',
+        date: '08/05/2019, 9:30AM'
+      },
+      {
+        custName: 'customer 3',
+        rating: 2,
+        review: 'hello world',
+        date: '08/05/2019, 9:30AM'
+      },
+      {
+        custName: 'customer 3',
+        rating: 2,
+        review: 'hello world',
+        date: '08/05/2019, 9:30AM'
+      },
+      {
+        custName: 'customer 3',
+        rating: 2,
+        review: 'hello world',
+        date: '08/05/2019, 9:30AM'
+      }
+    ]
+
     const {
       classes: {
         avatar,
@@ -100,7 +190,9 @@ class ResponseList extends Component {
         bodyText,
         paper,
         gridItem,
-        span
+        span,
+        dialogPaper,
+        star: starStyle
       }
     } = this.props
 
@@ -123,12 +215,25 @@ class ResponseList extends Component {
       )
     }
 
+    // let testList = acceptedProfessionals
+    // for (let i = 0; i <= 7; i++) {
+    //   testList = testList.concat(testList)
+    //   console.log('length', testList.length)
+    // }
+    const { plan } = this.context.userDetails
+
     return (
       <Fragment>
         <Typography variant="h6" color="primary" gutterBottom>
           Available Professionals
         </Typography>
-        <Grid container spacing={16}>
+        <Grid
+          container
+          spacing={16}
+          style={{
+            width: 500
+          }}
+        >
           {acceptedProfessionals.map(prof => {
             const {
               professionalId,
@@ -138,8 +243,18 @@ class ResponseList extends Component {
               location: { coordinates }
             } = prof
 
+            // professional location
+            const profLat = coordinates[1]
+            const profLng = coordinates[0]
+
             return (
-              <Grid item className={gridItem} key={professionalId}>
+              <Grid
+                item
+                style={{
+                  width: 500
+                }}
+                key={professionalId}
+              >
                 <Paper className={paper}>
                   <List disablePadding>
                     <ListItem disableGutters>
@@ -157,7 +272,12 @@ class ResponseList extends Component {
                             </span>
                           </div>
                         }
-                        // secondary={'Driving distance: 0.8km'}
+                        secondary={`Relative distance: ${calcDistance(
+                          this.state.myLat,
+                          this.state.myLng,
+                          profLat,
+                          profLng
+                        )}km`}
                         classes={{
                           primary: primaryText,
                           secondary: secondaryText
@@ -177,6 +297,20 @@ class ResponseList extends Component {
                   <Fragment>
                     <Typography variant="body1" className={bodyText}>
                       <span className={span}>Pricing:</span> ${price}
+                      {plan === 'premium' && ' (Free)'}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      style={{
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: 500,
+                        display: 'inline-block'
+                      }}
+                      onClick={() => this.handleOpen(prof)}
+                    >
+                      View ratings and reviews
                     </Typography>
                   </Fragment>
 
@@ -191,6 +325,90 @@ class ResponseList extends Component {
                     </Grid>
                   </Grid>
                 </Paper>
+                <Dialog
+                  open={this.state.modalOpen}
+                  onClose={this.handleClose}
+                  classes={{
+                    paper: dialogPaper
+                  }}
+                >
+                  <Fragment>
+                    <DialogTitle color="primary">
+                      {`Ratings and Reviews for ${
+                        this.state.currentProf.fullName
+                      }`}
+                    </DialogTitle>
+                    <DialogContent>
+                      <Grid container spacing={16}>
+                        {sampleList.map((item, index) => {
+                          const { custName, rating, review, date } = item
+
+                          return (
+                            <Grid
+                              item
+                              style={{
+                                width: 500
+                              }}
+                              key={index}
+                            >
+                              <Paper className={paper}>
+                                <List disablePadding>
+                                  <ListItem disableGutters>
+                                    <ListItemText
+                                      primary={
+                                        <div>
+                                          {custName} •{' '}
+                                          {this.renderStars(rating, starStyle)}
+                                        </div>
+                                      }
+                                      secondary={date}
+                                      classes={{
+                                        primary: primaryText,
+                                        secondary: secondaryText
+                                      }}
+                                    />
+                                    <ListItemIcon
+                                      style={{
+                                        marginRight: 0
+                                      }}
+                                    >
+                                      <Avatar className={avatar}>
+                                        <Person className={accountIcon} />
+                                      </Avatar>
+                                    </ListItemIcon>
+                                  </ListItem>
+                                </List>
+                                <Fragment>
+                                  <Typography
+                                    variant="body1"
+                                    className={bodyText}
+                                  >
+                                    {review}
+                                    {!review && (
+                                      <span
+                                        style={{
+                                          color: 'rgba(0,0,0,0.5)',
+                                          fontStyle: 'italic'
+                                        }}
+                                      >
+                                        No review provided
+                                      </span>
+                                    )}
+                                  </Typography>
+                                </Fragment>
+                              </Paper>
+                            </Grid>
+                          )
+                        })}
+                      </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={this.handleClose} color="primary">
+                        Close
+                      </Button>
+                    </DialogActions>
+                  </Fragment>
+                </Dialog>
               </Grid>
             )
           })}

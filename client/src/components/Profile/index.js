@@ -23,7 +23,6 @@ const style = theme => ({
     }
   },
   tab: {
-    maxWidth: 500,
     marginBottom: 16
   }
 })
@@ -58,7 +57,7 @@ class Profile extends Component {
           onChange={this.handleTabChange}
           indicatorColor="primary"
           textColor="primary"
-          variant="fullWidth"
+          // variant="fullWidth"
           className={tab}
         >
           <Tab label="Basic details" />

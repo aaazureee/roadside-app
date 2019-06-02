@@ -122,6 +122,19 @@ class ItemRow extends Component {
                 <Grid item xs={12} sm={6} className={denseGrid}>
                   <TextField
                     required
+                    id={`make${numberID}`}
+                    name={`make`}
+                    label="Car make"
+                    type="text"
+                    fullWidth
+                    onChange={this.handleChange}
+                    value={this.state.make}
+                    margin="dense"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} className={denseGrid}>
+                  <TextField
+                    required
                     id={`carModel${numberID}`}
                     name={`carModel`}
                     label="Car model"

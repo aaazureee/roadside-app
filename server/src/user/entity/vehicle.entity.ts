@@ -9,6 +9,9 @@ export class Vehicle {
   @Column()
   model: string;
 
+  @Column()
+  make: string;
+
   @Column({ unique: true })
   plateNumber: string;
 

@@ -167,7 +167,7 @@ class Pricing extends Component {
       },
       {
         name: 'Premium Plan',
-        price: 9.99,
+        price: 59.99,
         feature: [
           'All Basic Plan benefits',
           'Unlimited services',
@@ -196,7 +196,7 @@ class Pricing extends Component {
                     >
                       {plan.price}
                     </span>
-                    {plan.name.includes('Premium') && '/mo'}
+                    {plan.name.includes('Premium') && '/year'}
                   </Typography>
                   <Divider className={divider} />
 

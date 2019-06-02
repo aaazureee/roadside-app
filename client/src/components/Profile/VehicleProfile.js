@@ -38,6 +38,7 @@ class VehicleProfile extends Component {
   render() {
     const { vehicleList } = this.state
     const itemSchema = {
+      make: '',
       carModel: '',
       carPlate: ''
     }

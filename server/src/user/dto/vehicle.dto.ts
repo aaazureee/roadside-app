@@ -5,5 +5,8 @@ export class DtoVehicle {
   model: string;
 
   @IsString()
+  make: string;
+
+  @IsString()
   plateNumber: string;
 }

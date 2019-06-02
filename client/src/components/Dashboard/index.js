@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Paper, Tabs, Tab, Typography } from '@material-ui/core'
 import classNames from 'classnames'
@@ -7,6 +7,10 @@ import MakeRequest from './MakeRequest'
 import ResponseList from './ResponseList'
 import CustomerList from './CustomerList'
 import CustFinal from './CustFinal'
+import ProfFinal from './ProfFinal'
+import RatingReviewList from './RatingReviewList'
+import Transaction from './Transaction'
+import Subscription from './Subscription'
 import api from '../api'
 
 const style = theme => ({
@@ -24,7 +28,6 @@ const style = theme => ({
     }
   },
   tab: {
-    maxWidth: 200,
     marginBottom: 16
   }
 })
@@ -101,13 +104,45 @@ class Dashboard extends Component {
     } else if (userType === 'professional') {
       if (customerConfirmed) {
         return (
-          <div>
-            Customer has confirmed your request offer.{' '}
-            {JSON.stringify(customerConfirmed)}
-          </div>
+          <ProfFinal
+            handleInnerChange={this.handleInnerChange}
+            customerConfirmed={customerConfirmed}
+          />
         )
       }
       return <CustomerList handleInnerChange={this.handleInnerChange} />
+    }
+  }
+
+  renderTabContents = (userType, value) => {
+    if (userType === 'admin') {
+      if (value === 0) {
+        return <div>User list</div>
+      } else if (value === 1) {
+        return <div>System Transactions</div>
+      } else if (value === 2) {
+        return <div>System Subscriptions</div>
+      }
+    }
+
+    if (userType === 'customer') {
+      if (value === 0) {
+        return this.renderRequestView()
+      } else if (value === 1) {
+        return <Transaction />
+      } else if (value === 2) {
+        return <Subscription />
+      }
+    }
+
+    if (userType === 'professional') {
+      if (value === 0) {
+        return this.renderRequestView()
+      } else if (value === 1) {
+        return <Transaction />
+      } else if (value === 2) {
+        return <RatingReviewList />
+      }
     }
   }
 
@@ -115,6 +150,8 @@ class Dashboard extends Component {
     const {
       classes: { root, paper, tab }
     } = this.props
+
+    const { userType } = this.context.userDetails
 
     const { value } = this.state
     return (
@@ -128,13 +165,28 @@ class Dashboard extends Component {
           onChange={this.handleTabChange}
           indicatorColor="primary"
           textColor="primary"
-          variant="fullWidth"
           className={tab}
         >
-          <Tab label="Roadside Request" />
+          {userType === 'admin' && [
+            <Tab key="1" label="User list" />,
+            <Tab key="2" label="Transaction" />,
+            <Tab key="3" label="Subscription" />
+          ]}
+
+          {userType === 'customer' && [
+            <Tab key="1" label="Roadside Request" />,
+            <Tab key="2" label="Transaction" />,
+            <Tab key="3" label="Subscription" />
+          ]}
+
+          {userType === 'professional' && [
+            <Tab key="1" label="Roadside Request" />,
+            <Tab key="2" label="Transaction" />,
+            <Tab key="3" label="Ratings and Reviews" />
+          ]}
         </Tabs>
 
-        {value === 0 && this.renderRequestView()}
+        {this.renderTabContents(userType, value)}
       </main>
     )
   }

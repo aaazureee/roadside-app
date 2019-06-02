@@ -49,6 +49,28 @@ const style = theme => ({
 class SignUpReview extends Component {
   static contextType = UserContext
 
+  // admin
+  redirectAdmin = async () => {
+    const user = this.context
+    const { userDetails, userType, history } = this.props
+
+    const { email, password } = userDetails
+
+    const { data: result } = await api.post('/auth/register', {
+      email,
+      password,
+      userType
+    })
+
+    if (result.success) {
+      console.log('signed up for admin account successfully.')
+      user.updateUserDetails(userDetails) // update root user
+      window.location.replace('/')
+    } else {
+      alert(result.error)
+    }
+  }
+
   redirectCustomer = async () => {
     const user = this.context
     const { userType, history } = this.props
@@ -70,6 +92,7 @@ class SignUpReview extends Component {
     let { vehicleList } = userDetails
 
     vehicleList = vehicleList.map(x => ({
+      make: x.make,
       model: x.carModel,
       plateNumber: x.carPlate
     }))
@@ -173,6 +196,8 @@ class SignUpReview extends Component {
         this.redirectCustomer()
       } else if (userType === 'professional') {
         this.redirectProfessional()
+      } else if (userType === 'admin') {
+        this.redirectAdmin()
       }
     }, 500)
   }
@@ -277,6 +302,20 @@ class SignUpReview extends Component {
                       <Grid item xs={12} className={gridTitle}>
                         <Typography variant="h6">{`Car ${index +
                           1}`}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6} className={denseGrid}>
+                        <TextField
+                          id={`make${index}`}
+                          name={`make`}
+                          label="Car make"
+                          type="text"
+                          fullWidth
+                          value={vehicle.make}
+                          margin="dense"
+                          InputProps={{
+                            readOnly: true
+                          }}
+                        />
                       </Grid>
                       <Grid item xs={12} sm={6} className={denseGrid}>
                         <TextField

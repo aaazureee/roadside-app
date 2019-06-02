@@ -77,7 +77,7 @@ class MakeRequest extends Component {
     return {
       vehicleList: vehicleList.map(vehicle => ({
         id: vehicle.id,
-        details: `${vehicle.carModel} - ${vehicle.carPlate}`
+        details: `${vehicle.make} ${vehicle.carModel} • ${vehicle.carPlate}`
       })),
       address
     }

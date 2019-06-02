@@ -23,6 +23,7 @@ import {
 import { Person } from '@material-ui/icons'
 import { grey } from '@material-ui/core/colors'
 import { UserContext } from '../Context'
+import { calcDistance } from './utils'
 import api from '../api'
 
 const styles = theme => ({
@@ -56,14 +57,6 @@ const styles = theme => ({
   dialogPaper: {
     minWidth: 400
   },
-  gridItem: {
-    minWidth: 400,
-    width: '100%',
-    marginLeft: 0,
-    [theme.breakpoints.up(890)]: {
-      flexBasis: '50%'
-    }
-  },
   span: {
     fontWeight: 500
   }
@@ -92,7 +85,25 @@ class CustomerList extends Component {
   }
 
   // TODO decline
-  handleDecline = something => {}
+  handleDecline = async (event, calloutId) => {
+    event.preventDefault()
+
+    const { data: result } = await api.post(
+      '/callout/professional/decline-callout',
+      {
+        id: calloutId
+      }
+    )
+    if (result.success) {
+      this.setState(state => ({
+        nearbyCallouts: state.nearbyCallouts.filter(
+          callout => callout.id !== calloutId
+        )
+      }))
+    } else {
+      console.log(result.error)
+    }
+  }
 
   handleAccept = async (event, calloutId, price) => {
     event.preventDefault()
@@ -153,6 +164,10 @@ class CustomerList extends Component {
 
     const { price, isLoading, nearbyCallouts } = this.state
 
+    // my location
+    const myLat = this.context.userDetails.location.coordinates[1]
+    const myLng = this.context.userDetails.location.coordinates[0]
+
     if (isLoading) {
       return <Typography variant="body2">Loading...</Typography>
     }
@@ -189,6 +204,10 @@ class CustomerList extends Component {
               price: fetchedPrice
             } = callout
 
+            // customer location
+            const custLat = coordinates[1]
+            const custLng = coordinates[0]
+
             return (
               <Grid item className={gridItem} key={calloutId}>
                 <Paper className={paper}>
@@ -208,7 +227,12 @@ class CustomerList extends Component {
                             </span>
                           </div>
                         }
-                        // secondary={'Driving distance: 0.8km'}
+                        secondary={`Relative distance: ${calcDistance(
+                          myLat,
+                          myLng,
+                          custLat,
+                          custLng
+                        )}km`}
                         classes={{
                           primary: primaryText,
                           secondary: secondaryText
@@ -232,7 +256,9 @@ class CustomerList extends Component {
                     </Typography>
                     <Typography variant="body1" className={bodyText}>
                       <span className={span}>Vehicle:</span>{' '}
-                      {`${vehicle.model} - ${vehicle.plateNumber}`}
+                      {`${vehicle.make} ${vehicle.model} • ${
+                        vehicle.plateNumber
+                      }`}
                     </Typography>
                     <Typography
                       variant="body1"
@@ -254,7 +280,7 @@ class CustomerList extends Component {
                         <Fragment>
                           <Button
                             color="primary"
-                            onClick={() => this.handleDecline()}
+                            onClick={evt => this.handleDecline(evt, calloutId)}
                           >
                             Decline
                           </Button>
@@ -292,7 +318,7 @@ class CustomerList extends Component {
                         this.handleAccept(evt, this.state.calloutId, price)
                       }
                     >
-                      <DialogTitle>Provide quote {calloutId}</DialogTitle>
+                      <DialogTitle>Provide quote</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
                           To provide service for this customer, please enter

@@ -57,6 +57,7 @@ class CustomerVehicleForm extends Component {
     console.log('vehicle form', this.state)
 
     const itemSchema = {
+      make: '',
       carModel: '',
       carPlate: ''
     }
