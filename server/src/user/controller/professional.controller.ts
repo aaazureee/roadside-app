@@ -15,12 +15,14 @@ import { ISession } from 'src/auth/session.interface';
 import { ResponseSuccess, ResponseError } from 'src/server-response.dto';
 import { DtoProfessionalDetails } from '../dto/profession-details.dto';
 import { ReviewService } from 'src/assistance-callout/service/review.service';
+import { TransactionService } from 'src/assistance-callout/service/transaction.service';
 
 @Controller('professional')
 export class ProfessionalController {
   constructor(
     private readonly professionalService: ProfessionalService,
     private readonly reviewService: ReviewService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   @Get('details')
@@ -74,5 +76,38 @@ export class ProfessionalController {
       address,
       reviews,
     });
+  }
+
+  @Get('service-payments')
+  @UseGuards(RoleGuard)
+  @RequiresRoles('professional')
+  async getServicePayments(@Session() session: ISession) {
+    const payments = await this.transactionService.getServicePaymentsByProfessional(
+      session.user.userId,
+    );
+
+    const result = payments.map(payment => {
+      const callout = payment.callout;
+      const customerName = payment.customer.fullName;
+      const professionalName = payment.professional.fullName;
+      const date = payment.dateCreated;
+      const amount = payment.amount;
+      const waived = payment.waived;
+
+      return {
+        customerName,
+        professionalName,
+        date,
+        amount,
+        waived,
+        calloutInfo: {
+          address: callout.address,
+          description: callout.description,
+          vehicle: callout.vehicle,
+        },
+      };
+    });
+
+    return new ResponseSuccess(result);
   }
 }

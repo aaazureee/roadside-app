@@ -8,6 +8,7 @@ import { ProfessionalRepository } from './repository/professional.repository';
 import { ProfessionalController } from './controller/professional.controller';
 import { ProfessionalService } from './service/professional.service';
 import { CalloutModule } from 'src/assistance-callout/callout.module';
+import { AdminController } from './controller/admin.controller';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { CalloutModule } from 'src/assistance-callout/callout.module';
   ],
   exports: [TypeOrmModule],
   providers: [CustomerService, ProfessionalService],
-  controllers: [CustomerController, ProfessionalController],
+  controllers: [CustomerController, ProfessionalController, AdminController],
 })
 export class UserModule {}

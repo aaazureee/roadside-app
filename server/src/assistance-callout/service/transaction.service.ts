@@ -52,25 +52,97 @@ export class TransactionService {
     return await this.entityManager.save(payment);
   }
 
-  async getTransactionsByCustomer(customerId: string): Promise<Transaction[]> {
+  async getServicePaymentsByCustomer(
+    customerId: string,
+  ): Promise<Transaction[]> {
     const result = await this.entityManager.find(Transaction, {
       where: {
         customerId,
+        type: TransactionType.SERVICE_PAYMENT,
+      },
+      relations: ['customer', 'professional', 'callout', 'callout.vehicle'],
+      order: {
+        dateCreated: 'DESC',
       },
     });
 
     return result;
   }
 
-  async getTransactionsByProfessional(
+  async getSubscriptionsByCustomer(customerId: string): Promise<Transaction[]> {
+    const result = await this.entityManager.find(Transaction, {
+      where: {
+        customerId,
+        type: TransactionType.SUBSCRIPTION,
+      },
+      relations: ['customer'],
+      order: {
+        dateCreated: 'DESC',
+      },
+    });
+
+    return result;
+  }
+
+  async getServicePaymentsByProfessional(
     professionalId: string,
   ): Promise<Transaction[]> {
     const result = await this.entityManager.find(Transaction, {
       where: {
         professionalId,
+        type: TransactionType.SERVICE_PAYMENT,
+      },
+      relations: ['customer', 'professional', 'callout', 'callout.vehicle'],
+      order: {
+        dateCreated: 'DESC',
+      },
+    });
+
+    return result;
+  }
+
+  async getAllServicePayments() {
+    const result = await this.entityManager.find(Transaction, {
+      where: {
+        type: TransactionType.SERVICE_PAYMENT,
+      },
+      relations: ['customer', 'professional', 'callout', 'callout.vehicle'],
+      order: {
+        dateCreated: 'DESC',
+      },
+    });
+
+    return result;
+  }
+
+  async getAllSubscriptions() {
+    const result = await this.entityManager.find(Transaction, {
+      where: {
+        type: TransactionType.SUBSCRIPTION,
+      },
+      relations: ['customer'],
+      order: {
+        dateCreated: 'DESC',
       },
     });
 
     return result;
   }
 }
+
+/*
+const demo = {
+  customerName,
+  professionalName,
+  date,
+  amount,
+  waived,
+  calloutInfo: {},
+};
+
+const subDemo = {
+  customerName,
+  amount,
+  date,
+};
+*/
