@@ -6,12 +6,16 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ISession } from './session.interface';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly authService: AuthService,
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     /**
      * Get handler if placed before route otherwise get controller class
      */
@@ -25,7 +29,11 @@ export class RoleGuard implements CanActivate {
     }
     const session: ISession = context.switchToHttp().getRequest().session;
     const user = session.user;
+    if (!user) {
+      return false;
+    }
     const hasRole = () => roles.includes(user.userType);
-    return user && user.userType && hasRole();
+    const userValid = await this.authService.isUserValid(user.userId);
+    return user.userType && userValid && hasRole();
   }
 }
