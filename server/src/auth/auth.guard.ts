@@ -19,10 +19,10 @@ export class RoleGuard implements CanActivate {
     /**
      * Get handler if placed before route otherwise get controller class
      */
-    const roles = this.reflector.get<string[]>(
-      'roles',
-      context.getHandler() || context.getClass(),
-    );
+    const roles =
+      this.reflector.get<string[]>('roles', context.getHandler()) ||
+      this.reflector.get<string[]>('roles', context.getClass());
+
     Logger.log(`Hitting RoleGuard, roles: ${roles}`);
     if (!roles) {
       return true;

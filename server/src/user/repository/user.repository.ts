@@ -1,15 +1,24 @@
-import { EntityRepository, EntityManager, AbstractRepository } from 'typeorm';
+import {
+  EntityRepository,
+  EntityManager,
+  AbstractRepository,
+  Repository,
+} from 'typeorm';
 import { UserRole } from '../user-role.interface';
 import { LoginInfoDto } from '../../auth/auth.dto';
 import { User } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Customer } from '../entity/customer.entity';
 import { Professional } from '../entity/professional.entity';
+import {
+  AccountBannedError,
+  InvalidCredentialError,
+} from 'src/auth/login.exception';
 
 const SALT_ROUNDS = 10;
 
-@EntityRepository()
-export class UserRepository extends AbstractRepository<User> {
+@EntityRepository(User)
+export class UserRepository extends Repository<User> {
   // constructor(private manager: EntityManager) {}
 
   /**
@@ -64,14 +73,22 @@ export class UserRepository extends AbstractRepository<User> {
     password: string,
     manager: EntityManager = this.manager,
   ): Promise<User | null> {
+    let user;
     try {
-      const user = await manager.findOneOrFail(User, { email });
-      const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
-      if (isPasswordMatch) {
-        return user;
-      }
+      user = await manager.findOneOrFail(User, { email });
     } catch (error) {
-      return null;
+      throw new InvalidCredentialError();
+    }
+
+    if (user.banned) {
+      throw new AccountBannedError();
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.passwordHash);
+    if (isPasswordMatch) {
+      return user;
+    } else {
+      throw new InvalidCredentialError();
     }
   }
 

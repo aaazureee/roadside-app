@@ -11,7 +11,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   passwordHash: string;
 
   @Column({ enum: UserRole })
@@ -26,4 +26,7 @@ export class User {
     nullable: true,
   })
   professionalInfo?: Professional;
+
+  @Column({ type: 'boolean', default: false })
+  banned: boolean;
 }

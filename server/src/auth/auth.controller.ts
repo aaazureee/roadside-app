@@ -7,6 +7,7 @@ import {
   LoginResponseDto,
 } from 'src/auth/auth.dto';
 import { ISession } from './session.interface';
+import { InvalidCredentialError, AccountBannedError } from './login.exception';
 
 @Controller('auth')
 export class AuthController {
@@ -43,7 +44,23 @@ export class AuthController {
     @Session() session: ISession,
   ): Promise<LoginResponseDto> {
     const { email, password, rememberMe } = loginInfo;
-    const user = await this.authService.logIn(email, password);
+    let user;
+    try {
+      user = await this.authService.logIn(email, password);
+    } catch (err) {
+      if (err instanceof InvalidCredentialError) {
+        return {
+          success: false,
+          error: 'Invalid credentials.',
+        };
+      } else if (err instanceof AccountBannedError) {
+        return {
+          success: false,
+          error: 'You have been banned. Please contact an admin for details',
+        };
+      }
+    }
+
     if (!user) {
       return {
         success: false,

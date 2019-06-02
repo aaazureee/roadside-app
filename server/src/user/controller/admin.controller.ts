@@ -1,16 +1,20 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Param, Body, Post } from '@nestjs/common';
 import { RoleGuard } from 'src/auth/auth.guard';
 import { RequiresRoles } from 'src/auth/roles.decorator';
 import { TransactionService } from 'src/assistance-callout/service/transaction.service';
-import { ResponseSuccess } from 'src/server-response.dto';
+import { ResponseSuccess, ResponseError } from 'src/server-response.dto';
+import { AdminService } from '../service/admin.service';
 
 @Controller('admin')
+@UseGuards(RoleGuard)
+@RequiresRoles('admin')
 export class AdminController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(
+    private readonly transactionService: TransactionService,
+    private readonly adminService: AdminService,
+  ) {}
 
   @Get('service-payments')
-  @UseGuards(RoleGuard)
-  @RequiresRoles('admin')
   async getAllServicePayments() {
     const payments = await this.transactionService.getAllServicePayments();
 
@@ -40,8 +44,6 @@ export class AdminController {
   }
 
   @Get('subscriptions')
-  @UseGuards(RoleGuard)
-  @RequiresRoles('admin')
   async getAllSubscriptions() {
     const subs = await this.transactionService.getAllSubscriptions();
 
@@ -54,5 +56,33 @@ export class AdminController {
     });
 
     return new ResponseSuccess(result);
+  }
+
+  @Post('ban')
+  async banUser(@Body('userId') userId: string) {
+    const success: boolean = await this.adminService.banUser(userId);
+
+    return success
+      ? new ResponseSuccess({ message: 'User has been banned' })
+      : new ResponseError('Could not ban user');
+  }
+
+  @Post('unban')
+  async unbanUser(@Body('userId') userId: string) {
+    const success: boolean = await this.adminService.unbanUser(userId);
+
+    return success
+      ? new ResponseSuccess({ message: 'User has been unbanned' })
+      : new ResponseError('Could not unban user');
+  }
+
+  @Get('customers')
+  async getCustomers() {
+    return await this.adminService.getAllCustomers();
+  }
+
+  @Get('professional')
+  async getProfessionals() {
+    return await this.adminService.getAllProfessionals();
   }
 }

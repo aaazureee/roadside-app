@@ -9,6 +9,7 @@ import { ProfessionalController } from './controller/professional.controller';
 import { ProfessionalService } from './service/professional.service';
 import { CalloutModule } from 'src/assistance-callout/callout.module';
 import { AdminController } from './controller/admin.controller';
+import { AdminService } from './service/admin.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { AdminController } from './controller/admin.controller';
     CalloutModule,
   ],
   exports: [TypeOrmModule],
-  providers: [CustomerService, ProfessionalService],
+  providers: [CustomerService, ProfessionalService, AdminService],
   controllers: [CustomerController, ProfessionalController, AdminController],
 })
 export class UserModule {}

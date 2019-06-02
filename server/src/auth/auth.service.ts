@@ -21,8 +21,8 @@ export class AuthService {
     return this.userRepository.logIn(email, password);
   }
 
-  async isUserValid(userId: string) {
+  async isUserValid(userId: string): Promise<boolean> {
     const user = await this.userRepository.findUserById(userId);
-    return !!user;
+    return (!!user && !user.banned) as boolean;
   }
 }
