@@ -86,14 +86,8 @@ class CustFinal extends Component {
     if (isLoading) return <Typography variant="body2">Loading...</Typography>
 
     const {
-      confirmProfessional: {
-        fullName,
-        price,
-        phone,
-        location: { coordinates: coordinates1 }
-      },
+      confirmProfessional: { fullName, price, phone },
       address,
-      location: { coordinates: coordinates2 },
       vehicle,
       description
     } = this.state

@@ -72,7 +72,7 @@ class MainLanding extends Component {
             color="inherit"
             className={bodyTextStyle}
             style={{
-              display: 'inline-block',
+              display: 'block',
               width: 700
             }}
           >

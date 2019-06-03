@@ -13,7 +13,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions
 } from '@material-ui/core'
 import moment from 'moment'
@@ -24,7 +23,6 @@ import { UserContext } from '../Context'
 import { calcDistance } from './utils'
 import { ReactComponent as StarBorder } from '../../svg/star-border.svg'
 import { ReactComponent as Star } from '../../svg/star.svg'
-import axios from 'axios'
 
 const styles = theme => ({
   avatar: {
@@ -168,7 +166,6 @@ class ResponseList extends Component {
         secondaryText,
         bodyText,
         paper,
-        gridItem,
         span,
         dialogPaper,
         star: starStyle
@@ -223,7 +220,6 @@ class ResponseList extends Component {
               professionalId,
               fullName,
               price,
-              address,
               location: { coordinates }
             } = prof
 

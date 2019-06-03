@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { Paper, Tabs, Tab, Typography } from '@material-ui/core'
+import { Tabs, Tab, Typography } from '@material-ui/core'
 import classNames from 'classnames'
 import { UserContext } from '../Context'
 import MakeRequest from './MakeRequest'
@@ -155,7 +155,7 @@ class Dashboard extends Component {
 
   render() {
     const {
-      classes: { root, paper, tab }
+      classes: { root, tab }
     } = this.props
 
     const { userType } = this.context.userDetails

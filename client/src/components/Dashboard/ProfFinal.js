@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { Typography, Grid, TextField, Button, Paper } from '@material-ui/core'
+import { Typography, Grid, TextField, Paper } from '@material-ui/core'
 import { UserContext } from '../Context'
-import api from '../api'
 
 const style = theme => ({
   root: {
@@ -43,7 +42,6 @@ class ProfFinal extends Component {
       customerPhone
     } = this.props.customerConfirmed
 
-    const user = this.context
     const vehicleDetails = `${vehicle.make} ${vehicle.model} • ${
       vehicle.plateNumber
     }`

@@ -1,13 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import {
-  Grid,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  TableRow,
-  TableCell
-} from '@material-ui/core'
+import React, { Component } from 'react'
+import { Button, Typography, TableRow, TableCell } from '@material-ui/core'
 import {
   withStyles,
   createMuiTheme,
@@ -15,11 +7,10 @@ import {
 } from '@material-ui/core/styles'
 import { UserContext } from '../Context'
 import MUIDataTable from 'mui-datatables'
-import moment from 'moment'
 
 import api from '../api'
 
-const styles = theme => ({
+const styles = () => ({
   span: {
     fontWeight: 500,
     fontSize: '0.8125rem'
@@ -198,7 +189,7 @@ class AdminProfList extends Component {
       expandableRows: true,
       rowsPerPage: 20,
       rowsPerPageOptions: [20, 50, 100],
-      renderExpandableRow: (rowData, rowMeta) => {
+      renderExpandableRow: rowData => {
         const colSpan = rowData.length + 1
         let { abn, workingRange } = rowData[6]
         let { bsb, accountNumber } = rowData[7]

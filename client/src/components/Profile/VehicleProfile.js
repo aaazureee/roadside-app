@@ -49,12 +49,12 @@ class VehicleProfile extends Component {
     })
     // console.log('removed', removedVehicles)
 
-    let updatedVehicles = vehicleList.filter(vehicle => {
-      if (original.find(x => x.dbId === vehicle.dbId)) {
-        return true
-      }
-      return false
-    })
+    // let updatedVehicles = vehicleList.filter(vehicle => {
+    //   if (original.find(x => x.dbId === vehicle.dbId)) {
+    //     return true
+    //   }
+    //   return false
+    // })
     // console.log('updated', updatedVehicles)
 
     vehicleList = this.vehicleFormRef.state.itemList.map(vehicle => {

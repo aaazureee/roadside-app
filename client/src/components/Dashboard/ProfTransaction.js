@@ -1,13 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import {
-  Grid,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  TableRow,
-  TableCell
-} from '@material-ui/core'
+import React, { Component } from 'react'
+import { Typography, TableRow, TableCell } from '@material-ui/core'
 import {
   withStyles,
   createMuiTheme,
@@ -19,7 +11,7 @@ import moment from 'moment'
 
 import api from '../api'
 
-const styles = theme => ({
+const styles = () => ({
   span: {
     fontWeight: 500,
     fontSize: '0.8125rem'
@@ -117,7 +109,7 @@ class ProfTransaction extends Component {
       expandableRows: true,
       rowsPerPage: 20,
       rowsPerPageOptions: [20, 50, 100],
-      renderExpandableRow: (rowData, rowMeta) => {
+      renderExpandableRow: rowData => {
         const colSpan = rowData.length + 1
         const { address, description, vehicle } = rowData[3]
         const vehicleDetails = `${vehicle.make} ${vehicle.model} • ${

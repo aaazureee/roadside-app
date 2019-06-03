@@ -1,11 +1,9 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import {
   Typography,
-  Grid,
   TextField,
   Button,
-  Paper,
   DialogTitle,
   DialogContent,
   DialogContentText,
@@ -16,7 +14,7 @@ import { ReactComponent as Star } from '../../svg/star.svg'
 
 import api from '../api'
 
-const style = theme => ({
+const style = () => ({
   star: {
     width: 40,
     cursor: 'pointer'

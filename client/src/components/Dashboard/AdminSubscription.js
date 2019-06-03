@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import { Grid, TextField, Button, Typography, Paper } from '@material-ui/core'
+import React, { Component } from 'react'
+import { Typography } from '@material-ui/core'
 import {
   withStyles,
   createMuiTheme,
@@ -11,7 +11,7 @@ import moment from 'moment'
 
 import api from '../api'
 
-const styles = theme => ({})
+const styles = () => ({})
 
 class AdminSubscription extends Component {
   static contextType = UserContext

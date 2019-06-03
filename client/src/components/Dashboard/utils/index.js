@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 const toRad = num => {
   return (num * Math.PI) / 180
 }

@@ -52,7 +52,7 @@ class SignUpReview extends Component {
   // admin
   redirectAdmin = async () => {
     const user = this.context
-    const { userDetails, userType, history } = this.props
+    const { userDetails, userType } = this.props
 
     const { email, password } = userDetails
 
@@ -73,7 +73,7 @@ class SignUpReview extends Component {
 
   redirectCustomer = async () => {
     const user = this.context
-    const { userType, history } = this.props
+    const { userType } = this.props
 
     // remove unnecessary info before storing on client-side
     let { userDetails: extraUserDetails } = this.props
@@ -130,7 +130,7 @@ class SignUpReview extends Component {
 
   redirectProfessional = async () => {
     const user = this.context
-    const { userType, history } = this.props
+    const { userType } = this.props
 
     // remove unnecessary info before storing on client-side
     let { userDetails: extraUserDetails } = this.props
