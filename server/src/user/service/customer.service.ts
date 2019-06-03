@@ -33,16 +33,7 @@ export class CustomerService {
     //   relations: ['vehicles', 'user'],
     // });
 
-    const customer = await this.customerRepository
-      .createQueryBuilder('customer')
-      .leftJoinAndSelect(
-        'customer.vehicles',
-        'vehicle',
-        'vehicle.active = true',
-      )
-      .leftJoinAndSelect('customer.user', 'user')
-      .where('customer.userId = :userId', { userId })
-      .getOne();
+    const customer = await this.getCustomerById(userId);
 
     const { user, ...rest } = customer;
     const { email, id, role } = user;
@@ -73,6 +64,31 @@ export class CustomerService {
   }
 
   async deleteVehicles(userId: string, vehicleIds: number[]) {
+    const customer = await this.getCustomerWithVehicles(userId);
+
+    customer.vehicles = customer.vehicles.map(vehicle => {
+      if (vehicleIds.includes(vehicle.id)) {
+        vehicle.active = false;
+      }
+      return vehicle;
+    });
+
+    await this.entityManager.save(customer.vehicles);
+  }
+
+  async editVehicles(
+    userId: string,
+    vehicles: {
+      id: number;
+      make: string;
+      model: string;
+      plateNumber: string;
+    }[],
+  ) {
+    const customer = await this.getCustomerWithVehicles(userId);
+  }
+
+  private async getCustomerWithVehicles(userId: string) {
     const customer = await this.customerRepository
       .createQueryBuilder('customer')
       .leftJoinAndSelect(
@@ -84,12 +100,6 @@ export class CustomerService {
       .where('customer.userId = :userId', { userId })
       .getOne();
 
-    for (let v of customer.vehicles) {
-      if (vehicleIds.includes(v.id)) {
-        v.active = false;
-      }
-    }
-
-    await this.entityManager.save(customer.vehicles);
+    return customer;
   }
 }
