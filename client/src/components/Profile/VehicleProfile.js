@@ -70,7 +70,7 @@ class VehicleProfile extends Component {
         model: x.carModel,
         plateNumber: x.carPlate
       })),
-      remove: removedVehicles.map(x => x.dbId)
+      remove: removedVehicles.map(x => ({ id: x.dbId }))
     })
 
     if (result.success) {
