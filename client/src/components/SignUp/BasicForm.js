@@ -75,6 +75,9 @@ class CustomerBasicForm extends Component {
       console.log('geocode result', result.results[0])
       newUserDetails.lat = result.results[0].geometry.location.lat
       newUserDetails.lng = result.results[0].geometry.location.lng
+
+      console.log('latitude', newUserDetails.lat)
+      console.log('longitude', newUserDetails.lng)
     } else {
       console.log('no result found!')
     }

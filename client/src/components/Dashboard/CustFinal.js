@@ -101,7 +101,7 @@ class CustFinal extends Component {
       <Fragment>
         <Typography variant="h6" color="primary" gutterBottom>
           The chosen roadside professional is on the way to assist you. Please
-          be patience...
+          be patient...
         </Typography>
         <Paper className={paper}>
           <Typography variant="h6" color="primary" gutterBottom>
