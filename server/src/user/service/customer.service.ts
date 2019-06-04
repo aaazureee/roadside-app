@@ -33,7 +33,7 @@ export class CustomerService {
     //   relations: ['vehicles', 'user'],
     // });
 
-    const customer = await this.getCustomerById(userId);
+    const customer = await this.getCustomerWithVehicles(userId);
 
     const { user, ...rest } = customer;
     const { email, id, role } = user;
