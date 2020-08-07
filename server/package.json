@@ -33,7 +33,7 @@
     "@types/node": "^10.7.1",
     "@types/supertest": "^2.0.5",
     "bcrypt": "^3.0.5",
-    "class-transformer": "^0.2.0",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.9.1",
     "dotenv": "^7.0.0",
     "express-session": "^1.15.6",
